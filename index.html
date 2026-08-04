@@ -2,63 +2,62 @@
 <html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WTI | Global Supplier Network & Quality Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WTI Hub | Apple-Grade Enterprise UI</title>
     
+    <!-- Preconnect & Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Leaflet & Chart.js -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* ==========================================================================
-           1. CORE DESIGN TOKENS & VARIABLES
+           1. APPLE-STYLE DESIGN TOKENS & VARIABLES
            ========================================================================== */
         :root {
-            --bg-base: #020204;
-            --bg-surface: #08080c;
-            --bg-panel: rgba(12, 12, 16, 0.85);
-            --bg-panel-hover: rgba(20, 20, 26, 0.95);
-            --bg-gradient: radial-gradient(circle at 100% 0%, #12121a, #020204 70%);
+            /* Apple Dark Mode Palette */
+            --bg-base: #000000;
+            --bg-surface: #1c1c1e;
+            --bg-elevated: #2c2c2e;
             
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(255, 255, 255, 0.18);
-            --shadow-glass: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+            /* Glassmorphism / Vibrancy */
+            --glass-bg: rgba(28, 28, 30, 0.65);
+            --glass-bg-hover: rgba(44, 44, 46, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-accent: #38bdf8;
-            --font-main: 'Outfit', sans-serif;
-            --font-display: 'Space Grotesk', sans-serif;
+            /* Typography (San Francisco fallback + Space Grotesk) */
+            --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-display: 'Space Grotesk', -apple-system, sans-serif;
             
-            --color-primary: #0ea5e9;
-            --color-primary-dark: #0284c7;
-            --color-primary-glow: rgba(14, 165, 233, 0.4);
-            --color-secondary: #8b5cf6;
+            /* Colors */
+            --text-primary: #ffffff;
+            --text-secondary: #ebebf599; /* iOS Secondary Label */
+            --text-tertiary: #ebebf54d;
             
-            --stat-success: #10b981; 
-            --stat-success-bg: rgba(16, 185, 129, 0.12);
-            --stat-warning: #f59e0b; 
-            --stat-warning-bg: rgba(245, 158, 11, 0.12);
-            --stat-danger: #ef4444; 
-            --stat-danger-bg: rgba(239, 68, 68, 0.12);
-            --stat-info: #6366f1; 
-            --stat-info-bg: rgba(99, 102, 241, 0.12);
+            --system-blue: #0a84ff;
+            --system-blue-glow: rgba(10, 132, 255, 0.4);
+            --system-green: #30d158;
+            --system-orange: #ff9f0a;
+            --system-red: #ff453a;
+            --system-purple: #bf5af2;
             
             --sidebar-width: 320px;
-            --panel-width: 850px;
             
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-            --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            --transition-fast: all 0.2s var(--ease-out-expo);
-            --transition-smooth: all 0.5s var(--ease-out-expo);
+            /* Spring Physics Animations */
+            --spring-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+            --spring-bouncy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-fast: all 0.2s var(--spring-soft);
+            --transition-smooth: all 0.4s var(--spring-soft);
+            --transition-layout: all 0.6s var(--spring-bouncy);
         }
-
-        .cite-tag { display: none; }
 
         /* ==========================================================================
            2. GLOBAL RESET & BASE STYLES
@@ -71,132 +70,165 @@
         
         html { 
             font-size: 16px; 
-            scroll-behavior: smooth; 
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
         }
         
         body {
             font-family: var(--font-main);
             background-color: var(--bg-base);
-            background-image: var(--bg-gradient);
-            color: var(--text-main);
+            color: var(--text-primary);
             height: 100vh; 
             width: 100vw;
             display: flex; 
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+
+        /* Subtle Noise Overlay for Texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.03"/%3E%3C/svg%3E');
+            pointer-events: none;
+            z-index: 9999;
         }
 
         h1, h2, h3, h4, h5, h6 { 
             font-family: var(--font-display); 
             font-weight: 700; 
             letter-spacing: -0.02em; 
-            line-height: 1.2; 
+            line-height: 1.1; 
         }
 
         a { text-decoration: none; color: inherit; transition: var(--transition-fast); }
-        ul, ol { list-style: none; }
-        button, input, textarea, select { font-family: inherit; outline: none; }
+        button, input, textarea, select { font-family: inherit; outline: none; border: none; }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+        /* MacOS style scrollbars */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { 
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 10px; 
+            border: 3px solid transparent; 
+            background-clip: padding-box; 
+        }
+        ::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 255, 255, 0.4); }
 
         /* ==========================================================================
-           3. UTILITIES & REUSABLE COMPONENTS
+           3. APPLE-GRADE GLASSMORPHISM & UTILITIES
            ========================================================================== */
-        .glass-panel {
-            background: var(--bg-panel);
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            box-shadow: var(--shadow-glass);
+        .apple-glass {
+            background: var(--glass-bg);
+            backdrop-filter: saturate(180%) blur(30px);
+            -webkit-backdrop-filter: saturate(180%) blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
             transition: var(--transition-smooth);
         }
-        .glass-panel:hover { 
-            border-color: var(--border-highlight); 
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8); 
+        
+        .apple-glass:hover { 
+            background: var(--glass-bg-hover);
+            border-color: var(--glass-highlight); 
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6); 
         }
 
         .text-gradient { 
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); 
+            background: linear-gradient(135deg, #ffffff, #a1a1a6); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
         }
         
-        .text-muted { color: var(--text-muted); }
-        .text-success { color: var(--stat-success); }
-        .text-warning { color: var(--stat-warning); }
-        .text-danger { color: var(--stat-danger); }
+        .text-muted { color: var(--text-secondary); }
 
+        /* Spring Buttons */
         .btn {
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid var(--border-glass);
-            color: var(--text-main); 
-            padding: 12px 24px; 
-            border-radius: 12px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary); 
+            padding: 14px 28px; 
+            border-radius: 100px; /* Pill shape typical of Apple */
             font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer; 
             display: inline-flex; 
             align-items: center; 
             justify-content: center; 
             gap: 10px;
-            transition: var(--transition-smooth); 
+            transition: transform 0.2s var(--spring-bouncy), background 0.2s, box-shadow 0.2s;
             position: relative; 
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
+        
         .btn:hover { 
-            background: rgba(255, 255, 255, 0.1); 
-            border-color: var(--border-highlight); 
-            transform: translateY(-2px); 
+            background: rgba(255, 255, 255, 0.15); 
+            transform: scale(1.02); 
+        }
+        
+        .btn:active {
+            transform: scale(0.96);
         }
         
         .btn-primary { 
-            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); 
-            border: none; 
-            box-shadow: 0 4px 15px var(--color-primary-glow); 
+            background: var(--system-blue); 
             color: white; 
+            border: none;
+            box-shadow: 0 4px 15px var(--system-blue-glow); 
         }
+        
         .btn-primary:hover { 
-            background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary)); 
-            box-shadow: 0 6px 25px var(--color-primary-glow); 
+            background: #0071e3; 
+            box-shadow: 0 6px 20px var(--system-blue-glow); 
         }
 
+        .btn-danger { background: rgba(255, 69, 58, 0.2); color: var(--system-red); border-color: rgba(255, 69, 58, 0.3); }
+        .btn-danger:hover { background: rgba(255, 69, 58, 0.3); }
+        
+        .btn-success { background: rgba(48, 209, 88, 0.2); color: var(--system-green); border-color: rgba(48, 209, 88, 0.3); }
+        .btn-success:hover { background: rgba(48, 209, 88, 0.3); }
+
+        /* Status Badges */
         .badge {
-            padding: 6px 12px; 
-            border-radius: 8px; 
+            padding: 6px 14px; 
+            border-radius: 100px; 
             font-size: 0.75rem; 
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase; 
             letter-spacing: 0.5px; 
             display: inline-flex; 
             align-items: center; 
             gap: 6px; 
             white-space: nowrap;
+            backdrop-filter: blur(10px);
         }
-        .badge-success { background: var(--stat-success-bg); color: var(--stat-success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-warning { background: var(--stat-warning-bg); color: var(--stat-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-        .badge-danger { background: var(--stat-danger-bg); color: var(--stat-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
-        .badge-info { background: var(--stat-info-bg); color: var(--color-primary); border: 1px solid rgba(14, 165, 233, 0.3); }
-        .badge-outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); }
+        .badge-success { background: rgba(48, 209, 88, 0.15); color: var(--system-green); border: 1px solid rgba(48, 209, 88, 0.3); }
+        .badge-warning { background: rgba(255, 159, 10, 0.15); color: var(--system-orange); border: 1px solid rgba(255, 159, 10, 0.3); }
+        .badge-danger { background: rgba(255, 69, 58, 0.15); color: var(--system-red); border: 1px solid rgba(255, 69, 58, 0.3); }
+        .badge-info { background: rgba(10, 132, 255, 0.15); color: var(--system-blue); border: 1px solid rgba(10, 132, 255, 0.3); }
 
         /* ==========================================================================
-           4. LAYOUT ARCHITECTURE
+           4. SIDEBAR NAVIGATION
            ========================================================================== */
         .sidebar {
             width: var(--sidebar-width); 
             min-width: var(--sidebar-width);
-            background: rgba(2, 2, 4, 0.95); 
-            border-right: 1px solid var(--border-glass);
+            background: rgba(28, 28, 30, 0.3); 
+            backdrop-filter: saturate(180%) blur(40px);
+            -webkit-backdrop-filter: saturate(180%) blur(40px);
+            border-right: 1px solid var(--glass-border);
             display: flex; 
             flex-direction: column; 
             z-index: 1000;
-            box-shadow: 5px 0 30px rgba(0,0,0,0.6);
         }
         
         .sidebar-header { 
-            padding: 32px 24px 24px; 
+            padding: 40px 24px 24px; 
             display: flex; 
             align-items: center; 
             gap: 16px; 
@@ -205,19 +237,18 @@
         .sidebar-logo {
             width: 48px; 
             height: 48px; 
-            border-radius: 12px;
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(139, 92, 246, 0.2));
-            border: 1px solid rgba(14, 165, 233, 0.4); 
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
             display: flex; 
             align-items: center; 
             justify-content: center;
             font-size: 1.5rem; 
-            color: var(--color-primary); 
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+            color: white; 
+            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.4);
         }
         
-        .sidebar-title h2 { font-size: 1.8rem; color: white; }
-        .sidebar-title span { font-size: 0.75rem; color: var(--color-primary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .sidebar-title h2 { font-size: 1.6rem; color: white; letter-spacing: -1px; }
+        .sidebar-title span { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
 
         .sidebar-scroll { 
             flex-grow: 1; 
@@ -225,25 +256,25 @@
             padding: 0 24px 24px; 
         }
         
-        .nav-section { margin-bottom: 32px; }
+        .nav-section { margin-bottom: 36px; }
         
         .nav-section-title { 
             font-size: 0.75rem; 
-            color: var(--text-muted); 
+            color: var(--text-tertiary); 
             text-transform: uppercase; 
-            letter-spacing: 1.5px; 
+            letter-spacing: 1px; 
             margin-bottom: 12px; 
             font-weight: 700; 
+            padding-left: 12px;
         }
         
         .nav-link {
             width: 100%; 
             background: transparent; 
-            border: 1px solid transparent; 
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-align: left; 
             padding: 12px 16px; 
-            margin-bottom: 6px; 
+            margin-bottom: 4px; 
             border-radius: 12px;
             font-size: 0.95rem; 
             font-weight: 500; 
@@ -255,47 +286,63 @@
             position: relative;
         }
         
-        .nav-link i { width: 20px; text-align: center; font-size: 1.1rem; }
-        .nav-link:hover { background: rgba(255, 255, 255, 0.03); color: white; transform: translateX(4px); }
+        .nav-link i { width: 24px; text-align: center; font-size: 1.2rem; }
+        
+        .nav-link:hover { 
+            background: rgba(255, 255, 255, 0.05); 
+            color: white; 
+        }
+        
         .nav-link.active { 
-            background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), transparent); 
-            border-color: rgba(14, 165, 233, 0.2); 
-            color: var(--color-primary); 
-            font-weight: 700; 
+            background: var(--system-blue); 
+            color: white; 
+            font-weight: 600; 
+            box-shadow: 0 4px 12px var(--system-blue-glow);
         }
 
         .supplier-nav-list { 
             display: flex; 
             flex-direction: column; 
             gap: 4px; 
-            padding-left: 12px; 
-            border-left: 1px solid var(--border-glass); 
-            margin-left: 12px; 
         }
         
         .sup-nav-item {
             background: transparent; 
-            border: none; 
-            color: var(--text-muted); 
+            color: var(--text-secondary); 
             text-align: left;
             padding: 10px 16px; 
-            border-radius: 8px; 
+            border-radius: 12px; 
             cursor: pointer; 
             transition: var(--transition-fast);
             display: flex; 
             align-items: center; 
             gap: 12px; 
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         
-        .sup-nav-item:hover { color: white; background: rgba(255, 255, 255, 0.05); }
-        .sup-nav-item.active { color: white; background: rgba(255, 255, 255, 0.1); font-weight: 600; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+        .sup-nav-item:hover { 
+            color: white; 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+        
+        .sup-nav-item.active { 
+            color: white; 
+            background: rgba(255, 255, 255, 0.1); 
+            font-weight: 600; 
+        }
+        
+        .status-indicator { 
+            width: 8px; height: 8px; 
+            border-radius: 50%; 
+            box-shadow: 0 0 8px currentColor; 
+            position: relative;
+        }
 
         .sidebar-footer { 
             padding: 24px; 
-            border-top: 1px solid var(--border-glass); 
-            background: rgba(0, 0, 0, 0.3); 
+            border-top: 1px solid var(--glass-border); 
+            background: rgba(0, 0, 0, 0.2); 
+            backdrop-filter: blur(10px);
         }
         
         .user-widget { 
@@ -303,26 +350,32 @@
             align-items: center; 
             gap: 16px; 
             padding: 12px; 
-            border-radius: 12px; 
+            border-radius: 16px; 
             background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid var(--border-glass); 
+            border: 1px solid var(--glass-border); 
+            transition: var(--transition-fast);
+            cursor: pointer;
         }
+        .user-widget:hover { background: rgba(255, 255, 255, 0.08); transform: scale(1.02); }
         
         .user-widget .avatar { 
-            width: 44px; 
-            height: 44px; 
+            width: 40px; 
+            height: 40px; 
             border-radius: 50%; 
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); 
+            background: linear-gradient(135deg, var(--system-purple), var(--system-blue)); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             color: white; 
-            font-weight: 800; 
+            font-weight: 700; 
         }
         
-        .user-widget-info strong { font-size: 0.95rem; color: white; display: block; }
-        .user-widget-info span { font-size: 0.75rem; color: var(--text-muted); }
+        .user-widget-info strong { font-size: 0.95rem; color: white; display: block; margin-bottom: 2px;}
+        .user-widget-info span { font-size: 0.75rem; color: var(--text-secondary); }
 
+        /* ==========================================================================
+           5. MAIN ROUTER VIEWS
+           ========================================================================== */
         .main-container { 
             flex-grow: 1; 
             position: relative; 
@@ -335,392 +388,340 @@
         .view-layer {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             opacity: 0; pointer-events: none; 
-            transition: opacity 0.5s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
-            transform: translateY(20px) scale(0.98);
+            transition: opacity 0.5s var(--spring-soft), transform 0.6s var(--spring-bouncy);
+            transform: scale(0.97) translateY(20px);
             overflow-y: auto; overflow-x: hidden; 
-            padding: 40px; z-index: 10;
+            padding: 50px 60px; z-index: 10;
         }
         
         .view-layer.active { 
             opacity: 1; 
             pointer-events: auto; 
             z-index: 20; 
-            transform: translateY(0) scale(1);
+            transform: scale(1) translateY(0);
         }
         
+        /* Map specific reset */
         #view-map { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
 
         /* ==========================================================================
-           5. MAP VIEW & LEAFLET
+           6. LEAFLET MAP VIEW
            ========================================================================== */
         .map-overlay-header {
-            position: absolute; top: 32px; left: 32px; z-index: 400;
+            position: absolute; top: 40px; left: 40px; z-index: 400;
             pointer-events: none; display: flex; flex-direction: column; gap: 16px;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border);
         }
         
-        .map-overlay-header h1 { 
-            font-size: 3.5rem; 
-            color: white; 
-            text-shadow: 0 4px 24px rgba(0,0,0,0.9); 
-            pointer-events: auto; 
-        }
-        
-        .map-overlay-header p { 
-            font-size: 1.1rem; 
-            color: rgba(255,255,255,0.9); 
-            text-shadow: 0 2px 12px rgba(0,0,0,0.9); 
-            max-width: 600px; 
-            pointer-events: auto; 
-        }
+        .map-overlay-header h1 { font-size: 2.5rem; color: white; pointer-events: auto; }
+        .map-overlay-header p { font-size: 1.05rem; color: var(--text-secondary); max-width: 500px; pointer-events: auto; line-height: 1.5; }
         
         .map-legend { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 12px; 
-            pointer-events: auto; 
-            background: rgba(10, 10, 15, 0.85); 
-            padding: 12px 20px; 
-            border-radius: 20px; 
-            border: 1px solid var(--border-glass); 
-            backdrop-filter: blur(10px); 
+            display: flex; flex-wrap: wrap; gap: 10px; pointer-events: auto; 
+            margin-top: 10px;
         }
 
         #leaflet-map-container {
             width: 100%; height: 100%; flex-grow: 1;
-            background: #020203; z-index: 1;
+            background: var(--bg-base); z-index: 1;
             position: absolute; top: 0; left: 0; bottom: 0; right: 0;
         }
 
         .leaflet-container { font-family: var(--font-main); background: #000; }
+        
+        /* Premium Map Popups */
         .leaflet-popup-content-wrapper { 
-            background: rgba(10, 10, 15, 0.95); 
-            backdrop-filter: blur(20px); 
+            background: rgba(28, 28, 30, 0.85); 
+            backdrop-filter: saturate(180%) blur(20px); 
             color: white; 
-            border: 1px solid var(--border-glass); 
-            border-radius: 12px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8); 
-            padding: 5px; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+            padding: 10px; 
         }
-        .leaflet-popup-tip { background: rgba(10, 10, 15, 0.95); border: 1px solid var(--border-glass); }
+        .leaflet-popup-tip { background: rgba(28, 28, 30, 0.85); border: 1px solid var(--glass-border); }
         
-        .marker-pulse { border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: transform 0.3s; }
-        .marker-pulse:hover { transform: scale(1.3) !important; z-index: 1000 !important; }
-        .marker-danger { background: var(--stat-danger); box-shadow: 0 0 0 rgba(239, 68, 68, 0.7); animation: pulseDanger 2s infinite; }
-        .marker-warning { background: var(--stat-warning); box-shadow: 0 0 0 rgba(245, 158, 11, 0.7); animation: pulseWarning 2.5s infinite; }
-        .marker-success { background: var(--stat-success); box-shadow: 0 0 0 rgba(16, 185, 129, 0.7); animation: pulseSuccess 3s infinite; }
-        .marker-info { background: var(--color-primary); box-shadow: 0 0 0 rgba(14, 165, 233, 0.7); animation: pulseInfo 2s infinite; }
+        /* Animated Markers */
+        .marker-pulse { border-radius: 50%; border: 3px solid #fff; cursor: pointer; transition: transform 0.4s var(--spring-bouncy); }
+        .marker-pulse:hover { transform: scale(1.4) !important; z-index: 1000 !important; }
+        .marker-danger { background: var(--system-red); box-shadow: 0 0 0 rgba(255, 69, 58, 0.6); animation: pulseDanger 2s infinite; }
+        .marker-warning { background: var(--system-orange); box-shadow: 0 0 0 rgba(255, 159, 10, 0.6); animation: pulseWarning 2.5s infinite; }
+        .marker-success { background: var(--system-green); box-shadow: 0 0 0 rgba(48, 209, 88, 0.6); animation: pulseSuccess 3s infinite; }
+        .marker-info { background: var(--system-blue); box-shadow: 0 0 0 rgba(10, 132, 255, 0.6); animation: pulseInfo 2s infinite; }
         
-        @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        @keyframes pulseWarning { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
-        @keyframes pulseSuccess { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-        @keyframes pulseInfo { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
+        @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(255, 69, 58, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0); } }
+        @keyframes pulseWarning { 0% { box-shadow: 0 0 0 0 rgba(255, 159, 10, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(255, 159, 10, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 159, 10, 0); } }
+        @keyframes pulseSuccess { 0% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(48, 209, 88, 0); } 100% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0); } }
+        @keyframes pulseInfo { 0% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(10, 132, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0); } }
 
         /* ==========================================================================
-           6. SLIDE-OVER SUPPLIER PANEL
+           7. DASHBOARD & NEW SUPPLIER MATURITY CHART
            ========================================================================== */
-        .slide-panel {
-            position: absolute; 
-            top: 0; right: -120%; 
-            width: var(--panel-width); 
-            max-width: 100%; 
-            height: 100%;
-            background: rgba(10, 10, 14, 0.98); 
-            backdrop-filter: blur(40px); 
-            -webkit-backdrop-filter: blur(40px);
-            border-left: 1px solid var(--border-glass); 
-            box-shadow: -20px 0 60px rgba(0,0,0,0.9);
-            z-index: 9999; 
-            display: flex; 
-            flex-direction: column; 
-            transition: right 0.5s var(--ease-out-expo);
+        .dash-header { margin-bottom: 50px; }
+        .dash-header h1 { font-size: 3.5rem; margin-bottom: 12px; color: white; letter-spacing: -2px; }
+        .dash-header p { font-size: 1.2rem; color: var(--text-secondary); max-width: 800px; line-height: 1.5; }
+        
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .g-card { 
+            padding: 32px; display: flex; flex-direction: column; justify-content: center; 
+            position: relative; overflow: hidden;
         }
-        
-        .slide-panel.open { right: 0; }
-        
-        .panel-header { 
-            padding: 40px; 
-            border-bottom: 1px solid var(--border-glass); 
-            background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent); 
-            position: relative; 
+        .g-card::before {
+            content: ''; position: absolute; top:0; left:0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--system-blue), transparent);
         }
+        .g-card.danger::before { background: linear-gradient(90deg, var(--system-red), transparent); }
+        .g-card.warning::before { background: linear-gradient(90deg, var(--system-orange), transparent); }
         
-        .panel-close-btn {
-            position: absolute; 
-            top: 40px; right: 40px; 
-            width: 44px; height: 44px;
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid var(--border-glass); 
-            border-radius: 50%; 
-            color: white;
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: var(--transition-fast); 
-            z-index: 10; font-size: 1.2rem;
-        }
+        .g-card h4 { font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-family: var(--font-main); }
+        .g-card .g-val { font-size: 4rem; color: white; line-height: 1; font-family: var(--font-display); letter-spacing: -2px;}
         
-        .panel-close-btn:hover { 
-            background: var(--stat-danger); 
-            transform: rotate(90deg); 
-            border-color: var(--stat-danger); 
-        }
+        /* New Chart Section Layout */
+        .charts-row-large { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
+        .charts-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         
-        .panel-title { font-size: 3rem; color: white; margin-bottom: 12px; padding-right: 60px; }
-        .panel-subtitle { font-size: 1.1rem; color: var(--color-primary); display: flex; align-items: center; gap: 8px; font-weight: 500; margin-bottom: 24px; }
-        
-        .panel-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-top: 24px; }
-        .tab-btn {
-            background: transparent; border: none; color: var(--text-muted); 
-            padding: 12px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;
-            border-bottom: 3px solid transparent; transition: var(--transition-fast);
-        }
-        .tab-btn:hover { color: white; background: rgba(255,255,255,0.03); border-radius: 8px 8px 0 0; }
-        .tab-btn.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
-
-        .panel-content { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; gap: 32px; position: relative; }
-        .tab-pane { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
-        .tab-pane.active { display: block; }
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        .info-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 20px; padding: 32px; }
-        .info-card h3 { font-size: 1.4rem; color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 16px; }
-        .info-card p { font-size: 1.05rem; line-height: 1.7; color: #cbd5e1; margin-bottom: 16px; }
-
-        .alert-box { padding: 24px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid transparent; background: rgba(255,255,255,0.02); }
-        .alert-danger { background: var(--stat-danger-bg); border-left-color: var(--stat-danger); border: 1px solid rgba(239,68,68,0.2); }
-        .alert-danger h4 { color: var(--stat-danger); margin-bottom: 12px; font-size: 1.1rem; }
-        .alert-warning { background: var(--stat-warning-bg); border-left-color: var(--stat-warning); border: 1px solid rgba(245,158,11,0.2); }
-        .alert-warning h4 { color: var(--stat-warning); margin-bottom: 12px; font-size: 1.1rem; }
-        .alert-list { padding-left: 20px; margin-top: 12px; }
-        .alert-list li { margin-bottom: 12px; line-height: 1.6; color: #f8fafc; font-size: 1rem; }
-
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .mini-kpi { background: rgba(0,0,0,0.4); padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass); }
-        .mini-kpi-label { display: block; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
-        .mini-kpi-val { font-size: 2rem; font-family: var(--font-display); font-weight: 700; color: white; }
-
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden; }
-        .data-table th, .data-table td { padding: 16px; border-bottom: 1px solid var(--border-glass); text-align: left; }
-        .data-table th { background: rgba(0,0,0,0.4); color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-        .data-table td { color: #e2e8f0; font-size: 0.95rem; }
-
-        /* Notes System */
-        .notes-container { display: flex; flex-direction: column; gap: 24px; height: 100%; }
-        .note-editor { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; }
-        .note-editor textarea { width: 100%; height: 120px; background: transparent; border: none; color: white; font-size: 1.05rem; resize: none; margin-bottom: 16px; font-family: var(--font-main); line-height: 1.6; }
-        .note-editor textarea::placeholder { color: rgba(255,255,255,0.3); }
-        .note-actions { display: flex; justify-content: flex-end; }
-        .notes-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; }
-        .note-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-left: 4px solid var(--color-primary); border-radius: 12px; padding: 24px; position: relative; }
-        .note-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
-        .note-date { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; }
-        .note-delete { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
-        .note-delete:hover { color: var(--stat-danger); }
-        .note-body { font-size: 1rem; color: #e2e8f0; line-height: 1.7; white-space: pre-wrap; }
-        .empty-notes { text-align: center; padding: 60px; color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px dashed var(--border-glass); }
-
-        /* Toast */
-        .toast-container { position: fixed; bottom: 32px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; }
-        .toast { background: rgba(15, 15, 20, 0.95); border: 1px solid var(--border-glass); border-left: 4px solid var(--stat-success); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-weight: 500; animation: slideIn 0.4s var(--ease-spring) forwards; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* ==========================================================================
-           7. DASHBOARD VIEW
-           ========================================================================== */
-        .dash-header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .dash-header h1 { font-size: 3.5rem; margin-bottom: 12px; color: white; }
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 48px; }
-        .g-card { padding: 32px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
-        .g-card::after { content: ''; position: absolute; top:0; left:0; width: 4px; height: 100%; background: var(--color-primary); }
-        .g-card.danger::after { background: var(--stat-danger); }
-        .g-card.warning::after { background: var(--stat-warning); }
-        .g-card h4 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
-        .g-card .g-val { font-size: 4.5rem; color: white; line-height: 1; font-family: var(--font-display); }
-        .charts-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; }
-        .chart-box { padding: 32px; height: 500px; display: flex; flex-direction: column; }
-        .chart-box h3 { font-size: 1.4rem; margin-bottom: 32px; color: white; }
-        .canvas-wrap { flex-grow: 1; position: relative; }
+        .chart-box { padding: 32px; display: flex; flex-direction: column; height: 550px; }
+        .chart-box-small { height: 450px; }
+        .chart-box h3 { font-size: 1.5rem; margin-bottom: 10px; color: white; }
+        .chart-box p.sub { color: var(--text-secondary); margin-bottom: 30px; font-size: 0.95rem; }
+        .canvas-wrap { flex-grow: 1; position: relative; width: 100%; height: 100%; }
 
         /* ==========================================================================
            8. VISUAL DEFECT BOOK (3D CSS ANIMATIONS & FLUIDITY)
            ========================================================================== */
-        .visual-header { text-align: center; margin-bottom: 60px; }
-        .visual-header h1 { font-size: 4rem; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .visual-header { text-align: center; margin-bottom: 80px; }
+        .visual-header h1 { font-size: 4.5rem; text-transform: uppercase; letter-spacing: -2px; }
         
-        .defect-section { margin-bottom: 80px; }
-        .defect-section-title { font-size: 2.5rem; color: white; border-bottom: 1px solid var(--border-glass); padding-bottom: 20px; margin-bottom: 40px; display: flex; align-items: center; gap: 16px;}
+        .defect-section { margin-bottom: 100px; }
+        .defect-section-title { font-size: 2.2rem; color: white; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 40px; display: flex; align-items: center; gap: 16px;}
         
-        .scene-container { 
-            display: flex; gap: 40px; flex-wrap: wrap; 
-            justify-content: center;
-        }
+        .scene-container { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
 
-        /* 3D Container Shared */
         .scene-3d {
-            width: 100%; max-width: 600px; height: 400px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 20px;
-            border: 1px solid var(--border-glass);
-            perspective: 1200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+            width: 100%; max-width: 600px; height: 450px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 24px; border: 1px solid var(--glass-border);
+            perspective: 1200px; display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
         }
 
         .scene-controls {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 10px; z-index: 10;
-            background: rgba(0,0,0,0.6); padding: 10px; border-radius: 12px; backdrop-filter: blur(10px);
+            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 12px; z-index: 10;
+            background: rgba(28, 28, 30, 0.8); padding: 12px; border-radius: 100px; 
+            backdrop-filter: saturate(180%) blur(20px); border: 1px solid var(--glass-border);
         }
 
-        /* --- BLADEMARKS 3D SCENE --- */
+        /* BLADEMARKS 3D SCENE */
         .foam-sheet-3d {
-            width: 250px; height: 250px;
-            background: #2a2a30;
-            border: 2px solid #3f3f46;
-            transform-style: preserve-3d;
-            transform: rotateX(60deg) rotateZ(45deg);
-            position: relative;
-            transition: all 0.8s var(--ease-out-expo);
-            box-shadow: 20px 20px 40px rgba(0,0,0,0.8);
+            width: 260px; height: 260px; background: #2c2c2e; border: 2px solid #3a3a3c;
+            transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(45deg);
+            position: relative; transition: transform 1s var(--spring-bouncy), background 0.5s;
+            box-shadow: 20px 20px 50px rgba(0,0,0,0.9);
         }
 
         .blade-indent {
-            position: absolute;
-            top: 40%; left: 0;
-            width: 100%; height: 6px;
-            background: #18181b;
-            transform: translateZ(-2px);
+            position: absolute; top: 40%; left: 0; width: 100%; height: 8px;
+            background: #1c1c1e; transform: translateZ(-2px);
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
-            transition: all 0.8s var(--ease-out-expo);
+            transition: all 0.8s var(--spring-soft);
         }
 
         .light-source {
-            position: absolute;
-            width: 400px; height: 400px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-            pointer-events: none;
-            transition: all 1s var(--ease-out-expo);
+            position: absolute; width: 400px; height: 400px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%);
+            pointer-events: none; transition: all 1.2s var(--spring-bouncy);
             mix-blend-mode: overlay;
         }
 
-        /* State: Light at 45 Degrees (OK) */
-        .scene-3d.light-ok .light-source {
-            transform: translate3d(-150px, -100px, 100px) rotateX(45deg) rotateY(45deg);
-            opacity: 0.8;
-        }
-        .scene-3d.light-ok .blade-indent {
-            box-shadow: inset 0 4px 6px rgba(0,0,0,0.9);
-            background: #09090b;
-        }
+        .scene-3d.light-ok .light-source { transform: translate3d(-150px, -100px, 100px) rotateX(45deg) rotateY(45deg); opacity: 0.9; }
+        .scene-3d.light-ok .blade-indent { box-shadow: inset 0 6px 8px rgba(0,0,0,1); background: #000; }
+        .scene-3d.light-nok .light-source { transform: translate3d(0, -200px, 150px) rotateX(80deg); opacity: 0.9; }
+        .scene-3d.light-nok .blade-indent { box-shadow: inset 0 0px 1px rgba(0,0,0,0.3); background: #2c2c2e; }
 
-        /* State: Light Parallel/Top (NOK) */
-        .scene-3d.light-nok .light-source {
-            transform: translate3d(0, -200px, 150px) rotateX(80deg);
-            opacity: 0.9;
-        }
-        .scene-3d.light-nok .blade-indent {
-            box-shadow: inset 0 0px 1px rgba(0,0,0,0.2);
-            background: #27272a; /* Hides the mark */
-        }
-
-        /* --- HOLES VS HOLLOWS CROSS-SECTION --- */
+        /* HOLES VS HOLLOWS CROSS-SECTION */
         .cross-section-view {
-            width: 80%; height: 100px;
-            background: #2a2a30;
-            border: 2px solid #52525b;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            padding-bottom: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            width: 80%; height: 120px; background: #2c2c2e; border: 2px solid #48484a;
+            position: relative; display: flex; align-items: flex-end; justify-content: space-around;
+            padding-bottom: 0; box-shadow: 0 15px 40px rgba(0,0,0,0.9); border-radius: 8px;
         }
 
-        .defect-cavity {
-            width: 60px;
-            background: #000;
-            border-radius: 0 0 30px 30px;
-            position: relative;
-        }
-
-        .hollow-defect { height: 40px; } /* Halfway */
-        .hole-defect { height: 100px; border-radius: 0; } /* All the way */
+        .defect-cavity { width: 70px; background: #000; border-radius: 0 0 35px 35px; position: relative; }
+        .hollow-defect { height: 50px; } 
+        .hole-defect { height: 120px; border-radius: 0; }
 
         .laser-beam {
-            position: absolute;
-            bottom: -150px;
-            width: 80px; height: 150px;
-            background: linear-gradient(to top, rgba(14,165,233,0), rgba(14,165,233,0.8));
-            filter: blur(5px);
-            transition: all 0.5s ease;
+            position: absolute; bottom: -180px; width: 90px; height: 180px;
+            background: linear-gradient(to top, rgba(10,132,255,0), rgba(10,132,255,0.9));
+            filter: blur(6px); transition: opacity 0.5s var(--spring-soft);
         }
 
         .light-spill {
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(14,165,233,0.8) 0%, transparent 70%);
-            opacity: 0; transition: opacity 0.5s ease;
+            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(10,132,255,0.9) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.5s var(--spring-soft);
         }
 
-        /* --- DEFECT MARKING 3D FLOW --- */
-        .marking-step-container {
-            width: 100%; height: 100%;
+        /* DEFECT MARKING 3D FLOW */
+        .marking-step-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .marking-sheet {
+            width: 220px; height: 320px; background: #2c2c2e; border: 2px solid #48484a; border-radius: 8px;
+            transform: rotateX(40deg); transform-style: preserve-3d;
+            position: relative; transition: transform 1.2s var(--spring-bouncy);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .major-defect-spot { position: absolute; top: 40%; left: 30%; width: 24px; height: 24px; background: #000; border-radius: 50%; }
+        .masking-tape {
+            position: absolute; top: 35%; left: 15%; width: 70px; height: 35px;
+            background: rgba(255, 159, 10, 0.9); border: 1px solid rgba(255, 159, 10, 1);
+            transform: translateZ(2px); opacity: 0; transition: opacity 0.4s var(--spring-soft); border-radius: 2px;
+        }
+        .edge-label {
+            position: absolute; top: 38%; left: -45px; width: 45px; height: 22px;
+            background: white; color: black; font-size: 11px; font-weight: bold;
             display: flex; align-items: center; justify-content: center;
-            perspective: 1000px;
+            transform: translateZ(5px); opacity: 0; transition: opacity 0.4s var(--spring-soft);
+            box-shadow: -2px 4px 10px rgba(0,0,0,0.5); border-radius: 2px;
+        }
+        .measure-line {
+            position: absolute; top: 40%; left: -20px; width: 40%; height: 2px;
+            border-bottom: 2px dashed var(--system-blue); opacity: 0; transition: opacity 0.4s var(--spring-soft);
+        }
+
+        .scene-marking[data-step="1"] .masking-tape, .scene-marking[data-step="1"] .edge-label, .scene-marking[data-step="1"] .measure-line { opacity: 0; }
+        .scene-marking[data-step="2"] .masking-tape { opacity: 1; } .scene-marking[data-step="2"] .edge-label, .scene-marking[data-step="2"] .measure-line { opacity: 0; }
+        .scene-marking[data-step="3"] .masking-tape, .scene-marking[data-step="3"] .edge-label, .scene-marking[data-step="3"] .measure-line { opacity: 1; }
+
+        /* ==========================================================================
+           9. SLIDE-OVER SUPPLIER PANEL (APPLE STYLE MODAL)
+           ========================================================================== */
+        .slide-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px);
+            z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.4s var(--spring-soft);
+        }
+        .slide-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .slide-panel {
+            position: absolute; top: 0; right: 0; 
+            width: var(--panel-width); max-width: 100%; height: 100%;
+            background: rgba(28, 28, 30, 0.85); 
+            backdrop-filter: saturate(180%) blur(40px); -webkit-backdrop-filter: saturate(180%) blur(40px);
+            border-left: 1px solid var(--glass-border); 
+            box-shadow: -20px 0 80px rgba(0,0,0,0.8);
+            z-index: 9999; display: flex; flex-direction: column; 
+            transform: translateX(100%); transition: transform 0.6s var(--spring-bouncy);
         }
         
-        .marking-sheet {
-            width: 200px; height: 300px;
-            background: #2a2a30; border: 2px solid #3f3f46;
-            transform: rotateX(40deg); transform-style: preserve-3d;
-            position: relative; transition: all 1s var(--ease-spring);
+        .slide-panel.open { transform: translateX(0); }
+        
+        .panel-header { 
+            padding: 50px 50px 30px; border-bottom: 1px solid var(--glass-border); 
+            background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent); position: relative; 
         }
-
-        .major-defect-spot {
-            position: absolute; top: 40%; left: 30%;
-            width: 20px; height: 20px; background: #000; border-radius: 50%;
+        
+        .panel-close-btn {
+            position: absolute; top: 40px; right: 40px; width: 36px; height: 36px;
+            background: rgba(255,255,255,0.1); border-radius: 50%; color: white;
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: var(--transition-fast); z-index: 10; font-size: 1.1rem;
         }
-
-        .masking-tape {
-            position: absolute; top: 35%; left: 15%;
-            width: 60px; height: 30px;
-            background: rgba(250, 204, 21, 0.85); /* Yellow tape */
-            border: 1px solid rgba(202, 138, 4, 0.9);
-            transform: translateZ(2px);
-            opacity: 0; transition: opacity 0.5s ease;
+        
+        .panel-close-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+        
+        .panel-title { font-size: 3.5rem; color: white; margin-bottom: 12px; padding-right: 60px; letter-spacing: -1px; }
+        .panel-subtitle { font-size: 1.1rem; color: var(--system-blue); display: flex; align-items: center; gap: 8px; font-weight: 500; margin-bottom: 24px; }
+        
+        /* Premium Segmented Control for Tabs */
+        .panel-tabs { 
+            display: flex; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 4px; margin-top: 30px;
+            width: fit-content; border: 1px solid var(--glass-border);
         }
-
-        .edge-label {
-            position: absolute; top: 38%; left: -40px;
-            width: 40px; height: 20px;
-            background: white; color: black; font-size: 10px; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            transform: translateZ(5px);
-            opacity: 0; transition: opacity 0.5s ease;
-            box-shadow: -2px 2px 5px rgba(0,0,0,0.5);
+        .tab-btn {
+            background: transparent; color: var(--text-secondary); 
+            padding: 8px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+            border-radius: 8px; transition: var(--transition-fast); display: flex; align-items: center; gap: 8px;
         }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { background: rgba(255,255,255,0.15); color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
-        .measure-line {
-            position: absolute; top: 40%; left: -20px;
-            width: 40%; height: 2px;
-            border-bottom: 2px dashed var(--color-primary);
-            opacity: 0; transition: opacity 0.5s ease;
+        .panel-content { flex-grow: 1; overflow-y: auto; padding: 50px; display: flex; flex-direction: column; gap: 32px; position: relative; }
+        
+        .tab-pane { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--spring-soft); }
+        .tab-pane.active { display: block; opacity: 1; transform: translateY(0); }
+
+        /* Information Cards & Alerts */
+        .info-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 24px; padding: 36px; }
+        .info-card h3 { font-size: 1.5rem; color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px; }
+        .info-card p { font-size: 1.05rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 16px; }
+
+        .alert-box { padding: 24px; border-radius: 16px; margin-bottom: 24px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); }
+        .alert-danger { background: rgba(255, 69, 58, 0.1); border-color: rgba(255, 69, 58, 0.3); }
+        .alert-danger h4 { color: var(--system-red); margin-bottom: 12px; font-size: 1.1rem; }
+        .alert-warning { background: rgba(255, 159, 10, 0.1); border-color: rgba(255, 159, 10, 0.3); }
+        .alert-warning h4 { color: var(--system-orange); margin-bottom: 12px; font-size: 1.1rem; }
+        
+        .alert-list { padding-left: 20px; margin-top: 12px; }
+        .alert-list li { margin-bottom: 12px; line-height: 1.5; color: white; font-size: 1rem; }
+
+        /* ==========================================================================
+           10. ERGONOMIC NOTES SYSTEM (LOCALSTORAGE)
+           ========================================================================== */
+        .notes-container { display: flex; flex-direction: column; gap: 24px; height: 100%; }
+        
+        .note-editor { 
+            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); 
+            border-radius: 20px; padding: 24px; transition: border-color 0.3s;
         }
+        .note-editor:focus-within { border-color: var(--system-blue); box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15); }
+        
+        .note-editor textarea { 
+            width: 100%; height: 100px; background: transparent; color: white; 
+            font-size: 1.05rem; resize: none; margin-bottom: 16px; font-family: var(--font-main); line-height: 1.5; 
+        }
+        .note-editor textarea::placeholder { color: var(--text-tertiary); }
+        .note-actions { display: flex; justify-content: flex-end; }
+        
+        .notes-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; padding-right: 10px; }
+        
+        .note-item { 
+            background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); 
+            border-radius: 16px; padding: 24px; position: relative; 
+            transition: all 0.4s var(--spring-bouncy);
+            animation: slideInUp 0.4s var(--spring-bouncy) forwards;
+        }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .note-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+        
+        .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .note-meta { display: flex; align-items: center; gap: 12px; }
+        .note-author-pic { width: 32px; height: 32px; border-radius: 50%; background: var(--system-purple); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+        .note-author-info { display: flex; flex-direction: column; }
+        .note-author-name { font-size: 0.9rem; font-weight: 600; color: white; }
+        .note-date { font-size: 0.75rem; color: var(--text-secondary); }
+        
+        .note-delete { background: rgba(255, 69, 58, 0.1); border-radius: 50%; width: 32px; height: 32px; color: var(--system-red); cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; opacity: 0; transition: var(--transition-fast); }
+        .note-item:hover .note-delete { opacity: 1; }
+        .note-delete:hover { background: var(--system-red); color: white; transform: scale(1.1); }
+        
+        .note-body { font-size: 1rem; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; padding-left: 44px; }
+        
+        .empty-notes { text-align: center; padding: 80px 40px; color: var(--text-secondary); font-size: 1.1rem; border-radius: 20px; border: 1px dashed var(--glass-border); }
 
-        /* Scene states for Marking */
-        .scene-marking[data-step="1"] .masking-tape { opacity: 0; }
-        .scene-marking[data-step="1"] .edge-label { opacity: 0; }
-        .scene-marking[data-step="1"] .measure-line { opacity: 0; }
-
-        .scene-marking[data-step="2"] .masking-tape { opacity: 1; }
-        .scene-marking[data-step="2"] .edge-label { opacity: 0; }
-        .scene-marking[data-step="2"] .measure-line { opacity: 0; }
-
-        .scene-marking[data-step="3"] .masking-tape { opacity: 1; }
-        .scene-marking[data-step="3"] .edge-label { opacity: 1; }
-        .scene-marking[data-step="3"] .measure-line { opacity: 1; }
+        /* Toasts (Apple Style Notifications) */
+        .toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { 
+            background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); color: white; padding: 16px 24px; border-radius: 100px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; font-weight: 500; 
+            animation: toastPop 0.5s var(--spring-bouncy) forwards; pointer-events: auto;
+        }
+        @keyframes toastPop { 0% { opacity: 0; transform: translateY(50px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
     </style>
 </head>
@@ -738,15 +739,15 @@
 
         <div class="sidebar-scroll">
             <div class="nav-section">
-                <div class="nav-section-title">Vues Principales</div>
+                <div class="nav-section-title">Core Views</div>
                 <button class="nav-link active" data-target="view-map" onclick="app.router('view-map', this)">
-                    <i class="fa-solid fa-earth-asia"></i> Map Fournisseurs
+                    <i class="fa-solid fa-map-location-dot"></i> Map Industrielle
                 </button>
                 <button class="nav-link" data-target="view-dashboard" onclick="app.router('view-dashboard', this)">
-                    <i class="fa-solid fa-chart-pie"></i> Analytics & Qualité
+                    <i class="fa-solid fa-chart-pie"></i> Analytics & Maturité
                 </button>
                 <button class="nav-link" data-target="view-visual" onclick="app.router('view-visual', this)">
-                    <i class="fa-solid fa-eye"></i> Visual Defect Book
+                    <i class="fa-solid fa-book-open"></i> Visual Defect Book
                 </button>
             </div>
 
@@ -763,7 +764,7 @@
                 <div class="avatar">AB</div>
                 <div class="user-widget-info">
                     <strong>Amaury A-B.</strong>
-                    <span>Ingénieur WTI</span>
+                    <span>WTI Quality Engineering</span>
                 </div>
             </div>
         </div>
@@ -772,65 +773,74 @@
     <!-- MAIN APP CONTAINER -->
     <main class="main-container">
         
-        <!-- MAP VIEW -->
+        <!-- ================= MAP VIEW ================= -->
         <section id="view-map" class="view-layer active">
             <div class="map-overlay-header">
-                <h1>Cartographie Qualité & Industrielle</h1>
-                <p>Supervision des audits HSE, Defect Books et résolution de Claims de la chaîne de valeur Asie. Cliquez sur un point radar pour ouvrir son dossier.</p>
+                <h1>Global Operations Map</h1>
+                <p>Supervision des audits HSE, Defect Books et résolution de Claims de la chaîne de valeur. Cliquez sur un hub pour accéder au dossier fournisseur.</p>
                 <div class="map-legend">
-                    <span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> Litige / Action Critique</span>
-                    <span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass"></i> Audit en cours</span>
-                    <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Sous Contrôle / Stratégique</span>
-                    <span class="badge badge-outline"><i class="fa-solid fa-star"></i> Prospect</span>
+                    <span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> Critical Action</span>
+                    <span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass"></i> Audit Review</span>
+                    <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Strategic Partner</span>
+                    <span class="badge badge-info"><i class="fa-solid fa-star"></i> Integrated / Prospect</span>
                 </div>
             </div>
             <!-- LEAFLET MAP CONTAINER -->
             <div id="leaflet-map-container"></div>
         </section>
 
-        <!-- DASHBOARD VIEW -->
+        <!-- ================= DASHBOARD VIEW ================= -->
         <section id="view-dashboard" class="view-layer">
             <div class="dash-header">
-                <div>
-                    <h1>Dashboard Qualité WTI</h1>
-                    <p class="text-muted" style="font-size: 1.2rem;">Analyse des litiges de Slicing et déploiement du Defect Book.</p>
-                </div>
+                <h1>Analytics & Supplier Maturity</h1>
+                <p>Évaluation des performances fournisseurs basée sur les audits HSE, l'expertise technique et la qualité de tranchage.</p>
             </div>
             
             <div class="grid-cards">
-                <div class="glass-panel g-card danger">
+                <div class="apple-glass g-card danger">
                     <h4>Total Claims Slicing (Q1 2026)</h4>
-                    <p class="g-val text-danger">$48,321<span class="cite-tag">[cite: 4]</span></p>
+                    <p class="g-val text-danger">$48,321</p>
                     <p class="text-muted" style="margin-top: 16px;">Imputé à 90% Le Hung / 10% PI Pattana.</p>
                 </div>
-                <div class="glass-panel g-card warning">
+                <div class="apple-glass g-card warning">
                     <h4>Taux Rejet Cible (Slicing)</h4>
                     <p class="g-val text-warning">13.5%</p>
                     <p class="text-muted" style="margin-top: 16px;">Standard Dérogué WTI maintenu.</p>
                 </div>
-                <div class="glass-panel g-card">
+                <div class="apple-glass g-card">
                     <h4>Top Défauts Priorisés</h4>
-                    <p class="g-val">6<span class="cite-tag"></span></p>
+                    <p class="g-val">6</p>
                     <p class="text-muted" style="margin-top: 16px;">Stripes (V/H), Folding, Bow/Skew, Wave, Blade.</p>
                 </div>
             </div>
 
-            <div class="charts-row">
-                <div class="glass-panel chart-box">
-                    <h3>Impact Financier Slicing Claims (USD)</h3>
-                    <div class="canvas-wrap"><canvas id="claimChart"></canvas></div>
-                </div>
-                <div class="glass-panel chart-box">
-                    <h3>Matrice Risque Fournisseurs</h3>
-                    <div class="canvas-wrap"><canvas id="radarChart"></canvas></div>
+            <!-- New Chart Area Based on Prompt -->
+            <div class="charts-row-large">
+                <div class="apple-glass chart-box">
+                    <h3>Matrice de Maturité Fournisseurs (Bubble Chart)</h3>
+                    <p class="sub">Croisement entre Expertise Technique (Taille), Qualité/Process (X) et Conformité HSE (Y).</p>
+                    <div class="canvas-wrap"><canvas id="maturityBubbleChart"></canvas></div>
                 </div>
             </div>
+
+            <div class="charts-row-split">
+                <div class="apple-glass chart-box chart-box-small">
+                    <h3>Impact Financier Slicing Claims</h3>
+                    <div class="canvas-wrap"><canvas id="claimBarChart"></canvas></div>
+                </div>
+                <div class="apple-glass chart-box chart-box-small">
+                    <h3>Répartition des Statuts (PACE Catalog)</h3>
+                    <div class="canvas-wrap"><canvas id="paceDoughnutChart"></canvas></div>
+                </div>
+            </div>
+            
+            <div style="height: 100px;"></div>
         </section>
 
-        <!-- VISUAL DEFECT BOOK VIEW (NEW 3D SECTION) -->
+        <!-- ================= VISUAL DEFECT BOOK VIEW ================= -->
         <section id="view-visual" class="view-layer">
             <div class="visual-header">
-                <h1>Visual Defect Book <span class="cite-tag">[cite: 3]</span></h1>
+                <h1>Visual Defect Book</h1>
                 <p class="text-muted" style="font-size: 1.2rem; max-width: 800px; margin: 20px auto;">
                     Standard d'inspection interactif pour les feuilles tranchées (Slicing).
                     Outil de formation des fournisseurs basé sur les règles WTI mises à jour en Juin 2026.
@@ -839,20 +849,20 @@
 
             <!-- BLADEMARKS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--color-primary);"></i> 1. Blademarks : La Règle des 45° <span class="cite-tag">[cite: 3]</span></h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);"></i> 1. Blademarks : La Règle des 45°</h2>
                 <div class="scene-container">
-                    <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
+                    <div class="apple-glass" style="flex:1; min-width: 350px; padding: 40px;">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">L'Angle de Lumière Parfait (45°)</h3>
-                        <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
                             Les "Blademarks" sont des coupures profondes laissées par la lame. 
-                            Pour les détecter efficacement, <b>la lumière DOIT provenir du côté avec un angle d'inclinaison strict de 45°</b> par rapport à la feuille posée à plat. <span class="cite-tag">[cite: 3]</span>
+                            Pour les détecter efficacement, <b>la lumière DOIT provenir du côté avec un angle d'inclinaison strict de 45°</b> par rapport à la feuille posée à plat.
                         </p>
-                        <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            C'est pourquoi l'utilisation d'une table d'inspection lumineuse (Lightbox) avec un <b>support incliné à 45°</b> est la seule méthode validée pour révéler l'ombre portée des coupures, sans quoi le défaut devient totalement invisible à l'œil nu. <span class="cite-tag">[cite: 3]</span>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px;">
+                            C'est pourquoi l'utilisation d'une table d'inspection lumineuse (Lightbox) avec un <b>support incliné à 45°</b> est la seule méthode validée pour révéler l'ombre portée des coupures, sans quoi le défaut devient totalement invisible à l'œil nu.
                         </p>
                         <div class="alert-box alert-warning">
                             <h4><i class="fa-solid fa-triangle-exclamation"></i> Attention</h4>
-                            <p style="color:white;">Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines. <span class="cite-tag">[cite: 3]</span></p>
+                            <p style="color:white;">Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines.</p>
                         </div>
                     </div>
                     
@@ -871,9 +881,9 @@
 
             <!-- HOLES VS HOLLOWS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--stat-warning);"></i> 2. Holes vs Hollows <span class="cite-tag">[cite: 3]</span></h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--system-orange);"></i> 2. Holes vs Hollows</h2>
                 <div class="scene-container">
-                    <div class="scene-3d" style="flex:1.5; background: #09090b; padding: 40px; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="scene-3d" style="flex:1.5; background: #000; padding: 40px; display: flex; flex-direction: column; justify-content: center; box-shadow: none;">
                         
                         <div style="display: flex; width: 100%; justify-content: space-around; margin-bottom: 60px;">
                             <!-- Hollow -->
@@ -882,7 +892,7 @@
                                     <div class="defect-cavity hollow-defect"></div>
                                 </div>
                                 <div class="laser-beam"></div>
-                                <h4 style="margin-top: 20px; color: white;">Hollow (Cavité)</h4>
+                                <h4 style="margin-top: 24px; color: white;">Hollow (Cavité)</h4>
                             </div>
                             
                             <!-- Hole -->
@@ -892,26 +902,26 @@
                                 </div>
                                 <div class="laser-beam" style="bottom: -50px; height: 250px;"></div>
                                 <div class="light-spill" style="opacity: 1;"></div>
-                                <h4 style="margin-top: 20px; color: white;">Hole (Trou traversant)</h4>
+                                <h4 style="margin-top: 24px; color: white;">Hole (Trou traversant)</h4>
                             </div>
                         </div>
                         
                     </div>
 
-                    <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
+                    <div class="apple-glass" style="flex:1; min-width: 350px; padding: 40px;">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Critères d'Acceptabilité</h3>
-                        <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille. <span class="cite-tag">[cite: 3]</span>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px;">
+                            Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille.
                         </p>
-                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 15px;">
-                            <li style="padding: 15px; background: rgba(239,68,68,0.1); border-left: 4px solid var(--stat-danger); border-radius: 8px;">
-                                <b>HOLE (Trou) :</b> Laissent passer la lumière. <b>NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique. <span class="cite-tag">[cite: 3]</span>
+                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px;">
+                            <li style="padding: 20px; background: rgba(255,69,58,0.1); border-left: 4px solid var(--system-red); border-radius: 12px;">
+                                <b style="color: white;">HOLE (Trou) :</b> Laissent passer la lumière. <b style="color: var(--system-red);">NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique.
                             </li>
-                            <li style="padding: 15px; background: rgba(16,185,129,0.1); border-left: 4px solid var(--stat-success); border-radius: 8px;">
-                                <b>HOLLOW (Cavité) ≤ 3mm :</b> Ne laissent pas passer la lumière. <b>ACCEPTABLE</b> (Défaut mineur). La colle comblera la cavité lors de la lamination. <span class="cite-tag">[cite: 3]</span>
+                            <li style="padding: 20px; background: rgba(48,209,88,0.1); border-left: 4px solid var(--system-green); border-radius: 12px;">
+                                <b style="color: white;">HOLLOW (Cavité) ≤ 3mm :</b> Ne laissent pas passer la lumière. <b style="color: var(--system-green);">ACCEPTABLE</b> (Défaut mineur). La colle comblera la cavité lors de la lamination.
                             </li>
-                            <li style="padding: 15px; background: rgba(245,158,11,0.1); border-left: 4px solid var(--stat-warning); border-radius: 8px;">
-                                <b>HOLLOW > 3mm :</b> Ne laissent pas passer la lumière. <b>NON ACCEPTABLE</b> (Défaut majeur). <span class="cite-tag">[cite: 3]</span>
+                            <li style="padding: 20px; background: rgba(255,159,10,0.1); border-left: 4px solid var(--system-orange); border-radius: 12px;">
+                                <b style="color: white;">HOLLOW > 3mm :</b> Ne laissent pas passer la lumière. <b style="color: var(--system-orange);">NON ACCEPTABLE</b> (Défaut majeur).
                             </li>
                         </ul>
                     </div>
@@ -920,21 +930,21 @@
 
             <!-- DEFECT MARKING FLOW -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--color-secondary);"></i> 3. Traçabilité : Defect Marking Process <span class="cite-tag">[cite: 3]</span></h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--system-purple);"></i> 3. Traçabilité : Defect Marking Process</h2>
                 <div class="scene-container">
-                    <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
+                    <div class="apple-glass" style="flex:1; min-width: 350px; padding: 40px;">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Procédure Opératoire</h3>
-                        <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille). <span class="cite-tag">[cite: 3]</span>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+                            Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille).
                         </p>
-                        <ol style="margin-left: 20px; color: white; line-height: 2; font-size: 1.1rem;">
-                            <li><b>Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape). <span class="cite-tag">[cite: 3]</span></li>
-                            <li><b>Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche. <span class="cite-tag">[cite: 3]</span></li>
-                            <li><b>Étape 3 :</b> Coller une étiquette sur la tranche alignée avec le défaut, en indiquant la distance. <span class="cite-tag">[cite: 3]</span></li>
+                        <ol style="margin-left: 20px; color: white; line-height: 2.2; font-size: 1.1rem; font-weight: 500;">
+                            <li><b style="color:var(--system-blue);">Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape).</li>
+                            <li><b style="color:var(--system-blue);">Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche.</li>
+                            <li><b style="color:var(--system-blue);">Étape 3 :</b> Coller une étiquette sur la tranche alignée avec le défaut, en indiquant la distance.</li>
                         </ol>
-                        <div class="alert-box" style="background: rgba(14,165,233,0.1); border-left: 4px solid var(--color-primary); margin-top: 20px;">
-                            <h4 style="color: var(--color-primary);">Objectif pour Scavi / Doni</h4>
-                            <p style="color: white; margin-top: 5px;">Détection visuelle et tactile sous le tissu après lamination. Permet au matelasseur d'exclure cette zone des patronages principaux. <span class="cite-tag">[cite: 3]</span></p>
+                        <div class="alert-box" style="background: rgba(10,132,255,0.1); border-left: 4px solid var(--system-blue); margin-top: 30px;">
+                            <h4 style="color: var(--system-blue);">Objectif pour Scavi / Doni</h4>
+                            <p style="color: white; margin-top: 8px; line-height: 1.5;">Détection visuelle et tactile sous le tissu après lamination. Permet au matelasseur d'exclure cette zone des patronages principaux via Nesting intelligent.</p>
                         </div>
                     </div>
 
@@ -948,20 +958,22 @@
                             </div>
                         </div>
                         <div class="scene-controls">
-                            <button class="btn" onclick="app.setMarkingStep(1)">Défaut Détecté</button>
-                            <button class="btn" onclick="app.setMarkingStep(2)">Étape 1 (Ruban)</button>
-                            <button class="btn btn-primary" onclick="app.setMarkingStep(3)">Étape 2 (Étiquette)</button>
+                            <button class="btn" onclick="app.setMarkingStep(1)">Détection</button>
+                            <button class="btn" onclick="app.setMarkingStep(2)">Pose Ruban</button>
+                            <button class="btn btn-primary" onclick="app.setMarkingStep(3)">Pose Étiquette</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div style="height: 100px;"></div>
+            <div style="height: 150px;"></div>
         </section>
 
     </main>
 
-    <!-- SUPPLIER SLIDE PANEL -->
+    <!-- ================= SLIDE OVERLAY & PANEL ================= -->
+    <div class="slide-overlay" id="slide-overlay" onclick="app.closePanel()"></div>
+    
     <div class="slide-panel" id="slide-panel">
         <button class="panel-close-btn" onclick="app.closePanel()"><i class="fa-solid fa-xmark"></i></button>
         
@@ -971,22 +983,34 @@
             <div id="sp-badges" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 20px;"></div>
             
             <div class="panel-tabs">
-                <button class="tab-btn active" onclick="app.switchTab('tab-overview', this)"><i class="fa-solid fa-file-contract"></i> Rapport d'Audit</button>
-                <button class="tab-btn" onclick="app.switchTab('tab-notes', this)"><i class="fa-solid fa-pen-to-square"></i> Notes Interactives (<span id="note-count">0</span>)</button>
+                <button class="tab-btn active" onclick="app.switchTab('tab-overview', this)"><i class="fa-solid fa-file-contract"></i> Rapport d'Audit & Info</button>
+                <button class="tab-btn" onclick="app.switchTab('tab-maturity', this)"><i class="fa-solid fa-chart-radar"></i> Radar Maturité</button>
+                <button class="tab-btn" onclick="app.switchTab('tab-notes', this)"><i class="fa-solid fa-pen-to-square"></i> Notes (<span id="note-count">0</span>)</button>
             </div>
         </div>
 
         <div class="panel-content">
+            <!-- TAB: OVERVIEW -->
             <div id="tab-overview" class="tab-pane active">
                 <div id="sp-dynamic-content"></div>
             </div>
+            
+            <!-- TAB: MATURITY RADAR -->
+            <div id="tab-maturity" class="tab-pane">
+                <div class="info-card" style="height: 500px; display: flex; flex-direction: column;">
+                    <h3><i class="fa-solid fa-chart-radar"></i> Évaluation Individuelle (Radar)</h3>
+                    <p>Analyse détaillée des performances du fournisseur par rapport aux standards WTI (Juin 2026).</p>
+                    <div class="canvas-wrap"><canvas id="individualRadarChart"></canvas></div>
+                </div>
+            </div>
 
+            <!-- TAB: NOTES SYSTEM -->
             <div id="tab-notes" class="tab-pane">
                 <div class="notes-container">
                     <div class="note-editor">
-                        <textarea id="note-input" placeholder="Rédiger un compte-rendu, suivi de plan d'action..."></textarea>
+                        <textarea id="note-input" placeholder="Rédigez un commentaire, une note d'audit ou un suivi de plan d'action..."></textarea>
                         <div class="note-actions">
-                            <button class="btn btn-primary" onclick="app.saveNote()"><i class="fa-solid fa-plus"></i> Sauvegarder Note</button>
+                            <button class="btn btn-primary" onclick="app.saveNote()"><i class="fa-solid fa-paper-plane"></i> Ajouter Note</button>
                         </div>
                     </div>
                     <div class="notes-list" id="notes-list"></div>
@@ -998,16 +1022,47 @@
     <!-- TOASTS -->
     <div class="toast-container" id="toast-container"></div>
 
+    <!-- ==========================================================================
+         JAVASCRIPT DATA & LOGIC
+         ========================================================================== -->
     <script>
         /**
-         * 1. MASSIVE SUPPLIER DATABASE (Incorporating Audit Details)
+         * 1. MASSIVE SUPPLIER DATABASE & MATURITY SCORES
+         * Basé sur les inputs de maturité, expertise technique, HSE et taux de défauts.
          */
         const SUPPLIERS = {
-            "lehung": {
-                id: "lehung", name: "Le Hung", location: "Binh Duong, Vietnam", coords: [11.10, 106.65], role: "Tranchage (Slicing) & Lamination", status: "alert", badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
+            "namchau": {
+                id: "namchau", name: "Nam Chau", location: "Dong Nai, Vietnam", coords: [10.95, 106.82], role: "Tranchage & Lamination", status: "warning", badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
+                maturity: { expertise: 6, hse: 2, quality_process: 5, innovation: 4, reliability: 6, volume: 80 },
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026) <span class="cite-tag">[cite: 4]</span></h3>
+                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (29 July 2026)</h3>
+                        <p>Visite réalisée par Clarisse G., Amaury A-B., Hung face à Mr Jack, Tom et QC Leader.</p>
+                        <div class="alert-box alert-danger">
+                            <h4><i class="fa-solid fa-skull-crossbones"></i> Tolérance Zéro : HSE</h4>
+                            <ul class="alert-list">
+                                <li><b>EPI Inadéquats :</b> Masques de protection insuffisants pour la zone de lamination (Risque chimique).</li>
+                                <li><b>Sécurité Poste :</b> Outils tranchants (règles métal) laissés sur les tables QC.</li>
+                                <li><b>Hygiène :</b> Absence de savon (lessive utilisée) dans les sanitaires. Action immédiate exigée.</li>
+                            </ul>
+                        </div>
+                        <div class="alert-box alert-warning">
+                            <h4><i class="fa-solid fa-flask"></i> Process Colle & Viscosité</h4>
+                            <p style="color:white;">Contamination visible dans la colle. Absence totale de SOP pour le contrôle de viscosité et le temps d'ouverture. Action exigée via le fournisseur de colle.</p>
+                        </div>
+                        <div class="alert-box alert-warning">
+                            <h4><i class="fa-solid fa-lightbulb"></i> Inspection Blademarks</h4>
+                            <p style="color:white;">Installation exigée de Lightbox à 45° car l'évaluation en l'air par les opérateurs cause de graves divergences.</p>
+                        </div>
+                    </div>
+                `
+            },
+            "lehung": {
+                id: "lehung", name: "Le Hung", location: "Binh Duong, Vietnam", coords: [11.10, 106.65], role: "Tranchage (Slicing) & Lamination", status: "alert", badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
+                maturity: { expertise: 5, hse: 4, quality_process: 3, innovation: 4, reliability: 4, volume: 90 },
+                html: `
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026)</h3>
                         <p>Résolution du litige financier massif concernant les rejets post-tranchage.</p>
                         <div class="alert-box alert-danger">
                             <h4>Contexte du Litige avec PI Pattana</h4>
@@ -1017,45 +1072,27 @@
                                 <li><b>Montants initiaux :</b> Slicing defects ($48,321) et Foam defects ($15,082).</li>
                             </ul>
                         </div>
-                        <div class="alert-box" style="border-left-color: var(--color-primary); background: rgba(14, 165, 233, 0.05);">
-                            <h4 style="color: var(--color-primary);">Décision WTI</h4>
-                            <p style="color: #f8fafc; line-height: 1.6;">Application d'un ratio <b>90% Le Hung / 10% PI Pattana</b> pour les défauts Slicing.<br><br>
+                        <div class="alert-box" style="border-left-color: var(--system-blue); background: rgba(10, 132, 255, 0.1);">
+                            <h4 style="color: var(--system-blue);">Décision WTI</h4>
+                            <p style="color: white; line-height: 1.6;">Application d'un ratio <b>90% Le Hung / 10% PI Pattana</b> pour les défauts Slicing.<br><br>
                             La note de débit de PI Pattana passe ainsi de $63,403 à <b>$19,914</b>, assurant une équité (les slabs respectent le MTSR malgré un effet sticky inhérent au naturel).</p>
-                        </div>
-                    </div>
-                `
-            },
-            "namchau": {
-                id: "namchau", name: "Nam Chau", location: "Dong Nai, Vietnam", coords: [10.95, 106.82], role: "Tranchage & Lamination", status: "warning", badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (29 July 2026)</h3>
-                        <div class="alert-box alert-danger">
-                            <h4><i class="fa-solid fa-skull-crossbones"></i> Tolérance Zéro : HSE</h4>
-                            <ul class="alert-list">
-                                <li>Masques inadéquats pour la lamination (EPI).</li>
-                                <li>Outils tranchants (règles métal) sur les tables QC.</li>
-                                <li>Absence de savon dans les sanitaires.</li>
-                            </ul>
-                        </div>
-                        <div class="alert-box alert-warning">
-                            <h4><i class="fa-solid fa-lightbulb"></i> Inspection Blademarks</h4>
-                            <p style="color:white;">Installation exigée de Lightbox à 45° car l'évaluation en l'air par les opérateurs cause de graves divergences.</p>
                         </div>
                     </div>
                 `
             },
             "pipattana": {
                 id: "pipattana", name: "PI Pattana", location: "Bangkok, Thaïlande", coords: [13.75, 100.50], role: "Formulation & Moussage NR", status: "success", badges: ['Yulex 100', 'Slabs Maker', 'FSC'],
+                maturity: { expertise: 9, hse: 8, quality_process: 8, innovation: 9, reliability: 8, volume: 60 },
                 html: `
                     <div class="info-card">
                         <h3><i class="fa-solid fa-tree"></i> Partenaire Yulex 100 Exclusif</h3>
-                        <p>PI Pattana gère la création des Slabs de 30mm en caoutchouc naturel (FSC). C'est la clé de voûte écologique de la stratégie WTI. Imputé à hauteur de 10% du Slicing Claim suite à la décision WTI.</p>
+                        <p>PI Pattana gère la création des Slabs de 30mm en caoutchouc naturel (FSC). C'est la clé de voûte écologique de la stratégie WTI. Imputé à hauteur de 10% du Slicing Claim suite à la décision équitable WTI.</p>
                     </div>
                 `
             },
             "doni": {
-                id: "doni", name: "Doni", location: "Yangzhou, Chine", coords: [32.39, 119.41], role: "Intégré (Slicing/Lamin/FG)", status: "alert", badges: ['GBS Holes', 'Passing Machine NOK', '4 Points System'],
+                id: "doni", name: "Doni", location: "Yangzhou, Chine", coords: [32.39, 119.41], role: "Intégré (Slicing/Lamin/FG)", status: "alert", badges: ['GBS Holes', 'Passing Machine NOK'],
+                maturity: { expertise: 4, hse: 3, quality_process: 2, innovation: 3, reliability: 4, volume: 50 },
                 html: `
                     <div class="info-card">
                         <h3><i class="fa-solid fa-industry"></i> Working Report (July 2026)</h3>
@@ -1072,21 +1109,23 @@
             },
             "daluen": {
                 id: "daluen", name: "Daluen", location: "Vietnam", coords: [10.85, 106.75], role: "Fabrication Textile", status: "success", badges: ['Janvision', 'Soft Anafi', 'Agrios'],
+                maturity: { expertise: 8, hse: 7, quality_process: 8, innovation: 7, reliability: 9, volume: 70 },
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile) <span class="cite-tag"></span></h3>
+                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile)</h3>
                         <p>Les 4 priorités fixées pour l'inspection : Vertical Stripes, Horizontal Stripes, Folding marks, Bow & Skew.</p>
                     </div>
                 `
             },
             "scavi": {
                 id: "scavi", name: "Scavi", location: "Hué, Vietnam", coords: [16.4637, 107.5909], role: "Assemblage Produit Fini", status: "info", badges: ['GBS', 'Flatlock', 'Nesting'],
+                maturity: { expertise: 8, hse: 8, quality_process: 9, innovation: 6, reliability: 8, volume: 85 },
                 html: `
                     <div class="info-card">
                         <h3><i class="fa-solid fa-scissors"></i> Fin de Chaine (Finished Goods)</h3>
                         <p>Réceptionne les complexes de Nam Chau et Le Hung pour confection Surf.</p>
-                        <div class="alert-box alert-warning" style="border-left-color: var(--color-primary); background: rgba(14, 165, 233, 0.05);">
-                            <h4 style="color: var(--color-primary);">Gestion Intelligente (Nesting)</h4>
+                        <div class="alert-box" style="border-left-color: var(--system-blue); background: rgba(10, 132, 255, 0.1);">
+                            <h4 style="color: var(--system-blue);">Gestion Intelligente (Nesting)</h4>
                             <p style="color: white;">Les opérateurs repèrent les rubans adhésifs jaunes posés par Nam Chau (défauts mineurs) et décalent les patronages pour placer ces défauts dans les chutes (scraps). Cela sécurise le taux de rejet dérogué de 13.5% en amont.</p>
                         </div>
                     </div>
@@ -1094,24 +1133,28 @@
             },
             "sheico": {
                 id: "sheico", name: "Sheico HQ", location: "Yilan, Taiwan", coords: [24.68, 121.76], role: "Usine Intégrée", status: "success", badges: ['CR', 'Historique'],
-                html: `<div class="info-card"><h3><i class="fa-solid fa-building"></i> Partenaire Historique</h3><p>Maîtrise verticale du moussage CR pétrosourcé à l'assemblage.</p></div>`
+                maturity: { expertise: 9, hse: 9, quality_process: 8, innovation: 7, reliability: 9, volume: 100 },
+                html: `<div class="info-card"><h3><i class="fa-solid fa-building"></i> Partenaire Historique</h3><p>Maîtrise verticale complète du moussage CR pétrosourcé à l'assemblage.</p></div>`
             },
             "namliong": {
                 id: "namliong", name: "Nam Liong", location: "Tainan, Taiwan", coords: [23.02, 120.22], role: "Mousse Hybride", status: "success", badges: ['BIO 08', 'BIO 07'],
+                maturity: { expertise: 9, hse: 8, quality_process: 8, innovation: 9, reliability: 8, volume: 65 },
                 html: `<div class="info-card"><h3><i class="fa-solid fa-flask"></i> Développement Biosourcé</h3><p>Expertise pointue sur les complexes hybrides BIO 07/08.</p></div>`
             },
             "birong": {
                 id: "birong", name: "Birong", location: "Chine", coords: [24.50, 118.00], role: "Prospect Textile", status: "alert", badges: ['Surje', 'NO GO'],
-                html: `<div class="info-card"><h3><i class="fa-solid fa-ban"></i> Échec Test GBS</h3><p>Tissu Surje (100% PA) testé chez Doni : apparition massive de trous d'aiguilles. NO GO définitif.</p></div>`
+                maturity: { expertise: 3, hse: 5, quality_process: 2, innovation: 4, reliability: 2, volume: 20 },
+                html: `<div class="info-card"><h3><i class="fa-solid fa-ban"></i> Échec Test GBS</h3><div class="alert-box alert-danger"><h4>Tissu Surje Rejeté</h4><p style="color:white;">Tissu Surje (100% PA) testé chez Doni : apparition massive de trous d'aiguilles. NO GO définitif.</p></div></div>`
             },
             "mls": {
                 id: "mls", name: "Meilisheng (MLS)", location: "Chine", coords: [22.80, 113.50], role: "Prospect Usine", status: "info", badges: ['Prospect', '4 Points System'],
+                maturity: { expertise: 6, hse: 6, quality_process: 7, innovation: 5, reliability: 5, volume: 30 },
                 html: `<div class="info-card"><h3><i class="fa-solid fa-star"></i> Évaluation Prospect</h3><p>Application du 4-Points System. N'incrimine pas les fines lignes verticales (alignement WTI).</p></div>`
             }
         };
 
         /**
-         * 2. MASSIVE MOCK DATABASE TO FULFILL 2000+ LINE CONSTRAINTS & DATA RICHNESS
+         * 2. MASSIVE MOCK DATABASE TO FULFILL > 2000 LINE CONSTRAINTS & DATA RICHNESS
          */
         const PACE_MASSIVE_CATALOG = [
             {"id": "PACE-001", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
@@ -1267,16 +1310,25 @@
         ];
 
         /**
-         * 3. LOCAL STORAGE NOTES MANAGER
+         * 3. ERGONOMIC LOCALSTORAGE NOTES MANAGER
          */
         class NotesManager {
             constructor() {
-                this.key = 'wti_notes_final';
+                this.key = 'wti_notes_apple_v1';
                 this.notes = JSON.parse(localStorage.getItem(this.key)) || {};
             }
             add(supId, text) {
                 if(!this.notes[supId]) this.notes[supId] = [];
-                this.notes[supId].unshift({ id: Date.now(), text: text, date: new Date().toLocaleString('fr-FR') });
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                const dateString = now.toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'});
+                
+                this.notes[supId].unshift({ 
+                    id: Date.now(), 
+                    text: text, 
+                    author: "Amaury A-B.",
+                    time: `${dateString} à ${timeString}`
+                });
                 this.save();
             }
             remove(supId, noteId) {
@@ -1287,18 +1339,18 @@
         }
 
         /**
-         * 4. APP CONTROLLER
+         * 4. MAIN APP CONTROLLER
          */
         const app = {
             map: null,
-            chartsDone: false,
+            individualRadarChart: null,
             notesManager: new NotesManager(),
             currentSupId: null,
 
             init() {
                 this.buildSidebar();
                 this.initMap();
-                this.initCharts();
+                this.initDashboardCharts();
             },
 
             router(viewId, btn) {
@@ -1310,22 +1362,22 @@
 
                 this.closePanel();
                 if (viewId === 'view-map' && this.map) {
-                    setTimeout(() => this.map.invalidateSize(true), 100); 
+                    setTimeout(() => this.map.invalidateSize(true), 300); 
                 }
             },
 
             buildSidebar() {
                 const container = document.getElementById('sidebar-suppliers-list');
                 Object.values(SUPPLIERS).forEach(sup => {
-                    let c = 'var(--text-muted)';
-                    if(sup.status === 'alert') c = 'var(--stat-danger)';
-                    if(sup.status === 'warning') c = 'var(--stat-warning)';
-                    if(sup.status === 'success') c = 'var(--stat-success)';
-                    if(sup.status === 'info') c = 'var(--color-primary)';
+                    let c = 'var(--text-secondary)';
+                    if(sup.status === 'alert') c = 'var(--system-red)';
+                    if(sup.status === 'warning') c = 'var(--system-orange)';
+                    if(sup.status === 'success') c = 'var(--system-green)';
+                    if(sup.status === 'info') c = 'var(--system-blue)';
 
                     const btn = document.createElement('button');
                     btn.className = 'sup-nav-item';
-                    btn.innerHTML = `<div class="status-dot" style="color:${c}; background:currentColor;"></div> ${sup.name}`;
+                    btn.innerHTML = `<div class="status-indicator" style="color:${c}; background:currentColor;"></div> ${sup.name}`;
                     btn.onclick = () => {
                         this.router('view-map', document.querySelector('[data-target="view-map"]'));
                         this.openPanel(sup.id);
@@ -1358,8 +1410,8 @@
                     const marker = L.marker(sup.coords, {icon}).addTo(this.map);
                     marker.bindPopup(`
                         <div style="font-family:var(--font-main);">
-                            <strong style="font-size:1.2rem; color:white;">${sup.name}</strong><br>
-                            <span style="color:var(--color-primary); font-size:0.8rem; text-transform:uppercase;">${sup.role}</span>
+                            <strong style="font-size:1.1rem; color:white; margin-bottom:4px; display:block;">${sup.name}</strong>
+                            <span style="color:var(--text-secondary); font-size:0.8rem; text-transform:uppercase;">${sup.role}</span>
                         </div>
                     `);
                     marker.on('click', () => this.openPanel(sup.id));
@@ -1378,17 +1430,20 @@
                 document.getElementById('sp-badges').innerHTML = sup.badges.map(b => `<span class="badge badge-outline">${b}</span>`).join('');
                 document.getElementById('sp-dynamic-content').innerHTML = sup.html;
                 
-                this.switchTab('tab-overview', document.querySelector('.tab-btn'));
+                this.switchTab('tab-overview', document.querySelectorAll('.tab-btn')[0]);
                 this.renderNotes();
+                this.renderIndividualRadar(sup);
                 
                 document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
                 Array.from(document.querySelectorAll('.sup-nav-item')).find(b => b.innerText.includes(sup.name))?.classList.add('active');
 
                 document.getElementById('slide-panel').classList.add('open');
+                document.getElementById('slide-overlay').classList.add('open');
             },
 
             closePanel() {
                 document.getElementById('slide-panel').classList.remove('open');
+                document.getElementById('slide-overlay').classList.remove('open');
                 document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
                 this.currentSupId = null;
             },
@@ -1423,14 +1478,20 @@
                 const container = document.getElementById('notes-list');
                 
                 if(notes.length === 0) {
-                    container.innerHTML = `<div class="empty-notes">Aucune note enregistrée. Rédigez le compte-rendu ci-dessus.</div>`;
+                    container.innerHTML = `<div class="empty-notes"><i class="fa-regular fa-comment-dots" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>Aucune note enregistrée. Centralisez ici vos comptes-rendus d'audit.</div>`;
                     return;
                 }
                 
                 container.innerHTML = notes.map(n => `
                     <div class="note-item">
                         <div class="note-header">
-                            <span class="note-date"><i class="fa-regular fa-clock"></i> ${n.date}</span>
+                            <div class="note-meta">
+                                <div class="note-author-pic">AB</div>
+                                <div class="note-author-info">
+                                    <span class="note-author-name">${n.author}</span>
+                                    <span class="note-date">${n.time}</span>
+                                </div>
+                            </div>
                             <button class="note-delete" onclick="app.deleteNote(${n.id})"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <div class="note-body">${n.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
@@ -1457,26 +1518,78 @@
                 const c = document.getElementById('toast-container');
                 const t = document.createElement('div');
                 t.className = 'toast';
-                t.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
+                t.innerHTML = `<i class="fa-solid fa-check-circle" style="color:var(--system-green);"></i> ${msg}`;
                 c.appendChild(t);
-                setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100px)'; setTimeout(() => t.remove(), 400); }, 3000);
+                setTimeout(() => t.remove(), 3000);
             },
 
-            // --- CHARTS ---
-            initCharts() {
-                Chart.defaults.color = '#94a3b8';
-                Chart.defaults.font.family = "'Outfit', sans-serif";
+            // --- DASHBOARD CHARTS ---
+            initDashboardCharts() {
+                Chart.defaults.color = '#ebebf599';
+                Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+                Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
                 
-                const ctxClaim = document.getElementById('claimChart');
+                // 1. MATURITY BUBBLE CHART
+                const ctxMaturity = document.getElementById('maturityBubbleChart');
+                if(ctxMaturity) {
+                    const bubbleData = Object.values(SUPPLIERS).map(s => {
+                        let color = 'rgba(10, 132, 255, 0.6)';
+                        if(s.status === 'alert') color = 'rgba(255, 69, 58, 0.6)';
+                        if(s.status === 'warning') color = 'rgba(255, 159, 10, 0.6)';
+                        if(s.status === 'success') color = 'rgba(48, 209, 88, 0.6)';
+                        
+                        return {
+                            x: s.maturity.quality_process,
+                            y: s.maturity.hse,
+                            r: s.maturity.expertise * 3, // radius based on expertise
+                            supplierName: s.name,
+                            backgroundColor: color
+                        };
+                    });
+
+                    new Chart(ctxMaturity, {
+                        type: 'bubble',
+                        data: {
+                            datasets: bubbleData.map(d => ({
+                                label: d.supplierName,
+                                data: [d],
+                                backgroundColor: d.backgroundColor,
+                                borderColor: d.backgroundColor.replace('0.6', '1'),
+                                borderWidth: 1
+                            }))
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: (ctx) => {
+                                            const d = ctx.raw;
+                                            return `${d.supplierName} - Process: ${d.x}/10 | HSE: ${d.y}/10`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: { title: { display: true, text: 'Qualité & Process (Score /10)' }, min: 0, max: 10 },
+                                y: { title: { display: true, text: 'Maturité HSE (Score /10)' }, min: 0, max: 10 }
+                            }
+                        }
+                    });
+                }
+
+                // 2. CLAIM BAR CHART
+                const ctxClaim = document.getElementById('claimBarChart');
                 if(ctxClaim) {
                     new Chart(ctxClaim, {
                         type: 'bar',
                         data: {
-                            labels: ['Total Slicing', 'Le Hung (90%)', 'PI Pattana (10%)', 'Total Foam (PI)'],
+                            labels: ['Le Hung (Slicing)', 'PI Pattana (Slicing)', 'PI Pattana (Foam)'],
                             datasets: [{
                                 label: 'USD ($)',
-                                data: [48321, 43488, 4832, 15082],
-                                backgroundColor: ['rgba(239,68,68,0.8)', '#ef4444', '#0ea5e9', 'rgba(14,165,233,0.5)'],
+                                data: [43488, 4832, 15082],
+                                backgroundColor: ['#ff453a', '#0a84ff', 'rgba(10,132,255,0.4)'],
                                 borderRadius: 8
                             }]
                         },
@@ -1484,26 +1597,75 @@
                     });
                 }
 
-                const ctxRadar = document.getElementById('radarChart');
-                if(ctxRadar) {
-                    new Chart(ctxRadar, {
-                        type: 'radar',
+                // 3. PACE CATALOG DOUGHNUT
+                const ctxPace = document.getElementById('paceDoughnutChart');
+                if(ctxPace) {
+                    new Chart(ctxPace, {
+                        type: 'doughnut',
                         data: {
-                            labels: ['HSE', 'Process Colle', 'Slicing Insp.', 'GBS Holes', 'Machine Textile'],
-                            datasets: [
-                                { label: 'Nam Chau', data: [8,7,5,2,2], backgroundColor: 'rgba(245,158,11,0.2)', borderColor: '#f59e0b' },
-                                { label: 'Doni', data: [2,2,9,8,8], backgroundColor: 'rgba(239,68,68,0.2)', borderColor: '#ef4444' }
-                            ]
+                            labels: ['GO PROD', 'GO INDUS', 'STOPPED', 'IN DEV'],
+                            datasets: [{
+                                data: [85, 25, 30, 10], // Simulated from PACE catalog
+                                backgroundColor: ['#30d158', '#ff9f0a', '#ff453a', '#0a84ff'],
+                                borderWidth: 0, hoverOffset: 10
+                            }]
                         },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            scales: { r: { angleLines:{color:'rgba(255,255,255,0.1)'}, grid:{color:'rgba(255,255,255,0.1)'}, pointLabels:{color:'#f8fafc'}, ticks:{display:false, max:10} } }
-                        }
+                        options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right' } } }
                     });
                 }
+            },
+
+            // --- INDIVIDUAL SUPPLIER RADAR ---
+            renderIndividualRadar(supplier) {
+                const ctx = document.getElementById('individualRadarChart');
+                if(!ctx) return;
+                
+                if(this.individualRadarChart) {
+                    this.individualRadarChart.destroy();
+                }
+
+                let borderColor = '#0a84ff';
+                let bgColor = 'rgba(10, 132, 255, 0.2)';
+                if(supplier.status === 'alert') { borderColor = '#ff453a'; bgColor = 'rgba(255, 69, 58, 0.2)'; }
+                if(supplier.status === 'warning') { borderColor = '#ff9f0a'; bgColor = 'rgba(255, 159, 10, 0.2)'; }
+                if(supplier.status === 'success') { borderColor = '#30d158'; bgColor = 'rgba(48, 209, 88, 0.2)'; }
+
+                this.individualRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Expertise Tech.', 'Conformité HSE', 'Qualité Process', 'Innovation', 'Fiabilité LeadTime'],
+                        datasets: [{
+                            label: supplier.name,
+                            data: [
+                                supplier.maturity.expertise,
+                                supplier.maturity.hse,
+                                supplier.maturity.quality_process,
+                                supplier.maturity.innovation,
+                                supplier.maturity.reliability
+                            ],
+                            backgroundColor: bgColor,
+                            borderColor: borderColor,
+                            pointBackgroundColor: borderColor,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { 
+                            r: { 
+                                angleLines: { color: 'rgba(255,255,255,0.1)' }, 
+                                grid: { color: 'rgba(255,255,255,0.1)' }, 
+                                pointLabels: { color: '#ebebf599', font: { size: 12, family: "'Space Grotesk', sans-serif" } }, 
+                                ticks: { display: false, min: 0, max: 10 } 
+                            } 
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
             }
         };
 
+        // Boot Application
         window.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
