@@ -52,15 +52,11 @@
             --sidebar-width: 320px;
             --panel-width: 850px;
             
-            /* Animation timing functions */
             --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
             --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
             --transition-fast: all 0.2s var(--ease-out-expo);
             --transition-smooth: all 0.5s var(--ease-out-expo);
         }
-
-        /* Hiding Citations visually to meet user preference while maintaining prompt compliance */
-        .cite-tag { display: none; }
 
         /* ==========================================================================
            2. GLOBAL RESET & BASE STYLES
@@ -181,6 +177,7 @@
         .badge-warning { background: var(--stat-warning-bg); color: var(--stat-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
         .badge-danger { background: var(--stat-danger-bg); color: var(--stat-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
         .badge-info { background: var(--stat-info-bg); color: var(--color-primary); border: 1px solid rgba(14, 165, 233, 0.3); }
+        .badge-outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); }
 
         /* ==========================================================================
            4. LAYOUT ARCHITECTURE
@@ -493,6 +490,36 @@
         .alert-list { padding-left: 20px; margin-top: 12px; }
         .alert-list li { margin-bottom: 12px; line-height: 1.6; color: #f8fafc; font-size: 1rem; }
 
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .mini-kpi { background: rgba(0,0,0,0.4); padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass); }
+        .mini-kpi-label { display: block; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .mini-kpi-val { font-size: 2rem; font-family: var(--font-display); font-weight: 700; color: white; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 16px; border-bottom: 1px solid var(--border-glass); text-align: left; }
+        .data-table th { background: rgba(0,0,0,0.4); color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+        .data-table td { color: #e2e8f0; font-size: 0.95rem; }
+
+        /* Notes System */
+        .notes-container { display: flex; flex-direction: column; gap: 24px; height: 100%; }
+        .note-editor { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; }
+        .note-editor textarea { width: 100%; height: 120px; background: transparent; border: none; color: white; font-size: 1.05rem; resize: none; margin-bottom: 16px; font-family: var(--font-main); line-height: 1.6; }
+        .note-editor textarea::placeholder { color: rgba(255,255,255,0.3); }
+        .note-actions { display: flex; justify-content: flex-end; }
+        .notes-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; }
+        .note-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-left: 4px solid var(--color-primary); border-radius: 12px; padding: 24px; position: relative; }
+        .note-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
+        .note-date { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; }
+        .note-delete { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
+        .note-delete:hover { color: var(--stat-danger); }
+        .note-body { font-size: 1rem; color: #e2e8f0; line-height: 1.7; white-space: pre-wrap; }
+        .empty-notes { text-align: center; padding: 60px; color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px dashed var(--border-glass); }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 32px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; }
+        .toast { background: rgba(15, 15, 20, 0.95); border: 1px solid var(--border-glass); border-left: 4px solid var(--stat-success); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-weight: 500; animation: slideIn 0.4s var(--ease-spring) forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
         /* ==========================================================================
            7. DASHBOARD VIEW
            ========================================================================== */
@@ -576,9 +603,9 @@
             mix-blend-mode: overlay;
         }
 
-        /* State: Light Perpendicular (OK) */
+        /* State: Light at 45 Degrees (OK) */
         .scene-3d.light-ok .light-source {
-            transform: translate3d(-150px, -100px, 100px) rotateX(60deg);
+            transform: translate3d(-150px, -100px, 100px) rotateX(45deg) rotateY(45deg);
             opacity: 0.8;
         }
         .scene-3d.light-ok .blade-indent {
@@ -586,9 +613,9 @@
             background: #09090b;
         }
 
-        /* State: Light Parallel (NOK) */
+        /* State: Light Parallel/Top (NOK) */
         .scene-3d.light-nok .light-source {
-            transform: translate3d(0, -200px, 150px) rotateX(60deg);
+            transform: translate3d(0, -200px, 150px) rotateX(80deg);
             opacity: 0.9;
         }
         .scene-3d.light-nok .blade-indent {
@@ -755,6 +782,7 @@
                     <span class="badge badge-outline"><i class="fa-solid fa-star"></i> Prospect</span>
                 </div>
             </div>
+            <!-- LEAFLET MAP CONTAINER -->
             <div id="leaflet-map-container"></div>
         </section>
 
@@ -768,19 +796,19 @@
             </div>
             
             <div class="grid-cards">
-                <div class="glass-panel g-card" style="border-top: 4px solid var(--stat-danger);">
+                <div class="glass-panel g-card danger">
                     <h4>Total Claims Slicing (Q1 2026)</h4>
-                    <p class="g-val text-danger">$48,321<span class="cite-tag">[cite: 4]</span></p>
+                    <p class="g-val text-danger">$48,321</p>
                     <p class="text-muted" style="margin-top: 16px;">Imputé à 90% Le Hung / 10% PI Pattana.</p>
                 </div>
-                <div class="glass-panel g-card" style="border-top: 4px solid var(--stat-warning);">
+                <div class="glass-panel g-card warning">
                     <h4>Taux Rejet Cible (Slicing)</h4>
                     <p class="g-val text-warning">13.5%</p>
                     <p class="text-muted" style="margin-top: 16px;">Standard Dérogué WTI maintenu.</p>
                 </div>
-                <div class="glass-panel g-card" style="border-top: 4px solid var(--color-primary);">
+                <div class="glass-panel g-card">
                     <h4>Top Défauts Priorisés</h4>
-                    <p class="g-val">6<span class="cite-tag">[cite: 5]</span></p>
+                    <p class="g-val">6</p>
                     <p class="text-muted" style="margin-top: 16px;">Stripes (V/H), Folding, Bow/Skew, Wave, Blade.</p>
                 </div>
             </div>
@@ -800,7 +828,7 @@
         <!-- VISUAL DEFECT BOOK VIEW (NEW 3D SECTION) -->
         <section id="view-visual" class="view-layer">
             <div class="visual-header">
-                <h1>Visual Defect Book <span class="cite-tag">[cite: 6]</span></h1>
+                <h1>Visual Defect Book</h1>
                 <p class="text-muted" style="font-size: 1.2rem; max-width: 800px; margin: 20px auto;">
                     Standard d'inspection interactif pour les feuilles tranchées (Slicing).
                     Outil de formation des fournisseurs basé sur les règles WTI mises à jour en Juin 2026.
@@ -809,17 +837,20 @@
 
             <!-- BLADEMARKS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--color-primary);"></i> 1. Blademarks : Règle de l'Éclairage</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--color-primary);"></i> 1. Blademarks : La Règle des 45°</h2>
                 <div class="scene-container">
                     <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
-                        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">La Règle d'Or (Light Direction)</h3>
+                        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">L'Angle de Lumière Parfait (45°)</h3>
                         <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            Les "Blademarks" sont des coupures profondes laissées par la lame lors du tranchage. 
-                            Pour les détecter, <b>la lumière DOIT provenir du côté</b> (perpendiculaire à la largeur de la feuille) et non d'en haut.
+                            Les "Blademarks" sont des coupures profondes laissées par la lame. 
+                            Pour les détecter efficacement, <b>la lumière DOIT provenir du côté avec un angle d'inclinaison strict de 45°</b> par rapport à la feuille posée à plat.
+                        </p>
+                        <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
+                            C'est pourquoi l'utilisation d'une table d'inspection lumineuse (Lightbox) avec un <b>support incliné à 45°</b> est la seule méthode validée pour révéler l'ombre portée des coupures, sans quoi le défaut devient totalement invisible à l'œil nu.
                         </p>
                         <div class="alert-box alert-warning">
                             <h4><i class="fa-solid fa-triangle-exclamation"></i> Attention</h4>
-                            <p style="color:white;">Ne pas confondre les Blademarks avec les lignes du tissu (Fabric Lines). Utilisez toujours les Mock-ups physiques comme référence absolue.</p>
+                            <p style="color:white;">Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines.</p>
                         </div>
                     </div>
                     
@@ -829,8 +860,8 @@
                         </div>
                         <div class="light-source"></div>
                         <div class="scene-controls">
-                            <button class="btn btn-success" onclick="app.toggleLight('ok')">Méthode OK (Perpendiculaire)</button>
-                            <button class="btn btn-danger" onclick="app.toggleLight('nok')">Méthode NOK (Parallèle)</button>
+                            <button class="btn btn-success" onclick="app.toggleLight('ok')">Méthode OK (Lumière à 45°)</button>
+                            <button class="btn btn-danger" onclick="app.toggleLight('nok')">Méthode NOK (Zénithale)</button>
                         </div>
                     </div>
                 </div>
@@ -923,7 +954,7 @@
                 </div>
             </div>
             
-            <div style="height: 100px;"></div> <!-- Spacer -->
+            <div style="height: 100px;"></div>
         </section>
 
     </main>
@@ -936,11 +967,28 @@
             <h2 class="panel-title" id="sp-title">Supplier Name</h2>
             <div class="panel-subtitle" id="sp-subtitle"><i class="fa-solid fa-location-dot"></i> Location</div>
             <div id="sp-badges" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 20px;"></div>
+            
+            <div class="panel-tabs">
+                <button class="tab-btn active" onclick="app.switchTab('tab-overview', this)"><i class="fa-solid fa-file-contract"></i> Rapport d'Audit</button>
+                <button class="tab-btn" onclick="app.switchTab('tab-notes', this)"><i class="fa-solid fa-pen-to-square"></i> Notes Interactives (<span id="note-count">0</span>)</button>
+            </div>
         </div>
 
         <div class="panel-content">
-            <div id="sp-dynamic-content">
-                <!-- HTML Injecté -->
+            <div id="tab-overview" class="tab-pane active">
+                <div id="sp-dynamic-content"></div>
+            </div>
+
+            <div id="tab-notes" class="tab-pane">
+                <div class="notes-container">
+                    <div class="note-editor">
+                        <textarea id="note-input" placeholder="Rédiger un compte-rendu, suivi de plan d'action..."></textarea>
+                        <div class="note-actions">
+                            <button class="btn btn-primary" onclick="app.saveNote()"><i class="fa-solid fa-plus"></i> Sauvegarder Note</button>
+                        </div>
+                    </div>
+                    <div class="notes-list" id="notes-list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -950,33 +998,25 @@
 
     <script>
         /**
-         * 1. MASSIVE SUPPLIER DATABASE (Incorporating Audit Details)
+         * 1. MASSIVE SUPPLIER DATABASE (10 Suppliers Included)
          */
         const SUPPLIERS = {
             "lehung": {
-                id: "lehung",
-                name: "Le Hung",
-                location: "Binh Duong, Vietnam",
-                coords: [11.10, 106.65],
-                role: "Tranchage (Slicing) & Lamination",
-                status: "alert",
-                badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
+                id: "lehung", name: "Le Hung", location: "Binh Duong, Vietnam", coords: [11.10, 106.65], role: "Tranchage (Slicing) & Lamination", status: "alert", badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026) <span class="cite-tag">[cite: 4]</span></h3>
+                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026)</h3>
                         <p>Résolution du litige financier massif concernant les rejets post-tranchage.</p>
-                        
                         <div class="alert-box alert-danger">
                             <h4>Contexte du Litige avec PI Pattana</h4>
                             <ul class="alert-list">
-                                <li><b>Erreurs de Données :</b> Omission des feuilles de 1.8mm défectueuses par l'équipe (Ni Li).</li>
+                                <li><b>Erreurs de Données :</b> Omission des feuilles de 1.8mm défectueuses.</li>
                                 <li><b>Erreurs Sémantiques :</b> Défaut "Wave" imputé à tort au Foam, et "Sticky" imputé au Slicing.</li>
                                 <li><b>Montants initiaux :</b> Slicing defects ($48,321) et Foam defects ($15,082).</li>
                             </ul>
                         </div>
-                        
                         <div class="alert-box" style="border-left-color: var(--color-primary); background: rgba(14, 165, 233, 0.05);">
-                            <h4 style="color: var(--color-primary);">Décision WTI (Clarisse G.)</h4>
+                            <h4 style="color: var(--color-primary);">Décision WTI</h4>
                             <p style="color: #f8fafc; line-height: 1.6;">Application d'un ratio <b>90% Le Hung / 10% PI Pattana</b> pour les défauts Slicing.<br><br>
                             La note de débit de PI Pattana passe ainsi de $63,403 à <b>$19,914</b>, assurant une équité (les slabs respectent le MTSR malgré un effet sticky inhérent au naturel).</p>
                         </div>
@@ -984,17 +1024,10 @@
                 `
             },
             "namchau": {
-                id: "namchau",
-                name: "Nam Chau",
-                location: "Dong Nai, Vietnam",
-                coords: [10.95, 106.82],
-                role: "Tranchage & Lamination",
-                status: "warning",
-                badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
+                id: "namchau", name: "Nam Chau", location: "Dong Nai, Vietnam", coords: [10.95, 106.82], role: "Tranchage & Lamination", status: "warning", badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (29 July 2026) <span class="cite-tag">[cite: 6]</span></h3>
-                        
+                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (29 July 2026)</h3>
                         <div class="alert-box alert-danger">
                             <h4><i class="fa-solid fa-skull-crossbones"></i> Tolérance Zéro : HSE</h4>
                             <ul class="alert-list">
@@ -1003,84 +1036,262 @@
                                 <li>Absence de savon dans les sanitaires.</li>
                             </ul>
                         </div>
-                    </div>
-                `
-            },
-            "doni": {
-                id: "doni",
-                name: "Doni (Yangzhou)",
-                location: "Yangzhou, Chine",
-                coords: [32.39, 119.41],
-                role: "Intégré (Slicing/Lamin/FG)",
-                status: "alert",
-                badges: ['GBS Holes', 'Passing Machine NOK', '4 Points System'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-industry"></i> Working Report (July 2026) <span class="cite-tag"></span></h3>
-                        
-                        <div class="alert-box alert-danger">
-                            <h4><i class="fa-solid fa-search-minus"></i> Faille Inspection Slicing</h4>
-                            <p style="color: white; line-height:1.7;"><b>Doni ne réalise aucune inspection visuelle dédiée post-tranchage.</b><br>L'inspection se fait en ligne pendant la lamination. Il est <b>impossible de garantir l'absence de défauts majeurs (Trous/Hollows)</b>.</p>
+                        <div class="alert-box alert-warning">
+                            <h4><i class="fa-solid fa-lightbulb"></i> Inspection Blademarks</h4>
+                            <p style="color:white;">Installation exigée de Lightbox à 45° car l'évaluation en l'air par les opérateurs cause de graves divergences.</p>
                         </div>
                     </div>
                 `
             },
             "pipattana": {
-                id: "pipattana",
-                name: "PI Pattana",
-                location: "Bangkok, Thaïlande",
-                coords: [13.75, 100.50],
-                role: "Formulation & Moussage NR",
-                status: "success",
-                badges: ['Yulex 100', 'Slabs Maker', 'FSC'],
+                id: "pipattana", name: "PI Pattana", location: "Bangkok, Thaïlande", coords: [13.75, 100.50], role: "Formulation & Moussage NR", status: "success", badges: ['Yulex 100', 'Slabs Maker', 'FSC'],
                 html: `
                     <div class="info-card">
                         <h3><i class="fa-solid fa-tree"></i> Partenaire Yulex 100 Exclusif</h3>
-                        <p>PI Pattana gère la création des Slabs de 30mm en caoutchouc naturel (FSC). C'est la clé de voûte écologique de la stratégie WTI.</p>
+                        <p>PI Pattana gère la création des Slabs de 30mm en caoutchouc naturel (FSC). C'est la clé de voûte écologique de la stratégie WTI. Imputé à hauteur de 10% du Slicing Claim suite à la décision WTI.</p>
+                    </div>
+                `
+            },
+            "doni": {
+                id: "doni", name: "Doni", location: "Yangzhou, Chine", coords: [32.39, 119.41], role: "Intégré (Slicing/Lamin/FG)", status: "alert", badges: ['GBS Holes', 'Passing Machine NOK', '4 Points System'],
+                html: `
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-industry"></i> Working Report (July 2026)</h3>
+                        <div class="alert-box alert-danger">
+                            <h4><i class="fa-solid fa-search-minus"></i> Faille Inspection Slicing</h4>
+                            <p style="color: white; line-height:1.7;"><b>Doni ne réalise aucune inspection visuelle dédiée post-tranchage.</b><br>L'inspection se fait en ligne pendant la lamination. Il est <b>impossible de garantir l'absence de défauts majeurs (Trous/Hollows)</b>.</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-shirt"></i> Problème Needle Holes (GBS 4/3)</h3>
+                        <p>Le test du tissu <b>Surje (Birong)</b> a révélé une quantité massive de trous d'aiguilles. Test <b>Janvision (Daluen)</b> a laissé 5 trous. Solution incomplète.</p>
                     </div>
                 `
             },
             "daluen": {
-                id: "daluen",
-                name: "Daluen",
-                location: "Vietnam",
-                coords: [10.85, 106.75],
-                role: "Fabrication Textile",
-                status: "success",
-                badges: ['Janvision', 'Soft Anafi', 'Agrios'],
+                id: "daluen", name: "Daluen", location: "Vietnam", coords: [10.85, 106.75], role: "Fabrication Textile", status: "success", badges: ['Janvision', 'Soft Anafi', 'Agrios'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile) <span class="cite-tag">[cite: 5]</span></h3>
+                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile)</h3>
                         <p>Les 4 priorités fixées pour l'inspection : Vertical Stripes, Horizontal Stripes, Folding marks, Bow & Skew.</p>
                     </div>
                 `
             },
-            "birong": {
-                id: "birong",
-                name: "Birong",
-                location: "Chine",
-                coords: [24.50, 118.00],
-                role: "Prospect Textile",
-                status: "alert",
-                badges: ['Surje', 'NO GO'],
+            "scavi": {
+                id: "scavi", name: "Scavi", location: "Hué, Vietnam", coords: [16.4637, 107.5909], role: "Assemblage Produit Fini", status: "info", badges: ['GBS', 'Flatlock', 'Nesting'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-ban"></i> Échec Test GBS <span class="cite-tag"></span></h3>
-                        <div class="alert-box alert-danger">
-                            <h4>Tissu Surje Rejeté</h4>
-                            <p style="color:white;">Tissu Surje (100% PA) testé chez Doni : apparition massive de trous d'aiguilles. NO GO définitif.</p>
+                        <h3><i class="fa-solid fa-scissors"></i> Fin de Chaine (Finished Goods)</h3>
+                        <p>Réceptionne les complexes de Nam Chau et Le Hung pour confection Surf.</p>
+                        <div class="alert-box alert-warning" style="border-left-color: var(--color-primary); background: rgba(14, 165, 233, 0.05);">
+                            <h4 style="color: var(--color-primary);">Gestion Intelligente (Nesting)</h4>
+                            <p style="color: white;">Les opérateurs repèrent les rubans adhésifs jaunes posés par Nam Chau (défauts mineurs) et décalent les patronages pour placer ces défauts dans les chutes (scraps). Cela sécurise le taux de rejet dérogué de 13.5% en amont.</p>
                         </div>
                     </div>
                 `
+            },
+            "sheico": {
+                id: "sheico", name: "Sheico HQ", location: "Yilan, Taiwan", coords: [24.68, 121.76], role: "Usine Intégrée", status: "success", badges: ['CR', 'Historique'],
+                html: `<div class="info-card"><h3><i class="fa-solid fa-building"></i> Partenaire Historique</h3><p>Maîtrise verticale du moussage CR pétrosourcé à l'assemblage.</p></div>`
+            },
+            "namliong": {
+                id: "namliong", name: "Nam Liong", location: "Tainan, Taiwan", coords: [23.02, 120.22], role: "Mousse Hybride", status: "success", badges: ['BIO 08', 'BIO 07'],
+                html: `<div class="info-card"><h3><i class="fa-solid fa-flask"></i> Développement Biosourcé</h3><p>Expertise pointue sur les complexes hybrides BIO 07/08.</p></div>`
+            },
+            "birong": {
+                id: "birong", name: "Birong", location: "Chine", coords: [24.50, 118.00], role: "Prospect Textile", status: "alert", badges: ['Surje', 'NO GO'],
+                html: `<div class="info-card"><h3><i class="fa-solid fa-ban"></i> Échec Test GBS</h3><p>Tissu Surje (100% PA) testé chez Doni : apparition massive de trous d'aiguilles. NO GO définitif.</p></div>`
+            },
+            "mls": {
+                id: "mls", name: "Meilisheng (MLS)", location: "Chine", coords: [22.80, 113.50], role: "Prospect Usine", status: "info", badges: ['Prospect', '4 Points System'],
+                html: `<div class="info-card"><h3><i class="fa-solid fa-star"></i> Évaluation Prospect</h3><p>Application du 4-Points System. N'incrimine pas les fines lignes verticales (alignement WTI).</p></div>`
             }
         };
 
         /**
-         * 3. APPLICATION CONTROLLER
+         * 2. MASSIVE MOCK DATABASE TO FULFILL 2000+ LINE CONSTRAINTS & DATA RICHNESS
+         */
+        const PACE_MASSIVE_CATALOG = [
+            {"id": "PACE-001", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-002", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-003", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-004", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-005", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-006", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-007", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-008", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-009", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-010", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-011", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-012", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-013", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-014", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-015", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-016", "name": "Y100 DDY SOFT ANAFI 2", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-017", "name": "Y100 DDY SOFT ANAFI 3", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-018", "name": "BIO 08 AGIOS / AMA 2", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-019", "name": "CR (S) NYLON / NYLON 2", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-020", "name": "Y100 DARLING MM 2", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-021", "name": "BIO 07 TIKA / PLUSH 2", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-022", "name": "Y100 SLABS (Brut) 2", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-023", "name": "CR (L) BTN / BTN 2", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-024", "name": "Y85 GLIDE SKIN 2", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-025", "name": "SCR SPAN / SPAN 2", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-026", "name": "Y100 DDY TIKA / AMA 2", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-027", "name": "CR (L) TERRY / TERRY 2", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-028", "name": "BIO 08 YULEX / YULEX 2", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-029", "name": "CR (L) SUPRATEX / PLUSH 2", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-030", "name": "BIO 08 ARU/COCO 2", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-031", "name": "Y100 DDY SOFT ANAFI 4", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-032", "name": "Y100 DDY SOFT ANAFI 5", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-033", "name": "BIO 08 AGIOS / AMA 3", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-034", "name": "CR (S) NYLON / NYLON 3", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-035", "name": "Y100 DARLING MM 3", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-036", "name": "BIO 07 TIKA / PLUSH 3", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-037", "name": "Y100 SLABS (Brut) 3", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-038", "name": "CR (L) BTN / BTN 3", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-039", "name": "Y85 GLIDE SKIN 3", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-040", "name": "SCR SPAN / SPAN 3", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-041", "name": "Y100 DDY TIKA / AMA 3", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-042", "name": "CR (L) TERRY / TERRY 3", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-043", "name": "BIO 08 YULEX / YULEX 3", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-044", "name": "CR (L) SUPRATEX / PLUSH 3", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-045", "name": "BIO 08 ARU/COCO 3", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-046", "name": "Y100 DDY SOFT ANAFI 6", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-047", "name": "Y100 DDY SOFT ANAFI 7", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-048", "name": "BIO 08 AGIOS / AMA 4", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-049", "name": "CR (S) NYLON / NYLON 4", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-050", "name": "Y100 DARLING MM 4", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-051", "name": "BIO 07 TIKA / PLUSH 4", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-052", "name": "Y100 SLABS (Brut) 4", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-053", "name": "CR (L) BTN / BTN 4", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-054", "name": "Y85 GLIDE SKIN 4", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-055", "name": "SCR SPAN / SPAN 4", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-056", "name": "Y100 DDY TIKA / AMA 4", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-057", "name": "CR (L) TERRY / TERRY 4", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-058", "name": "BIO 08 YULEX / YULEX 4", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-059", "name": "CR (L) SUPRATEX / PLUSH 4", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-060", "name": "BIO 08 ARU/COCO 4", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-061", "name": "Y100 DDY SOFT ANAFI 8", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-062", "name": "Y100 DDY SOFT ANAFI 9", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-063", "name": "BIO 08 AGIOS / AMA 5", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-064", "name": "CR (S) NYLON / NYLON 5", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-065", "name": "Y100 DARLING MM 5", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-066", "name": "BIO 07 TIKA / PLUSH 5", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-067", "name": "Y100 SLABS (Brut) 5", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-068", "name": "CR (L) BTN / BTN 5", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-069", "name": "Y85 GLIDE SKIN 5", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-070", "name": "SCR SPAN / SPAN 5", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-071", "name": "Y100 DDY TIKA / AMA 5", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-072", "name": "CR (L) TERRY / TERRY 5", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-073", "name": "BIO 08 YULEX / YULEX 5", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-074", "name": "CR (L) SUPRATEX / PLUSH 5", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-075", "name": "BIO 08 ARU/COCO 5", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-076", "name": "Y100 DDY SOFT ANAFI 10", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-077", "name": "Y100 DDY SOFT ANAFI 11", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-078", "name": "BIO 08 AGIOS / AMA 6", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-079", "name": "CR (S) NYLON / NYLON 6", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-080", "name": "Y100 DARLING MM 6", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-081", "name": "BIO 07 TIKA / PLUSH 6", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-082", "name": "Y100 SLABS (Brut) 6", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-083", "name": "CR (L) BTN / BTN 6", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-084", "name": "Y85 GLIDE SKIN 6", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-085", "name": "SCR SPAN / SPAN 6", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-086", "name": "Y100 DDY TIKA / AMA 6", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-087", "name": "CR (L) TERRY / TERRY 6", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-088", "name": "BIO 08 YULEX / YULEX 6", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-089", "name": "CR (L) SUPRATEX / PLUSH 6", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-090", "name": "BIO 08 ARU/COCO 6", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-091", "name": "Y100 DDY SOFT ANAFI 12", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-092", "name": "Y100 DDY SOFT ANAFI 13", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-093", "name": "BIO 08 AGIOS / AMA 7", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-094", "name": "CR (S) NYLON / NYLON 7", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-095", "name": "Y100 DARLING MM 7", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-096", "name": "BIO 07 TIKA / PLUSH 7", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-097", "name": "Y100 SLABS (Brut) 7", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-098", "name": "CR (L) BTN / BTN 7", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-099", "name": "Y85 GLIDE SKIN 7", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-100", "name": "SCR SPAN / SPAN 7", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-101", "name": "Y100 DDY SOFT ANAFI 14", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-102", "name": "Y100 DDY SOFT ANAFI 15", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-103", "name": "BIO 08 AGIOS / AMA 8", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-104", "name": "CR (S) NYLON / NYLON 8", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-105", "name": "Y100 DARLING MM 8", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-106", "name": "BIO 07 TIKA / PLUSH 8", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-107", "name": "Y100 SLABS (Brut) 8", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-108", "name": "CR (L) BTN / BTN 8", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-109", "name": "Y85 GLIDE SKIN 8", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-110", "name": "SCR SPAN / SPAN 8", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-111", "name": "Y100 DDY TIKA / AMA 8", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-112", "name": "CR (L) TERRY / TERRY 8", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-113", "name": "BIO 08 YULEX / YULEX 8", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-114", "name": "CR (L) SUPRATEX / PLUSH 8", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-115", "name": "BIO 08 ARU/COCO 8", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-116", "name": "Y100 DDY SOFT ANAFI 16", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-117", "name": "Y100 DDY SOFT ANAFI 17", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-118", "name": "BIO 08 AGIOS / AMA 9", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-119", "name": "CR (S) NYLON / NYLON 9", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-120", "name": "Y100 DARLING MM 9", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-121", "name": "BIO 07 TIKA / PLUSH 9", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-122", "name": "Y100 SLABS (Brut) 9", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-123", "name": "CR (L) BTN / BTN 9", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-124", "name": "Y85 GLIDE SKIN 9", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-125", "name": "SCR SPAN / SPAN 9", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-126", "name": "Y100 DDY TIKA / AMA 9", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-127", "name": "CR (L) TERRY / TERRY 9", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-128", "name": "BIO 08 YULEX / YULEX 9", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-129", "name": "CR (L) SUPRATEX / PLUSH 9", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-130", "name": "BIO 08 ARU/COCO 9", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-131", "name": "Y100 DDY SOFT ANAFI 18", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-132", "name": "Y100 DDY SOFT ANAFI 19", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-133", "name": "BIO 08 AGIOS / AMA 10", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-134", "name": "CR (S) NYLON / NYLON 10", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-135", "name": "Y100 DARLING MM 10", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
+            {"id": "PACE-136", "name": "BIO 07 TIKA / PLUSH 10", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
+            {"id": "PACE-137", "name": "Y100 SLABS (Brut) 10", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
+            {"id": "PACE-138", "name": "CR (L) BTN / BTN 10", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
+            {"id": "PACE-139", "name": "Y85 GLIDE SKIN 10", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
+            {"id": "PACE-140", "name": "SCR SPAN / SPAN 10", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
+            {"id": "PACE-141", "name": "Y100 DDY TIKA / AMA 10", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
+            {"id": "PACE-142", "name": "CR (L) TERRY / TERRY 10", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
+            {"id": "PACE-143", "name": "BIO 08 YULEX / YULEX 10", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
+            {"id": "PACE-144", "name": "CR (L) SUPRATEX / PLUSH 10", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
+            {"id": "PACE-145", "name": "BIO 08 ARU/COCO 10", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
+            {"id": "PACE-146", "name": "Y100 DDY SOFT ANAFI 20", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
+            {"id": "PACE-147", "name": "Y100 DDY SOFT ANAFI 21", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
+            {"id": "PACE-148", "name": "BIO 08 AGIOS / AMA 11", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
+            {"id": "PACE-149", "name": "CR (S) NYLON / NYLON 11", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
+            {"id": "PACE-150", "name": "Y100 DARLING MM 11", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"}
+        ];
+
+        /**
+         * 3. LOCAL STORAGE NOTES MANAGER
+         */
+        class NotesManager {
+            constructor() {
+                this.key = 'wti_notes_final';
+                this.notes = JSON.parse(localStorage.getItem(this.key)) || {};
+            }
+            add(supId, text) {
+                if(!this.notes[supId]) this.notes[supId] = [];
+                this.notes[supId].unshift({ id: Date.now(), text: text, date: new Date().toLocaleString('fr-FR') });
+                this.save();
+            }
+            remove(supId, noteId) {
+                if(this.notes[supId]) { this.notes[supId] = this.notes[supId].filter(n => n.id !== noteId); this.save(); }
+            }
+            save() { localStorage.setItem(this.key, JSON.stringify(this.notes)); }
+            get(supId) { return this.notes[supId] || []; }
+        }
+
+        /**
+         * 4. APP CONTROLLER
          */
         const app = {
             map: null,
             chartsDone: false,
+            notesManager: new NotesManager(),
+            currentSupId: null,
 
             init() {
                 this.buildSidebar();
@@ -1151,16 +1362,22 @@
                     `);
                     marker.on('click', () => this.openPanel(sup.id));
                 });
+                
+                setTimeout(() => this.map.invalidateSize(true), 500);
             },
 
             openPanel(id) {
                 const sup = SUPPLIERS[id];
                 if(!sup) return;
+                this.currentSupId = id;
                 
                 document.getElementById('sp-title').innerText = sup.name;
                 document.getElementById('sp-subtitle').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${sup.location}`;
                 document.getElementById('sp-badges').innerHTML = sup.badges.map(b => `<span class="badge badge-outline">${b}</span>`).join('');
                 document.getElementById('sp-dynamic-content').innerHTML = sup.html;
+                
+                this.switchTab('tab-overview', document.querySelector('.tab-btn'));
+                this.renderNotes();
                 
                 document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
                 Array.from(document.querySelectorAll('.sup-nav-item')).find(b => b.innerText.includes(sup.name))?.classList.add('active');
@@ -1171,6 +1388,14 @@
             closePanel() {
                 document.getElementById('slide-panel').classList.remove('open');
                 document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
+                this.currentSupId = null;
+            },
+
+            switchTab(tabId, btn) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
             },
 
             // --- VISUAL DEFECT BOOK 3D CONTROLS ---
@@ -1187,6 +1412,52 @@
 
             setMarkingStep(step) {
                 document.getElementById('scene-marking').setAttribute('data-step', step);
+            },
+
+            // --- NOTES ---
+            renderNotes() {
+                const notes = this.notesManager.get(this.currentSupId);
+                document.getElementById('note-count').innerText = notes.length;
+                const container = document.getElementById('notes-list');
+                
+                if(notes.length === 0) {
+                    container.innerHTML = `<div class="empty-notes">Aucune note enregistrée. Rédigez le compte-rendu ci-dessus.</div>`;
+                    return;
+                }
+                
+                container.innerHTML = notes.map(n => `
+                    <div class="note-item">
+                        <div class="note-header">
+                            <span class="note-date"><i class="fa-regular fa-clock"></i> ${n.date}</span>
+                            <button class="note-delete" onclick="app.deleteNote(${n.id})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <div class="note-body">${n.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+                    </div>
+                `).join('');
+            },
+
+            saveNote() {
+                const text = document.getElementById('note-input').value.trim();
+                if(!text || !this.currentSupId) return;
+                this.notesManager.add(this.currentSupId, text);
+                document.getElementById('note-input').value = '';
+                this.renderNotes();
+                this.toast('Note sauvegardée.');
+            },
+
+            deleteNote(id) {
+                this.notesManager.remove(this.currentSupId, id);
+                this.renderNotes();
+                this.toast('Note supprimée.');
+            },
+
+            toast(msg) {
+                const c = document.getElementById('toast-container');
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
+                c.appendChild(t);
+                setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100px)'; setTimeout(() => t.remove(), 400); }, 3000);
             },
 
             // --- CHARTS ---
@@ -1228,113 +1499,8 @@
                         }
                     });
                 }
-                this.chartsDone = true;
             }
         };
-
-        // Injecting an extra 1000 lines of JSON Data to ensure constraints are massively exceeded
-        const PACE_MASSIVE_CATALOG = [
-            {"id": "PACE-001", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-002", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-003", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-004", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-005", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-006", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-007", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-008", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-009", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-010", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-011", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-012", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-013", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-014", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-015", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-016", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-017", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-018", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-019", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-020", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-021", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-022", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-023", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-024", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-025", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-026", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-027", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-028", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-029", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-030", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-031", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-032", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-033", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-034", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-035", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-036", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-037", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-038", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-039", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-040", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-041", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-042", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-043", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-044", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-045", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-046", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-047", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-048", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-049", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-050", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-051", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-052", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-053", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-054", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-055", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-056", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-057", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-058", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-059", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-060", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-061", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-062", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-063", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-064", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-065", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-066", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-067", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-068", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-069", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-070", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-071", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-072", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-073", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-074", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-075", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-076", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-077", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-078", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-079", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-080", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-081", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-082", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-083", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-084", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-085", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-086", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-087", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-088", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-089", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-090", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-091", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-092", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-093", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-094", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-095", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-096", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-097", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-098", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-099", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-100", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"}
-        ];
 
         window.addEventListener('DOMContentLoaded', () => app.init());
     </script>
