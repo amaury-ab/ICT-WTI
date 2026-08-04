@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WTI | Decathlon Component Hub</title>
+    <title>WTI | Supplier Quality & Network Hub</title>
     
-    <!-- Polices & Icônes -->
+    <!-- Polices & Icônes Premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Leaflet CSS (Map) -->
@@ -19,879 +19,235 @@
 
     <style>
         /* ==========================================================================
-           1. CSS VARIABLES & CORE DESIGN TOKENS
+           1. CSS VARIABLES & TOKENS (ULTRA MODERN DARK THEME)
            ========================================================================== */
         :root {
-            /* Couleurs de fond et surfaces */
-            --bg-base: #020203;
-            --bg-surface: #0a0a0c;
-            --bg-panel: rgba(18, 18, 22, 0.75);
-            --bg-gradient: radial-gradient(circle at 100% 0%, #161625, #020203 70%);
+            /* Backgrounds */
+            --bg-base: #050505;
+            --bg-surface: #0a0a0a;
+            --bg-panel: rgba(18, 18, 20, 0.65);
+            --bg-gradient: radial-gradient(circle at top right, #1a1a2e, #050505 60%);
             
-            /* Bordures et Glassmorphism */
-            --border-glass: rgba(255, 255, 255, 0.06);
-            --border-highlight: rgba(255, 255, 255, 0.15);
-            --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            /* Glassmorphism */
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
             
-            /* Typographie */
+            /* Text & Colors */
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-accent: #38bdf8;
-            
-            /* Couleurs Primaires */
-            --color-primary: #0284c7;
-            --color-primary-glow: rgba(2, 132, 199, 0.6);
-            --color-secondary: #8b5cf6;
+            --text-muted: #8b949e;
+            --color-primary: #3b82f6;
+            --color-primary-glow: rgba(59, 130, 246, 0.5);
             --color-accent: #0ea5e9;
+            --color-danger: #ef4444;
+            --color-danger-glow: rgba(239, 68, 68, 0.4);
+            --color-warning: #f59e0b;
+            --color-success: #10b981;
+            --color-purple: #8b5cf6;
             
-            /* Status Colors (Validation PACE) */
-            --stat-prod: #10b981; 
-            --stat-prod-bg: rgba(16, 185, 129, 0.12);
-            --stat-indus: #f59e0b; 
-            --stat-indus-bg: rgba(245, 158, 11, 0.12);
-            --stat-stop: #ef4444; 
-            --stat-stop-bg: rgba(239, 68, 68, 0.12);
-            --stat-dev: #6366f1; 
-            --stat-dev-bg: rgba(99, 102, 241, 0.12);
+            /* Typography */
+            --font-main: 'Outfit', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
             
-            /* Animations */
-            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-fast: all 0.2s ease-in-out;
+            /* Transitions */
+            --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* ==========================================================================
-           2. GLOBAL RESET & TYPOGRAPHY
+           2. GLOBAL RESET
            ========================================================================== */
-        *, *::before, *::after { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: var(--font-main);
             background-color: var(--bg-base);
             background-image: var(--bg-gradient);
-            background-attachment: fixed;
             color: var(--text-main);
             height: 100vh;
             display: flex;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        h1, h2, h3, h4, h5 { 
-            font-family: 'Space Grotesk', sans-serif; 
-            font-weight: 700; 
-            letter-spacing: -0.02em;
-        }
+        h1, h2, h3, h4, h5 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; }
 
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 
-        /* Scrollbar Personnalisée */
-        ::-webkit-scrollbar { 
-            width: 8px; 
-            height: 8px; 
-        }
-        ::-webkit-scrollbar-track { 
-            background: rgba(0, 0, 0, 0.2); 
-        }
-        ::-webkit-scrollbar-thumb { 
-            background: rgba(255, 255, 255, 0.1); 
-            border-radius: 10px; 
-        }
-        ::-webkit-scrollbar-thumb:hover { 
-            background: rgba(255, 255, 255, 0.25); 
-        }
+        .cite-tag { font-size: 0.65rem; color: var(--text-muted); opacity: 0.5; vertical-align: super; }
 
         /* ==========================================================================
-           3. UI COMPONENTS (GLASSMORPHISM & BOUTONS)
+           3. UI COMPONENTS
            ========================================================================== */
         .glass {
             background: var(--bg-panel);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
-            box-shadow: var(--shadow-glass);
+            box-shadow: var(--glass-shadow);
         }
 
         .btn {
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid var(--border-glass);
-            color: var(--text-main); 
-            padding: 12px 24px; 
-            border-radius: 10px;
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            font-weight: 600; 
-            font-size: 0.95rem;
-            cursor: pointer; 
-            transition: var(--transition-smooth); 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center;
-            gap: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            color: var(--text-main); padding: 12px 24px; border-radius: 10px;
+            font-family: var(--font-main); font-weight: 600; cursor: pointer; 
+            transition: var(--transition-smooth); display: inline-flex; align-items: center; gap: 8px;
         }
+        .btn:hover { background: rgba(255,255,255,0.1); border-color: var(--glass-highlight); transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); border: none; box-shadow: 0 4px 15px var(--color-primary-glow); }
+        .btn-primary:hover { background: linear-gradient(135deg, var(--color-accent), var(--color-primary)); box-shadow: 0 6px 25px var(--color-primary-glow); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: var(--color-danger); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 
-        .btn:hover { 
-            background: rgba(255, 255, 255, 0.08); 
-            border-color: var(--border-highlight); 
-            transform: translateY(-2px); 
-        }
-
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--color-primary), #0284c7);
-            border: none; 
-            box-shadow: 0 6px 20px var(--color-primary-glow); 
-            color: white;
-        }
-
-        .btn-primary:hover { 
-            background: linear-gradient(135deg, #0284c7, #0369a1);
-            box-shadow: 0 8px 25px var(--color-primary-glow); 
-            transform: translateY(-2px);
-        }
-
-        .badge {
-            padding: 6px 12px; 
-            border-radius: 8px; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .b-prod { background: var(--stat-prod-bg); color: var(--stat-prod); border: 1px solid rgba(16,185,129,0.3); }
-        .b-indus { background: var(--stat-indus-bg); color: var(--stat-indus); border: 1px solid rgba(245,158,11,0.3); }
-        .b-stop { background: var(--stat-stop-bg); color: var(--stat-stop); border: 1px solid rgba(239,68,68,0.3); }
-        .b-dev { background: var(--stat-dev-bg); color: var(--stat-dev); border: 1px solid rgba(99,102,241,0.3); }
-
-        .text-gradient {
-            background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid transparent; }
+        .b-danger { background: rgba(239,68,68,0.1); color: var(--color-danger); border-color: rgba(239,68,68,0.3); }
+        .b-warning { background: rgba(245,158,11,0.1); color: var(--color-warning); border-color: rgba(245,158,11,0.3); }
+        .b-success { background: rgba(16,185,129,0.1); color: var(--color-success); border-color: rgba(16,185,129,0.3); }
+        .b-info { background: rgba(59,130,246,0.1); color: var(--color-primary); border-color: rgba(59,130,246,0.3); }
 
         /* ==========================================================================
            4. SIDEBAR NAVIGATION
            ========================================================================== */
         .sidebar {
-            width: 300px; 
-            min-width: 300px; 
-            background: rgba(5, 5, 8, 0.85); 
-            border-right: 1px solid var(--border-glass);
-            display: flex; 
-            flex-direction: column; 
-            padding: 32px 20px; 
-            z-index: 100;
-            backdrop-filter: blur(10px);
+            width: 320px; background: rgba(5,5,5,0.8); border-right: 1px solid var(--glass-border);
+            display: flex; flex-direction: column; padding: 32px 24px; z-index: 100;
         }
-        
-        .logo-container { 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            margin-bottom: 48px; 
-            padding-left: 12px; 
-        }
-        
-        .logo-container i { 
-            font-size: 32px; 
-            color: var(--text-accent); 
-            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));
-        }
-        
-        .logo-container h2 { 
-            font-size: 2rem; 
-            letter-spacing: -1px; 
-            color: white;
-        }
+        .logo-area { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+        .logo-area i { font-size: 32px; color: var(--color-accent); filter: drop-shadow(0 0 15px var(--color-primary-glow)); }
+        .logo-area h2 { font-size: 2rem; color: white; }
 
-        .nav-group { 
-            margin-bottom: 32px; 
-        }
-        
-        .nav-title { 
-            font-size: 0.75rem; 
-            color: var(--text-muted); 
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
-            margin-bottom: 16px; 
-            padding-left: 12px; 
-            font-weight: 700; 
-        }
-        
+        .nav-section { margin-bottom: 32px; }
+        .nav-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; font-weight: 700; padding-left: 12px; }
         .nav-item {
-            width: 100%; 
-            background: transparent; 
-            border: none; 
-            color: var(--text-muted); 
-            text-align: left;
-            padding: 14px 16px; 
-            margin-bottom: 6px; 
-            border-radius: 12px; 
-            font-size: 1rem; 
-            font-weight: 500;
-            cursor: pointer; 
-            transition: var(--transition-smooth); 
-            display: flex; 
-            align-items: center; 
-            gap: 16px;
-            position: relative;
+            width: 100%; background: transparent; border: none; color: var(--text-muted);
+            text-align: left; padding: 14px 16px; margin-bottom: 6px; border-radius: 12px;
+            font-size: 1rem; font-weight: 500; cursor: pointer; transition: var(--transition-smooth);
+            display: flex; align-items: center; gap: 16px; position: relative;
         }
+        .nav-item i { width: 24px; text-align: center; font-size: 1.2rem; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: white; transform: translateX(5px); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(59,130,246,0.15), transparent); color: var(--color-accent); font-weight: 700; border-left: 3px solid var(--color-accent); }
         
-        .nav-item i { 
-            width: 24px; 
-            text-align: center; 
-            font-size: 1.2rem; 
-            transition: var(--transition-fast);
+        .supplier-list { display: flex; flex-direction: column; gap: 4px; padding-left: 12px; }
+        .sup-btn {
+            background: transparent; border: none; color: var(--text-muted); text-align: left;
+            padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 500;
         }
-        
-        .nav-item:hover { 
-            background: rgba(255, 255, 255, 0.04); 
-            color: var(--text-main); 
-            transform: translateX(4px);
-        }
-        
-        .nav-item.active { 
-            background: rgba(14, 165, 233, 0.1); 
-            color: var(--text-accent); 
-            font-weight: 700; 
-            border: 1px solid rgba(14, 165, 233, 0.2);
-        }
-        
-        .nav-item.active i {
-            filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.6));
-        }
+        .sup-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .sup-btn i { font-size: 0.5rem; color: var(--color-primary); }
 
-        .user-profile {
-            margin-top: auto; 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02); 
-            border: 1px solid var(--border-glass); 
-            border-radius: 16px;
-            transition: var(--transition-smooth);
-        }
-        
-        .user-profile:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--border-highlight);
-        }
-        
-        .avatar { 
-            width: 48px; 
-            height: 48px; 
-            border-radius: 50%; 
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 800; 
-            font-size: 1.1rem;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        
+        .user-card { margin-top: auto; display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 16px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-purple)); display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 1.1rem;}
         .user-info p { margin: 0; }
         .user-info .name { font-size: 0.95rem; font-weight: 700; color: white; }
         .user-info .role { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
         /* ==========================================================================
-           5. MAIN CONTENT LAYOUT
+           5. MAIN CONTENT & MAP AREA
            ========================================================================== */
-        .main-wrapper { 
-            flex-grow: 1; 
-            position: relative; 
-            overflow-y: auto; 
-            padding: 0; 
-            scroll-behavior: smooth;
-        }
+        .main-wrapper { flex-grow: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* View Router system */
-        .view-section { 
-            display: none; 
-            opacity: 0; 
-            padding: 48px; 
-            animation: fadeView 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        /* Map Container occupies full space behind everything */
+        #network-map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        /* Floating Header over the map */
+        .floating-header {
+            position: absolute; top: 32px; left: 32px; z-index: 10;
+            display: flex; flex-direction: column; gap: 12px; pointer-events: none;
         }
-        .view-section.active { display: block; }
-        @keyframes fadeView { 
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        .floating-header h1 { font-size: 3.5rem; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.8); pointer-events: auto; }
+        .floating-header p { font-size: 1.2rem; color: rgba(255,255,255,0.8); text-shadow: 0 2px 10px rgba(0,0,0,0.8); pointer-events: auto; }
 
-        .page-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: flex-end; 
-            margin-bottom: 48px; 
+        /* Custom Leaflet Styling */
+        .leaflet-container { background: #000; font-family: var(--font-main); }
+        .leaflet-popup-content-wrapper { background: rgba(10,10,12,0.95); backdrop-filter: blur(15px); color: white; border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); padding: 5px; }
+        .leaflet-popup-tip { background: rgba(10,10,12,0.95); border: 1px solid var(--glass-border); }
+        .map-pin {
+            background: var(--color-primary); border: 3px solid white; border-radius: 50%;
+            box-shadow: 0 0 0 rgba(59,130,246,0.8); animation: radarPulse 2.5s infinite; cursor: pointer; transition: 0.3s;
         }
-        
-        .page-header h1 { 
-            font-size: 3rem; 
-            margin-bottom: 12px; 
-            color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        
-        .page-header p { 
-            color: var(--text-muted); 
-            font-size: 1.15rem; 
-            max-width: 600px;
-            line-height: 1.5;
-        }
+        .map-pin:hover { transform: scale(1.2); }
+        .map-pin.alert { background: var(--color-danger); box-shadow: 0 0 0 rgba(239,68,68,0.8); animation: radarPulseAlert 2s infinite; }
+        @keyframes radarPulse { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.8); } 70% { box-shadow: 0 0 0 25px rgba(59,130,246,0); } 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); } }
+        @keyframes radarPulseAlert { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.8); } 70% { box-shadow: 0 0 0 25px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
         /* ==========================================================================
-           6. DASHBOARD & KPIS
+           6. SLIDE-OVER PANELS (SUPPLIER DETAILS & ANALYTICS)
            ========================================================================== */
-        .kpi-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
-            gap: 24px; 
-            margin-bottom: 48px; 
+        .slide-panel {
+            position: absolute; top: 0; right: -800px; width: 750px; height: 100%;
+            background: rgba(8, 8, 10, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border); z-index: 500;
+            transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.5);
         }
+        .slide-panel.open { right: 0; }
         
-        .kpi-card { 
-            padding: 32px 24px; 
-            position: relative; 
-            overflow: hidden; 
-            border-left: 4px solid var(--color-primary); 
-            transition: var(--transition-smooth);
+        .sp-header {
+            padding: 40px; border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: flex-start;
         }
-        
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            border-left-color: var(--color-secondary);
+        .sp-header h2 { font-size: 2.8rem; color: white; margin-bottom: 8px; }
+        .sp-loc { color: var(--color-accent); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .close-btn {
+            background: rgba(255,255,255,0.05); border: none; width: 44px; height: 44px; border-radius: 50%;
+            color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;
         }
-        
-        .kpi-card::before { 
-            content: ''; 
-            position: absolute; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(90deg, rgba(2, 132, 199, 0.05), transparent); 
-            pointer-events: none;
-        }
-        
-        .kpi-card h4 { 
-            color: var(--text-muted); 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            margin-bottom: 16px; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            font-weight: 700;
-        }
-        
-        .kpi-card .value { 
-            font-size: 3.5rem; 
-            font-weight: 800; 
-            color: white; 
-            line-height: 1; 
-            margin-bottom: 12px; 
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        
-        .kpi-card .trend { 
-            font-size: 0.9rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            font-weight: 600;
-        }
-        
-        .t-up { color: var(--stat-prod); } 
-        .t-down { color: var(--stat-stop); }
-        
-        .kpi-icon { 
-            position: absolute; 
-            right: -10px; 
-            bottom: -10px; 
-            font-size: 7rem; 
-            color: rgba(255,255,255,0.02); 
-            transform: rotate(-15deg);
-            transition: var(--transition-smooth);
-        }
-        
-        .kpi-card:hover .kpi-icon {
-            transform: rotate(0deg) scale(1.1);
-            color: rgba(255,255,255,0.04);
-        }
+        .close-btn:hover { background: var(--color-danger); transform: rotate(90deg); }
 
-        .charts-grid { 
-            display: grid; 
-            grid-template-columns: 2fr 1fr; 
-            gap: 32px; 
-            margin-bottom: 48px; 
-        }
+        .sp-content { padding: 40px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 32px; }
         
-        .chart-box { 
-            padding: 32px; 
-            height: 450px; 
-            display: flex; 
-            flex-direction: column; 
-        }
+        /* Card Data inside Panel */
+        .data-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; }
+        .data-card h3 { font-size: 1.3rem; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; color: white; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
+        .data-card p { font-size: 1rem; color: #cbd5e1; line-height: 1.7; margin-bottom: 16px; }
         
-        .chart-box h3 { 
-            font-size: 1.25rem; 
-            margin-bottom: 24px; 
-            color: white; 
-            font-weight: 700;
+        /* Alert/Claim Box */
+        .alert-box {
+            background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-left: 4px solid var(--color-danger);
+            padding: 24px; border-radius: 0 12px 12px 0; margin-bottom: 20px;
         }
-        
-        .canvas-container { 
-            flex-grow: 1; 
-            position: relative; 
-            width: 100%;
+        .alert-box h4 { color: var(--color-danger); font-size: 1.2rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .alert-box ul { padding-left: 20px; color: #f8fafc; font-size: 0.95rem; line-height: 1.8; }
+        .alert-box li { margin-bottom: 8px; }
+
+        /* Success/Info Box */
+        .info-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2); border-left: 4px solid var(--color-primary); padding: 24px; border-radius: 0 12px 12px 0; }
+        .info-box h4 { color: var(--color-primary); font-size: 1.1rem; margin-bottom: 12px; }
+
+        /* KPI Grid inside panel */
+        .mini-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .mini-kpi { background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; border: 1px solid var(--glass-border); }
+        .mini-kpi span { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+        .mini-kpi strong { font-size: 1.5rem; color: white; font-family: var(--font-display); }
+
+        /* Full Screen Overlay Analytics */
+        .analytics-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base); z-index: 400; padding: 48px;
+            display: none; opacity: 0; overflow-y: auto;
+            animation: fadeView 0.5s forwards;
         }
+        .analytics-overlay.active { display: block; }
+        @keyframes fadeView { to { opacity: 1; } }
 
         /* ==========================================================================
-           7. CATALOG TABLE (DATATABLES)
+           7. CHARTS & GLOBAL KPI GRID
            ========================================================================== */
-        .toolbar { 
-            display: flex; 
-            gap: 16px; 
-            margin-bottom: 24px; 
-            flex-wrap: wrap;
-        }
+        .global-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 48px; }
+        .gkpi-card { padding: 32px; position: relative; overflow: hidden; }
+        .gkpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--color-primary); }
+        .gkpi-card h4 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+        .gkpi-card .val { font-size: 4rem; font-weight: 800; color: white; line-height: 1; font-family: var(--font-display); }
         
-        .search-wrapper { 
-            position: relative; 
-            flex-grow: 1; 
-            min-width: 300px; 
-        }
-        
-        .search-wrapper i { 
-            position: absolute; 
-            left: 20px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--text-muted); 
-            font-size: 1.2rem;
-        }
-        
-        .search-wrapper input {
-            width: 100%; 
-            padding: 16px 20px 16px 54px; 
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border-glass); 
-            border-radius: 12px; 
-            color: white;
-            font-size: 1rem; 
-            outline: none; 
-            transition: var(--transition-smooth);
-            font-family: inherit;
-        }
-        
-        .search-wrapper input:focus { 
-            border-color: var(--color-primary); 
-            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.2); 
-            background: rgba(0,0,0,0.6);
-        }
-
-        .table-responsive { 
-            width: 100%; 
-            overflow-x: auto; 
-            border-radius: 16px; 
-            border: 1px solid var(--border-glass); 
-            background: rgba(0,0,0,0.3);
-        }
-        
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            text-align: left; 
-        }
-        
-        th {
-            background: rgba(0,0,0,0.8); 
-            padding: 20px 24px; 
-            font-size: 0.85rem; 
-            color: var(--text-muted);
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            border-bottom: 1px solid var(--border-glass);
-            white-space: nowrap;
-        }
-        
-        td { 
-            padding: 20px 24px; 
-            border-bottom: 1px solid rgba(255,255,255,0.03); 
-            font-size: 0.95rem; 
-            vertical-align: middle; 
-        }
-        
-        tr { transition: var(--transition-fast); }
-        tr:hover { background: rgba(255,255,255,0.06); }
-        
-        .cpt-name { 
-            font-weight: 700; 
-            color: white; 
-            display: block; 
-            font-size: 1.1rem; 
-            margin-bottom: 6px; 
-        }
-        
-        .cpt-sub { 
-            font-size: 0.85rem; 
-            color: var(--text-muted); 
-            font-family: monospace;
-        }
-
-        .pagination { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 24px 0 0 0; 
-        }
-        
-        .page-controls { 
-            display: flex; 
-            gap: 12px; 
-        }
-        
-        .page-btn {
-            background: var(--bg-panel); 
-            border: 1px solid var(--border-glass); 
-            color: white;
-            width: 44px; 
-            height: 44px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-        
-        .page-btn:hover:not(:disabled) { 
-            background: var(--color-primary); 
-            border-color: var(--color-primary);
-        }
-        
-        .page-btn:disabled { 
-            opacity: 0.3; 
-            cursor: not-allowed; 
-        }
-
-        /* ==========================================================================
-           8. MAP LEAFLET & MARKERS
-           ========================================================================== */
-        .map-section { 
-            position: relative; 
-            width: 100%; 
-            height: 75vh; 
-            border-radius: 20px; 
-            border: 1px solid var(--border-glass); 
-            overflow: hidden; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        
-        #app-map { width: 100%; height: 100%; z-index: 1; }
-        
-        .leaflet-container { 
-            background: #050505; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
-        
-        .leaflet-popup-content-wrapper { 
-            background: rgba(15, 15, 20, 0.95); 
-            backdrop-filter: blur(10px); 
-            color: white; 
-            border: 1px solid var(--border-glass); 
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        
-        .leaflet-popup-tip { 
-            background: rgba(15, 15, 20, 0.95); 
-            border: 1px solid var(--border-glass); 
-        }
-        
-        .custom-pin {
-            background: var(--color-primary); 
-            border: 3px solid #fff; 
-            border-radius: 50%;
-            box-shadow: 0 0 0 rgba(2, 132, 199, 0.8); 
-            animation: pulseMap 2s infinite; 
-            cursor: pointer;
-        }
-        
-        @keyframes pulseMap { 
-            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.8); } 
-            70% { box-shadow: 0 0 0 20px rgba(14, 165, 233, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } 
-        }
-
-        /* ==========================================================================
-           9. SUPPLIER DETAIL PAGES (Dynamiques)
-           ========================================================================== */
-        .supplier-view { padding: 48px; }
-        
-        .sup-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 40px; 
-            border-bottom: 1px solid var(--border-glass); 
-            padding-bottom: 32px; 
-        }
-        
-        .sup-header h1 { 
-            font-size: 3.5rem; 
-            margin-bottom: 12px; 
-            color: white; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .sup-location { 
-            color: var(--text-accent); 
-            font-weight: 600; 
-            font-size: 1.2rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
-        
-        .sup-grid { 
-            display: grid; 
-            grid-template-columns: 2fr 1fr; 
-            gap: 32px; 
-        }
-        
-        .sup-panel { padding: 32px; }
-        
-        .sup-panel h3 { 
-            font-size: 1.4rem; 
-            margin-bottom: 24px; 
-            color: white; 
-            border-bottom: 1px solid var(--border-glass); 
-            padding-bottom: 16px; 
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .claim-alert {
-            background: rgba(239, 68, 68, 0.08); 
-            border-left: 4px solid #ef4444; 
-            padding: 24px;
-            border-radius: 0 12px 12px 0; 
-            margin-bottom: 24px;
-        }
-        
-        .claim-alert h4 { color: #ef4444; margin-bottom: 12px; font-size: 1.1rem; }
-        .claim-alert p { font-size: 0.95rem; line-height: 1.7; color: #f8fafc; }
-
-        .rule-box { 
-            background: rgba(255,255,255,0.02); 
-            border: 1px dashed rgba(255,255,255,0.2); 
-            padding: 24px; 
-            border-radius: 12px; 
-            margin-bottom: 24px; 
-        }
-        
-        .rule-box h4 { 
-            color: var(--text-accent); 
-            margin-bottom: 12px; 
-            font-family: 'Plus Jakarta Sans'; 
-            font-weight: 700; 
-            font-size: 1.1rem;
-        }
-        
-        .rule-box p { 
-            font-size: 0.95rem; 
-            color: #cbd5e1; 
-            line-height: 1.7; 
-        }
-        
-        .data-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .data-list li {
-            background: rgba(0,0,0,0.3);
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-glass);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .data-list li span:first-child { color: var(--text-muted); font-size: 0.9rem; }
-        .data-list li span:last-child { color: white; font-weight: 700; font-family: monospace; font-size: 1rem; }
-
-        /* ==========================================================================
-           10. 3D PROCESS ANIMATIONS (VALUE CHAIN)
-           ========================================================================== */
-        .process-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); 
-            gap: 40px; 
-        }
-        
-        .process-card { 
-            padding: 40px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            text-align: center; 
-            transition: var(--transition-smooth);
-        }
-        
-        .process-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        
-        .process-card h2 { font-size: 1.8rem; margin-bottom: 20px; color: white; }
-        .process-card p { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 32px; }
-        
-        .scene { 
-            width: 250px; 
-            height: 250px; 
-            perspective: 1200px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            margin-bottom: 40px; 
-        }
-        
-        /* Foaming Animation */
-        .vat { 
-            width: 160px; 
-            height: 160px; 
-            border-radius: 50%; 
-            border: 6px solid #3f3f46; 
-            background: rgba(0,0,0,0.6); 
-            position: relative; 
-            overflow: hidden; 
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-        }
-        
-        .liquid { 
-            position: absolute; 
-            bottom: 0; 
-            width: 100%; 
-            height: 65%; 
-            background: rgba(2, 132, 199, 0.4); 
-            border-top: 2px solid var(--color-primary); 
-        }
-        
-        .bubble { 
-            position: absolute; 
-            background: var(--color-primary); 
-            border-radius: 50%; 
-            bottom: -20px; 
-            animation: rise 2.5s infinite ease-in; 
-            opacity: 0; 
-            box-shadow: 0 0 10px var(--color-primary-glow);
-        }
-        
-        @keyframes rise { 
-            0% { transform: translateY(0) scale(0.5); opacity: 1; } 
-            100% { transform: translateY(-150px) scale(1.5); opacity: 0; } 
-        }
-        
-        /* Slicing 3D Animation */
-        .slicer-wrapper { 
-            transform-style: preserve-3d; 
-            transform: rotateX(60deg) rotateZ(45deg); 
-            position: relative; 
-        }
-        
-        .slab-block { 
-            width: 140px; 
-            height: 140px; 
-            background: #27272a; 
-            border: 2px solid #52525b; 
-            transform: translateZ(0); 
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.5);
-        }
-        
-        .blade { 
-            width: 180px; 
-            height: 4px; 
-            background: #cbd5e1; 
-            position: absolute; 
-            top: 70px; 
-            left: -20px; 
-            transform: translateZ(20px); 
-            box-shadow: 0 0 15px white; 
-            animation: sliceMove 2s infinite ease-in-out; 
-        }
-        
-        .sheet { 
-            width: 140px; 
-            height: 140px; 
-            background: #3f3f46; 
-            border: 2px solid #71717a; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            transform: translateZ(20px); 
-            animation: sheetPeel 2s infinite ease-in-out; 
-        }
-        
-        @keyframes sliceMove { 0% { top: 140px; } 100% { top: -4px; } }
-        @keyframes sheetPeel { 
-            0% { transform: translateZ(20px) translateX(0); opacity: 1; } 
-            70% { transform: translateZ(20px) translateX(90px); opacity: 0; } 
-            100% { opacity: 0; }
-        }
-
-        /* Lamination 3D Animation */
-        .lam-wrapper { 
-            transform-style: preserve-3d; 
-            transform: rotateX(60deg) rotateZ(30deg); 
-            position: relative; 
-        }
-        
-        .lam-layer { 
-            width: 140px; 
-            height: 140px; 
-            position: absolute; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            animation: laminate 3s infinite alternate ease-in-out; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        }
-        
-        .ll-1 { background: rgba(16, 185, 129, 0.7); transform: translateZ(0px); animation: none; }
-        .ll-2 { background: rgba(39, 39, 42, 0.95); transform: translateZ(50px); animation-name: lamMid; }
-        .ll-3 { background: rgba(2, 132, 199, 0.7); transform: translateZ(100px); }
-        
-        @keyframes laminate { 0% { transform: translateZ(100px); } 100% { transform: translateZ(4px); } }
-        @keyframes lamMid { 0% { transform: translateZ(50px); } 100% { transform: translateZ(2px); } }
-
-        /* Loader Sync */
-        .sync-container { display: flex; flex-direction: column; align-items: flex-end; }
-        .progress-bar { 
-            width: 200px; 
-            height: 6px; 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 3px; 
-            overflow: hidden; 
-            margin-top: 12px; 
-            display: none; 
-        }
-        .progress-fill { 
-            width: 0%; 
-            height: 100%; 
-            background: var(--color-primary); 
-            transition: width 0.2s; 
-            box-shadow: 0 0 10px var(--color-primary);
-        }
+        .dash-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .chart-wrapper { padding: 32px; height: 450px; display: flex; flex-direction: column; }
+        .chart-wrapper h3 { font-size: 1.4rem; margin-bottom: 24px; color: white; }
     </style>
 </head>
 <body>
@@ -900,739 +256,417 @@
          SIDEBAR NAVIGATION
          ========================================================================== -->
     <aside class="sidebar">
-        <div class="logo-container">
-            <i class="fa-solid fa-water"></i>
+        <div class="logo-area">
+            <i class="fa-solid fa-network-wired"></i>
             <h2>WTI Hub</h2>
         </div>
         
-        <div class="nav-group">
-            <div class="nav-title">Menu Principal</div>
-            <button class="nav-item active" onclick="app.route('dashboard')"><i class="fa-solid fa-chart-pie"></i> Analytics & KPI</button>
-            <button class="nav-item" onclick="app.route('catalog')"><i class="fa-solid fa-database"></i> Base PACE (PLM)</button>
-            <button class="nav-item" onclick="app.route('process')"><i class="fa-solid fa-gears"></i> Value Chain (3D)</button>
-        </div>
-        
-        <div class="nav-group">
-            <div class="nav-title">Réseau Asie (Map)</div>
-            <button class="nav-item" onclick="app.route('map')"><i class="fa-solid fa-map-location-dot"></i> Cartographie Globale</button>
+        <div class="nav-section">
+            <div class="nav-label">Vue Réseau</div>
+            <button class="nav-item active" onclick="app.showMap()"><i class="fa-solid fa-earth-asia"></i> Map Industrielle</button>
+            <button class="nav-item" onclick="app.showAnalytics()"><i class="fa-solid fa-chart-line"></i> Dashboard Qualité</button>
         </div>
 
-        <div class="nav-group" id="nav-suppliers" style="display: none; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;">
-            <div class="nav-title">Usines Détaillées</div>
-            <button class="nav-item" onclick="app.route('sup-lehung')"><i class="fa-solid fa-industry"></i> Le Hung</button>
-            <button class="nav-item" onclick="app.route('sup-namchau')"><i class="fa-solid fa-industry"></i> Nam Chau</button>
-            <button class="nav-item" onclick="app.route('sup-doni')"><i class="fa-solid fa-industry"></i> Doni</button>
-            <button class="nav-item" onclick="app.route('sup-pipattana')"><i class="fa-solid fa-industry"></i> PI Pattana</button>
-            <button class="nav-item" onclick="app.route('sup-scavi')"><i class="fa-solid fa-industry"></i> Scavi (Hué)</button>
-            <button class="nav-item" onclick="app.route('sup-daluen')"><i class="fa-solid fa-industry"></i> Daluen</button>
+        <div class="nav-section">
+            <div class="nav-label">Panel Fournisseurs Asie</div>
+            <div class="supplier-list">
+                <button class="sup-btn" onclick="app.openSupplier('lehung')"><i class="fa-solid fa-circle" style="color:var(--color-danger);"></i> Le Hung (Claim)</button>
+                <button class="sup-btn" onclick="app.openSupplier('namchau')"><i class="fa-solid fa-circle" style="color:var(--color-warning);"></i> Nam Chau</button>
+                <button class="sup-btn" onclick="app.openSupplier('doni')"><i class="fa-solid fa-circle" style="color:var(--color-warning);"></i> Doni</button>
+                <button class="sup-btn" onclick="app.openSupplier('pipattana')"><i class="fa-solid fa-circle" style="color:var(--color-success);"></i> PI Pattana</button>
+                <button class="sup-btn" onclick="app.openSupplier('daluen')"><i class="fa-solid fa-circle" style="color:var(--color-success);"></i> Daluen</button>
+                <button class="sup-btn" onclick="app.openSupplier('birong')"><i class="fa-solid fa-circle" style="color:var(--color-danger);"></i> Birong (Nouveau)</button>
+            </div>
         </div>
 
-        <div class="user-profile">
+        <div class="user-card">
             <div class="avatar">AB</div>
             <div class="user-info">
                 <p class="name">Amaury A-B.</p>
-                <p class="role">Ingénieur ICT</p>
+                <p class="role">Ingénieur ICT - WTI</p>
             </div>
-            <i class="fa-solid fa-ellipsis-vertical" style="margin-left: auto; color: var(--text-muted); cursor: pointer; padding: 10px;"></i>
         </div>
     </aside>
 
     <!-- ==========================================================================
-         MAIN CONTENT WRAPPER
+         MAIN CONTENT AREA
          ========================================================================== -->
     <main class="main-wrapper">
         
-        <!-- SECTION 1: DASHBOARD ANALYTICS -->
-        <section id="dashboard" class="view-section active">
-            <div class="page-header">
+        <!-- MAIN VIEW: LEAFLET MAP -->
+        <div class="floating-header" id="map-header">
+            <h1>Supply Chain & Qualité</h1>
+            <p>Cliquez sur un marqueur pour analyser les audits (Visual Defect Book, Claims, Qualité)[cite: 4, 5, 6, 7].</p>
+            <div style="display: flex; gap: 15px; margin-top: 15px; pointer-events: auto;">
+                <span class="badge b-danger"><i class="fa-solid fa-triangle-exclamation"></i> Action Requise</span>
+                <span class="badge b-warning"><i class="fa-solid fa-eye"></i> Audit en cours</span>
+                <span class="badge b-success"><i class="fa-solid fa-check"></i> Conforme</span>
+            </div>
+        </div>
+        <div id="network-map"></div>
+
+        <!-- SLIDE-OVER: SUPPLIER DETAILS (Dynamically Filled) -->
+        <div class="slide-panel" id="supplier-panel">
+            <div class="sp-header">
                 <div>
-                    <h1>Dashboard WTI</h1>
-                    <p>Supervision mondiale des composants, performance industrielle et transition écologique.</p>
+                    <h2 id="sp-name">Nom du Fournisseur</h2>
+                    <p class="sp-loc" id="sp-loc"><i class="fa-solid fa-location-dot"></i> Localisation</p>
                 </div>
-                <div class="sync-container">
-                    <button class="btn btn-primary" onclick="app.syncPace()" id="btn-sync" style="width: 200px;">
-                        <i class="fa-solid fa-rotate"></i> Synchroniser PACE
-                    </button>
-                    <div class="progress-bar" id="sync-progress"><div class="progress-fill" id="sync-fill"></div></div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;" id="sync-time">Dernière mise à jour: 08:00</p>
-                </div>
+                <button class="close-btn" onclick="app.closeSupplier()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <div class="kpi-grid">
-                <div class="kpi-card glass">
-                    <i class="fa-solid fa-leaf kpi-icon"></i>
-                    <h4>Transition Natural Rubber</h4>
-                    <p class="value">100<span style="font-size: 1.8rem; color:var(--text-muted);">%</span></p>
-                    <p class="trend t-up"><i class="fa-solid fa-bullseye"></i> Objectif Stratégique 2030</p>
-                </div>
-                <div class="kpi-card glass">
-                    <i class="fa-solid fa-database kpi-icon"></i>
-                    <h4>Base de Données PACE</h4>
-                    <p class="value" id="kpi-count">...</p>
-                    <p class="trend"><i class="fa-solid fa-check-circle"></i> Composants MTSR Référencés</p>
-                </div>
-                <div class="kpi-card glass" style="border-left-color: var(--stat-stop);">
-                    <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
-                    <h4>Taux de Rejet (Slicing)</h4>
-                    <p class="value" style="color: var(--stat-stop);">13.5<span style="font-size: 1.8rem;">%</span></p>
-                    <p class="trend t-down"><i class="fa-solid fa-file-contract"></i> Standard Dérogué 2024</p>
-                </div>
-                <div class="kpi-card glass" style="border-left-color: var(--color-secondary);">
-                    <i class="fa-solid fa-industry kpi-icon"></i>
-                    <h4>Empreinte Industrielle</h4>
-                    <p class="value">8</p>
-                    <p class="trend"><i class="fa-solid fa-earth-asia"></i> Usines Actives en Asie</p>
-                </div>
+            <div class="sp-content" id="sp-content">
+                <!-- Injected via JavaScript based on selection -->
             </div>
+        </div>
 
-            <div class="charts-grid">
-                <div class="chart-box glass">
-                    <h3>Répartition par Technologie de Mousse</h3>
-                    <div class="canvas-container"><canvas id="barChart"></canvas></div>
-                </div>
-                <div class="chart-box glass">
-                    <h3>Statuts d'Homologation PLM</h3>
-                    <div class="canvas-container"><canvas id="doughnutChart"></canvas></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: CATALOGUE PACE (DATATABLE) -->
-        <section id="catalog" class="view-section">
-            <div class="page-header">
+        <!-- FULL OVERLAY: ANALYTICS DASHBOARD -->
+        <div class="analytics-overlay" id="analytics-view">
+            <div class="page-header" style="margin-bottom: 60px;">
                 <div>
-                    <h1>Database PACE</h1>
-                    <p>Fiches MTSR, matériaux, nomenclatures et statuts d'homologation en temps réel.</p>
+                    <h1>Dashboard WTI Qualité</h1>
+                    <p>Synthèse des litiges financiers et du Visual Defect Book[cite: 4, 5].</p>
                 </div>
-                <button class="btn"><i class="fa-solid fa-file-csv"></i> Exporter CSV</button>
+                <button class="btn btn-primary" onclick="app.showMap()"><i class="fa-solid fa-map"></i> Retour à la Carte</button>
             </div>
 
-            <div class="glass" style="padding: 32px;">
-                <div class="toolbar">
-                    <div class="search-wrapper">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="searchInput" placeholder="Rechercher par référence, code PACE, usine ou textile..." onkeyup="app.filterTable()">
-                    </div>
+            <div class="global-kpi-grid">
+                <div class="gkpi-card glass" style="border-top-color: var(--color-danger);">
+                    <h4>Total Claims Slicing (Q1 2026)</h4>
+                    <p class="val" style="color: var(--color-danger);">$48,321<span class="cite-tag"></span></p>
+                    <p style="color: var(--text-muted); margin-top: 15px;">Imputé à 90% sur Le Hung / 10% PI Pattana[cite: 4].</p>
                 </div>
+                <div class="gkpi-card glass" style="border-top-color: var(--color-warning);">
+                    <h4>Taux Rejet Cible (Slicing)</h4>
+                    <p class="val" style="color: var(--color-warning);">13.5%</p>
+                    <p style="color: var(--text-muted); margin-top: 15px;">Standard Dérogué (Evite +138% coût FG).</p>
+                </div>
+                <div class="gkpi-card glass" style="border-top-color: var(--color-primary);">
+                    <h4>Défauts Priorisés (Defect Book)</h4>
+                    <p class="val">6<span class="cite-tag">[cite: 5]</span></p>
+                    <p style="color: var(--text-muted); margin-top: 15px;">Stripes, Folding marks, Bow&Skew, Wave, Blade[cite: 5].</p>
+                </div>
+            </div>
 
-                <div class="table-responsive">
-                    <table id="cptTable">
-                        <thead>
-                            <tr>
-                                <th>Code PACE / Référence</th>
-                                <th>Typologie Mousse</th>
-                                <th>Complexe Textile (In / Out)</th>
-                                <th>Épaisseur</th>
-                                <th>Fournisseur Asie</th>
-                                <th>Empreinte CO2</th>
-                                <th>Statut PLM</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- Rempli par JavaScript -->
-                        </tbody>
-                    </table>
+            <div class="dash-charts">
+                <div class="chart-wrapper glass">
+                    <h3>Répartition des Coûts du Claim (Jan-Apr 2026)</h3>
+                    <div class="canvas-container"><canvas id="claimChart"></canvas></div>
                 </div>
-                
-                <div class="pagination">
-                    <p id="pageInfo" style="color: var(--text-muted); font-size: 0.95rem; font-weight: 500;"></p>
-                    <div class="page-controls">
-                        <button class="page-btn" id="btnPrev" onclick="app.changePage(-1)"><i class="fa-solid fa-arrow-left"></i></button>
-                        <button class="page-btn" id="btnNext" onclick="app.changePage(1)"><i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
+                <div class="chart-wrapper glass">
+                    <h3>Matrice d'Évaluation Fournisseurs (Risque Qualité)</h3>
+                    <div class="canvas-container"><canvas id="radarChart"></canvas></div>
                 </div>
             </div>
-        </section>
-
-        <!-- SECTION 3: MAP GLOBALE (LEAFLET) -->
-        <section id="map" class="view-section">
-            <div class="page-header">
-                <div>
-                    <h1>Cartographie Industrielle</h1>
-                    <p>Cliquez sur un marqueur pour ouvrir le rapport d'audit et les données détaillées de l'usine.</p>
-                </div>
-            </div>
-            
-            <div class="map-section glass">
-                <div id="app-map"></div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: VALUE CHAIN 3D -->
-        <section id="process" class="view-section">
-            <div class="page-header">
-                <div>
-                    <h1>Value Chain (Processus WTI)</h1>
-                    <p>Visualisation des étapes d'ingénierie et des standards d'assemblage (Basic of Neoprene).</p>
-                </div>
-            </div>
-            
-            <div class="process-grid">
-                <!-- Foaming -->
-                <div class="process-card glass">
-                    <div class="scene">
-                        <div class="vat">
-                            <div class="liquid"></div>
-                            <div class="bubble" style="width:20px; height:20px; left:40px; animation-duration:2.2s;"></div>
-                            <div class="bubble" style="width:30px; height:30px; left:80px; animation-duration:2.8s; animation-delay:0.3s;"></div>
-                            <div class="bubble" style="width:15px; height:15px; left:120px; animation-duration:1.8s; animation-delay:0.8s;"></div>
-                        </div>
-                    </div>
-                    <h2>1. Formulation & Moussage</h2>
-                    <p>Mélange du Natural Rubber (Yulex) avec le Carbon Black. La vulcanisation sous haute pression et température permet de créer les blocs bruts (Slabs) de 30mm d'épaisseur.</p>
-                    <div style="display:flex; gap:10px;">
-                        <span class="badge b-dev">PI Pattana</span>
-                        <span class="badge b-dev">Nam Liong</span>
-                    </div>
-                </div>
-
-                <!-- Slicing -->
-                <div class="process-card glass">
-                    <div class="scene">
-                        <div class="slicer-wrapper">
-                            <div class="slab-block"></div>
-                            <div class="blade"></div>
-                            <div class="sheet"></div>
-                        </div>
-                    </div>
-                    <h2>2. Tranchage (Slicing)</h2>
-                    <p>Découpe horizontale des Slabs en feuilles très minces (1.5mm à 7.0mm). C'est l'étape la plus critique, génératrice des défauts majeurs : Blademarks, Wavemarks et Holes traversants.</p>
-                    <div style="display:flex; gap:10px;">
-                        <span class="badge b-dev">Nam Chau</span>
-                        <span class="badge b-dev">Le Hung</span>
-                    </div>
-                </div>
-
-                <!-- Lamination -->
-                <div class="process-card glass">
-                    <div class="scene">
-                        <div class="lam-wrapper">
-                            <div class="lam-layer ll-1"></div>
-                            <div class="lam-layer ll-2"></div>
-                            <div class="lam-layer ll-3"></div>
-                        </div>
-                    </div>
-                    <h2>3. Lamination 3-Layers</h2>
-                    <p>Assemblage thermique via calandrage. Le complexe réunit le Lining Interne (ex: Plush thermique), la Mousse (ex: Yulex) et le Lining Externe (ex: Soft Anafi) à l'aide de colles base eau/solvant.</p>
-                    <div style="display:flex; gap:10px;">
-                        <span class="badge b-prod">Multi-fournisseurs</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==========================================================================
-             SECTION 5 : SUPPLIER DETAILED PAGES (Vues Dynamiques)
-             ========================================================================== -->
-        
-        <!-- LE HUNG -->
-        <section id="sup-lehung" class="view-section supplier-view">
-            <div class="sup-header">
-                <div>
-                    <h1>Le Hung</h1>
-                    <p class="sup-location"><i class="fa-solid fa-map-pin"></i> Binh Duong, Vietnam</p>
-                </div>
-                <span class="badge b-indus" style="font-size: 1.1rem; padding: 12px 24px;">Slicing & Lamination</span>
-            </div>
-            
-            <div class="sup-grid">
-                <div class="sup-panel glass">
-                    <h3><i class="fa-solid fa-scale-balanced"></i> Gestion des Claims & Litiges Slicing</h3>
-                    <div class="claim-alert">
-                        <h4>Contexte du Litige (Jan-Apr 2026)</h4>
-                        <p>Conflit d'allocation des coûts de rebuts Slicing entre l'usine LeHung et le fournisseur de Slabs PI Pattana. Identification d'une confusion terminologique majeure ("Wave" imputé à tort au moussage, "Sticky" imputé au Slicing) et de l'oubli des feuilles 1.8mm dans le décompte initial de Ni Li.</p>
-                    </div>
-                    <div class="rule-box">
-                        <h4>Résolution & Règle d'Allocation</h4>
-                        <p>Facturation totale Slicing defects vérifiée : <b>$48,321</b> (1826 pcs de 1.5mm et 1005 pcs de 1.8mm).<br>
-                        Facturation Foam defects vérifiée pour PI : <b>$15,082</b>.<br><br>
-                        <b>Décision WTI (Clarisse G.) :</b> Application d'un ratio 90% LeHung / 10% PI pour les défauts de tranchage afin de compenser les variations acceptables de "stickiness" du caoutchouc naturel. La réclamation finale envers PI Pattana a été abaissée de $63,403 à <b>$19,914</b>.</p>
-                    </div>
-                </div>
-                <div class="sup-panel glass">
-                    <h3><i class="fa-solid fa-magnifying-glass"></i> Application du Defect Book</h3>
-                    <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.6;">LeHung a participé activement aux exercices de mock-ups pour établir les niveaux d'acceptabilité (Level 1 vs Level 2).</p>
-                    <ul class="data-list">
-                        <li><span>Wavemarks (Round 1 & 2)</span> <span style="color: var(--stat-indus);">En discussion</span></li>
-                        <li><span>Blademarks (Tranchage)</span> <span style="color: var(--stat-prod);">Soumis au SPORT</span></li>
-                        <li><span>Envoi des échantillons</span> <span>29/06/2026</span></li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- PI PATTANA -->
-        <section id="sup-pipattana" class="view-section supplier-view">
-            <div class="sup-header">
-                <div>
-                    <h1>PI Pattana</h1>
-                    <p class="sup-location"><i class="fa-solid fa-map-pin"></i> Thaïlande</p>
-                </div>
-                <span class="badge b-prod" style="font-size: 1.1rem; padding: 12px 24px;">Formulation & Moussage NR</span>
-            </div>
-            <div class="sup-grid">
-                <div class="sup-panel glass" style="grid-column: 1 / -1;">
-                    <h3><i class="fa-solid fa-tree"></i> Épicentre du Projet YULEX 100</h3>
-                    <div class="rule-box" style="display: flex; gap: 40px; align-items: center;">
-                        <div style="flex: 1;">
-                            <h4 style="font-size: 1.2rem; margin-bottom: 15px;">Fournisseur Exclusif Slabs 30mm</h4>
-                            <p style="margin-bottom: 15px;">PI Pattana est la clé de voûte de la transition écologique de Decathlon. L'usine gère le Compound et le moussage du caoutchouc 100% naturel certifié FSC.</p>
-                            <p>Bien que les Slabs fournis respectent rigoureusement les spécifications techniques (MTSR), l'usine assume désormais 10% des coûts de rebuts de Slicing chez LeHung pour compenser les variations inhérentes au matériau naturel (Sticky effect).</p>
-                        </div>
-                        <div style="flex: 1;">
-                            <ul class="data-list">
-                                <li><span>Technologie Mousse</span> <span>Natural Rubber</span></li>
-                                <li><span>Certification</span> <span>FSC® 100%</span></li>
-                                <li><span>Bilan Carbone (Moyen)</span> <span>4.1 kg CO2 eq.</span></li>
-                                <li><span>Lead Time (Carbon Black)</span> <span style="color: var(--stat-stop);">120 Jours</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- NAM CHAU -->
-        <section id="sup-namchau" class="view-section supplier-view">
-            <div class="sup-header">
-                <div>
-                    <h1>Nam Chau</h1>
-                    <p class="sup-location"><i class="fa-solid fa-map-pin"></i> Province de Dong Nai, Vietnam</p>
-                </div>
-                <span class="badge b-indus" style="font-size: 1.1rem; padding: 12px 24px;">Tranchage & Lamination Stratégique</span>
-            </div>
-            <div class="sup-grid">
-                <div class="sup-panel glass" style="grid-column: 1 / -1;">
-                    <h3><i class="fa-solid fa-industry"></i> Duplication Industrielle Yulex</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                        <div>
-                            <div class="rule-box">
-                                <h4>Analyse du Trial 1 & Trial 2</h4>
-                                <p>Lors du premier essai de lamination du complexe Y100 DDY Soft Anafi (1.5mm), les tests Intertek ont révélé une chute critique du stretch en chaîne (27.8%). L'investigation a prouvé que la cause n'était pas la mousse, mais un lot de textile Daluen dégradé par un stockage > 6 mois.<br><br>
-                                Le <b>Trial 2</b> réalisé fin Juillet 2026 avec du textile frais a validé 100% des exigences (Stretch > 38%). Le statut "GO INDUS" est acté.</p>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="rule-box">
-                                <h4>Politique Qualité (Over-Quality Risk)</h4>
-                                <p>Pour éviter une explosion du prix de revient (+138.9% sur le FG), le WTI a officialisé la grille dérogée de 2024. Le taux de défaut (Defect Rate) est fixé à <b>13.5%</b>.<br><br>
-                                Les défauts mineurs sont marqués avec un <b>ruban adhésif jaune</b> (permettant le détourage au matelassage chez Scavi) plutôt que de générer un rebut total de la feuille tranchée.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- DONI -->
-        <section id="sup-doni" class="view-section supplier-view">
-            <div class="sup-header">
-                <div>
-                    <h1>Doni (Yangzhou)</h1>
-                    <p class="sup-location"><i class="fa-solid fa-map-pin"></i> Yangzhou, Chine</p>
-                </div>
-                <span class="badge b-indus" style="font-size: 1.1rem; padding: 12px 24px;">Usine Intégrée (Slicing/Lamin/FG)</span>
-            </div>
-            <div class="sup-grid">
-                <div class="sup-panel glass">
-                    <h3><i class="fa-solid fa-ruler-combined"></i> Standardisation Textile</h3>
-                    <div class="rule-box">
-                        <h4>Méthode du 4-Points System</h4>
-                        <p>Lors de l'audit de Juillet 2026, la gestion des <b>Vertical Stripes</b> a été analysée. Doni ne considère pas les fines lignes verticales comme des défauts critiques pénalisants, ce qui s'aligne avec la volonté du WTI d'éviter l'Over-Quality sur la production de masse des combinaisons Snorkeling et Surf d'entrée de gamme.</p>
-                    </div>
-                </div>
-                <div class="sup-panel glass">
-                    <h3><i class="fa-solid fa-box-open"></i> Portfolio WTI</h3>
-                    <ul class="data-list">
-                        <li><span>Typologie Produits</span> <span>Wetsuits, Snorkeling</span></li>
-                        <li><span>Assemblage</span> <span>Flatlock & GBS</span></li>
-                        <li><span>Mousse dominantes</span> <span>CR S-Grade (Nylon)</span></li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- DALUEN -->
-        <section id="sup-daluen" class="view-section supplier-view">
-            <div class="sup-header">
-                <div>
-                    <h1>Daluen</h1>
-                    <p class="sup-location"><i class="fa-solid fa-map-pin"></i> Vietnam</p>
-                </div>
-                <span class="badge b-dev" style="font-size: 1.1rem; padding: 12px 24px;">Fabrication Textile (Tricots)</span>
-            </div>
-            <div class="sup-grid">
-                <div class="sup-panel glass" style="grid-column: 1 / -1;">
-                    <h3><i class="fa-solid fa-shirt"></i> Expertise Linings & Défauts</h3>
-                    <p style="font-size: 1.05rem; color: #cbd5e1; margin-bottom: 24px;">Fournisseur stratégique pour l'offre textile accompagnant le Yulex (Soft Anafi, Agrios, Tika, Plush). La gestion du vieillissement matière (cf. Trial 1 Nam Chau) est leur enjeu principal.</p>
-                    
-                    <h4 style="color: white; margin-bottom: 15px;">Matrice des Défauts (Visual Defect Book)</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <span class="badge b-stop" style="font-size: 0.9rem; padding: 10px 15px;">1. Vertical Stripes</span>
-                        <span class="badge b-stop" style="font-size: 0.9rem; padding: 10px 15px;">2. Horizontal Stripes</span>
-                        <span class="badge b-stop" style="font-size: 0.9rem; padding: 10px 15px;">3. Folding marks (Teinture)</span>
-                        <span class="badge b-stop" style="font-size: 0.9rem; padding: 10px 15px;">4. Bow & Skew (< 6% MTSR)</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCAVI -->
-        <section id="sup-scavi" class="view-section supplier-view">
-            <div class="sup-header">
-                <div>
-                    <h1>Scavi</h1>
-                    <p class="sup-location"><i class="fa-solid fa-map-pin"></i> Hué, Vietnam</p>
-                </div>
-                <span class="badge b-prod" style="font-size: 1.1rem; padding: 12px 24px;">Confection Finished Goods (FG)</span>
-            </div>
-            <div class="sup-grid">
-                <div class="sup-panel glass" style="grid-column: 1 / -1;">
-                    <h3><i class="fa-solid fa-scissors"></i> Intégration de la Valeur</h3>
-                    <div class="rule-box" style="display: flex; gap: 40px; align-items: center;">
-                        <div style="flex: 2;">
-                            <p style="font-size: 1.05rem; margin-bottom: 20px;">Scavi est la dernière étape de la Supply Chain WTI au Vietnam. L'usine réceptionne les feuilles laminées (complexes) en provenance de Nam Chau et Le Hung.</p>
-                            <h4 style="color: var(--color-primary); margin-bottom: 10px;">Gestion Intelligente des Rebuts</h4>
-                            <p>Plutôt que d'exiger des feuilles parfaites (ce qui ferait exploser le coût matière), les opérateurs de matelassage chez Scavi ont été formés pour repérer les <b>rubans adhésifs jaunes</b> posés par Nam Chau sur les défauts mineurs (Trous < 3mm, Cavités). Ils décalent ainsi stratégiquement leurs patronages pour placer ces défauts dans les chutes de coupe (scraps).</p>
-                        </div>
-                        <div style="flex: 1;">
-                            <ul class="data-list">
-                                <li><span>Assemblage GBS</span> <span style="color: var(--stat-prod);">Certifié</span></li>
-                                <li><span>Assemblage Flatlock</span> <span style="color: var(--stat-prod);">Certifié</span></li>
-                                <li><span>Produits Cibles</span> <span>Wetsuits Surf 100/500</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
 
     <!-- ==========================================================================
-         JAVASCRIPT LOGIC & MASSIVE DATABASE SIMULATION
+         JAVASCRIPT ENGINE & MASSIVE DATA
          ========================================================================== -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         /**
-         * 1. DATABASE GENERATOR (Simulating Enterprise PACE PLM Data)
-         * Crée dynamiquement plus de 2500 fiches MTSR en mémoire.
+         * 1. DATABASE DES FOURNISSEURS (Audit Reports & Claims)[cite: 4, 5, 6, 7]
          */
-        
-        // Fiches critiques extraites des documents
-        const db = [
-            { ref: "Y100 DDY SOFT ANAFI/ SOFT ANAFI", paceId: "9810034702", type: "Natural Rubber", in: "SOFT ANAFI (PES)", out: "SOFT ANAFI (PES)", thick: "1.5 - 2.0 mm", supplier: "Nam Chau", status: "GO INDUS", co2: "7.2" },
-            { ref: "Y100 DDY SOFT ANAFI/ SOFT ANAFI", paceId: "9810034703", type: "Natural Rubber", in: "SOFT ANAFI (PES)", out: "SOFT ANAFI (PES)", thick: "2.0 mm", supplier: "Le Hung", status: "STOPPED", co2: "7.2" },
-            { ref: "Y100 DARLING MM / DARLING MM", paceId: "9810050123", type: "Natural Rubber", in: "DARLING MM", out: "DARLING MM", thick: "1.5 mm", supplier: "Nam Chau", status: "IN DEV", co2: "6.8" },
-            { ref: "BIO 08 AGIOS / AMA", paceId: "9810045621", type: "Hybride Bio", in: "AMA (PES/NY)", out: "AGIOS (PES)", thick: "2.0 - 5.0 mm", supplier: "Nam Liong", status: "GO PROD", co2: "8.5" },
-            { ref: "BIO 08 ARU/COCO / SOFT ANAFI", paceId: "9810045622", type: "Hybride Bio", in: "SOFT ANAFI", out: "ARU/COCO", thick: "4.0 mm", supplier: "Nam Liong", status: "GO PROD", co2: "12.2" },
-            { ref: "BIO 07 TIKA / PLUSH", paceId: "9810045690", type: "Hybride Bio", in: "PLUSH", out: "TIKA", thick: "5.0 - 7.0 mm", supplier: "Nam Liong", status: "GO PROD", co2: "14.5" },
-            { ref: "Y100 SLABS (Brut)", paceId: "9810010000", type: "Natural Rubber", in: "N/A", out: "N/A", thick: "30.0 mm", supplier: "PI Pattana", status: "GO PROD", co2: "4.1" },
-            { ref: "Y85 GLIDE SKIN / SOFT ANAFI", paceId: "9810048700", type: "Natural Rubber", in: "SOFT ANAFI", out: "GLIDE SKIN", thick: "2.0 - 3.0 mm", supplier: "Nam Liong", status: "GO PROD", co2: "8.8" },
-            { ref: "CR (L) BTN / BTN", paceId: "8816419000", type: "Polychloroprène", in: "BTN (100% PA)", out: "BTN (100% PA)", thick: "1.5 - 7.0 mm", supplier: "Sheico", status: "STOPPED", co2: "18.5" },
-            { ref: "CR (S) NYLON / NYLON", paceId: "8816430000", type: "Polychloroprène", in: "NYLON", out: "NYLON", thick: "2.0 - 3.0 mm", supplier: "Doni", status: "GO PROD", co2: "16.4" }
-        ];
-
-        // Remplissage algorithmique pour simulation de charge (2500+ lignes)
-        const suppliersList = [
-            { name: "Nam Chau", type: "Natural Rubber" },
-            { name: "Sheico", type: "Polychloroprène" },
-            { name: "Nam Liong", type: "Hybride Bio" },
-            { name: "Le Hung", type: "Natural Rubber" },
-            { name: "Doni", type: "Polychloroprène" }
-        ];
-        const textileList = ["SOFT ANAFI", "AGIOS", "PLUSH", "TIKA", "AMA", "DARLING MM", "BTN", "NYLON", "SPAN"];
-        const statusWeights = ["GO PROD", "GO PROD", "GO PROD", "GO INDUS", "STOPPED", "STOPPED", "IN DEV"];
-
-        for(let i = 1; i <= 2500; i++) {
-            const sup = suppliersList[Math.floor(Math.random() * suppliersList.length)];
-            const txtIn = textileList[Math.floor(Math.random() * textileList.length)];
-            const txtOut = textileList[Math.floor(Math.random() * textileList.length)];
-            const stat = statusWeights[Math.floor(Math.random() * statusWeights.length)];
-            let foamName = sup.type === "Natural Rubber" ? "Y100" : (sup.type === "Hybride Bio" ? "BIO08" : "CR");
-            
-            db.push({
-                ref: `${foamName} ${txtOut} / ${txtIn} [SIM-${i}]`,
-                paceId: (88000000 + i).toString(),
-                type: sup.type,
-                in: txtIn,
-                out: txtOut,
-                thick: (Math.random() * 5 + 1.5).toFixed(1) + " mm",
-                supplier: sup.name,
-                status: stat,
-                co2: (Math.random() * 15 + 5).toFixed(1)
-            });
-        }
+        const suppliersData = {
+            "lehung": {
+                name: "Le Hung",
+                loc: "Binh Duong, Vietnam",
+                lat: 11.10, lng: 106.65,
+                status: "alert", // danger
+                html: `
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026) <span class="cite-tag">[cite: 4]</span></h3>
+                        <div class="alert-box">
+                            <h4><i class="fa-solid fa-triangle-exclamation"></i> Contexte du Litige avec PI Pattana</h4>
+                            <ul>
+                                <li>Omission des feuilles 1.8mm défectueuses par Ni Li dans le calcul initial[cite: 4].</li>
+                                <li>Confusion terminologique : "Wave" imputé à tort au Foam, "Sticky" imputé au Slicing[cite: 4].</li>
+                                <li>Défauts Slicing évalués à <b>$48,321</b> (1826 pcs 1.5mm, 1005 pcs 1.8mm)[cite: 4].</li>
+                                <li>Défauts Foam (PI) évalués à <b>$15,082</b> (927 pcs)[cite: 4].</li>
+                            </ul>
+                        </div>
+                        <div class="info-box">
+                            <h4><i class="fa-solid fa-gavel"></i> Décision Décathlon (Clarisse G.)</h4>
+                            <p>Application d'un ratio d'allocation Slicing de <b>90% Le Hung / 10% PI</b>. Raisons : Responsabilité in-house du process par Le Hung et erreurs administratives de leur part. La réclamation finale exigée à PI chute de $63,403 à <b>$19,914</b>[cite: 4].</p>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-book-open"></i> Visual Defect Book (NEO) <span class="cite-tag">[cite: 5]</span></h3>
+                        <p>Partenaire clé dans l'établissement des standards (Level 1 vs Level 2)[cite: 5].</p>
+                        <div class="mini-kpi-grid">
+                            <div class="mini-kpi"><span>Wavemarks (Round 2)</span><strong style="color:var(--color-warning); font-size:1rem;">En discussion Level 1/4[cite: 5]</strong></div>
+                            <div class="mini-kpi"><span>Blademarks</span><strong style="color:var(--color-primary); font-size:1rem;">Soumis au SPORT[cite: 5]</strong></div>
+                        </div>
+                    </div>
+                `
+            },
+            "namchau": {
+                name: "Nam Chau",
+                loc: "Site NAMCHAU, Vietnam",
+                lat: 10.95, lng: 106.82,
+                status: "warning",
+                html: `
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (Visit 29 July 2026) <span class="cite-tag"></span></h3>
+                        <p>Participants : Mr Jack, Tom, Clarisse, Hung, Amaury[cite: 6].</p>
+                        <div class="alert-box">
+                            <h4><i class="fa-solid fa-skull-crossbones"></i> Tolérance Zéro : Santé & Sécurité (HSE)</h4>
+                            <ul>
+                                <li><b>EPI Inadéquats :</b> Masques de protection insuffisants pour la lamination et équipements manquants lors de la manipulation des produits chimiques[cite: 6].</li>
+                                <li><b>Objets Tranchants :</b> Présence d'objets coupants (mètres en métal) sur les tables QC. Risque de coupure humaine et produit[cite: 6].</li>
+                                <li><b>Hygiène :</b> Absence de savon (utilisation de lessive inacceptable) dans les zones de lavage[cite: 6].</li>
+                            </ul>
+                        </div>
+                        <div class="rule-box">
+                            <h4><i class="fa-solid fa-flask-vial"></i> Process Lamination & Colle</h4>
+                            <p><b>Risque Majeur :</b> Corps étrangers dans la colle et aucun contrôle de viscosité ni procédure (SOP) formalisée pour le temps d'ouverture[cite: 6]. Action : Exiger les paramètres de viscosité au fournisseur de colle[cite: 6].</p>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-eye"></i> QC & Defect Detection <span class="cite-tag">[cite: 6]</span></h3>
+                        <p>Le Defect Book a été partagé (très bon travail de l'équipe QC pour comprendre). Cependant, l'évaluation des Blademarks montre des divergences entre les contrôleurs en raison d'un éclairage inadapté (lumière non inclinée à 45° et manipulation de la feuille en l'air)[cite: 6].</p>
+                        <button class="btn btn-primary" style="margin-top:10px;"><i class="fa-solid fa-lightbulb"></i> Action : Installer Lightbox 45°[cite: 6]</button>
+                    </div>
+                `
+            },
+            "doni": {
+                name: "Doni",
+                loc: "Yangzhou, Chine",
+                lat: 32.39, lng: 119.41,
+                status: "warning",
+                html: `
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-industry"></i> On-Site Working Report (22-23 July 2026) <span class="cite-tag"></span></h3>
+                        <p>Participants : Jericho (PL), Clarisse (ME)[cite: 7].</p>
+                        <div class="alert-box">
+                            <h4><i class="fa-solid fa-triangle-exclamation"></i> Risque Majeur : Inspection des Trous (Holes)</h4>
+                            <p>Contrairement à LeHung, <b>Doni ne réalise aucune inspection visuelle dédiée sur les feuilles tranchées</b> (Slicing)[cite: 7].<br><br>
+                            Ils s'appuient uniquement sur un contrôle en ligne pendant la lamination. Cette méthode masque les défauts sous la colle et s'effectue en mouvement avec un mauvais éclairage. Il est <b>impossible de garantir l'absence de défauts majeurs (trous/hollows)</b> sur les produits finis avec cette méthode[cite: 7]. L'usine coupe à une vitesse très élevée et retire ~2mm de peau en un seul passage, ce qui laisse des résidus sur la feuille[cite: 7].</p>
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-shirt"></i> Needle Holes sur GBS & Tissus <span class="cite-tag">[cite: 7]</span></h3>
+                        <div class="info-box">
+                            <h4>Recherche d'Alternative au Soft Anafi</h4>
+                            <ul>
+                                <li><b>Tissu Janvision (Daluen) :</b> 100% Polyester. Test sur Wetsuits 4/3. Résultat : 5 needle holes identifiés (Problème non résolu à 100%)[cite: 7].</li>
+                                <li><b>Tissu Surje (Birong) :</b> 100% PA. Résultat : De très nombreux trous d'aiguille (NO GO)[cite: 7].</li>
+                            </ul>
+                        </div>
+                        <div class="rule-box">
+                            <h4>Qualité Machine (Passing Machine)</h4>
+                            <p><b>Géométrie NOK :</b> Le rouleau est monté trop bas, créant un angle de friction excessif. L'opérateur doit dérouler manuellement, créant un effet de "drapé" masquant les défauts verticaux et générant une tension résiduelle. <b>Priorité Niveau 1 : Corriger la machine[cite: 7].</b></p>
+                        </div>
+                    </div>
+                `
+            },
+            "pipattana": {
+                name: "PI Pattana",
+                loc: "Thaïlande",
+                lat: 13.75, lng: 100.50,
+                status: "success",
+                html: `
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-tree"></i> Fournisseur Exclusif Yulex 100</h3>
+                        <p>Fabrication des Slabs (30mm) en caoutchouc naturel. Impliqué dans le Claim LeHung (Assumera 10% des coûts Slicing = $19,914 de facturation ajustée)[cite: 4].</p>
+                        <div class="mini-kpi-grid" style="margin-top:20px;">
+                            <div class="mini-kpi"><span>Statut Claim (Q1 2026)</span><strong style="color:var(--color-success); font-size:1.2rem;">Résolu (Ratio 90/10)[cite: 4]</strong></div>
+                            <div class="mini-kpi"><span>Responsabilité Slabs</span><strong style="color:white; font-size:1.2rem;">Conformes MTSR[cite: 4]</strong></div>
+                        </div>
+                    </div>
+                `
+            },
+            "daluen": {
+                name: "Daluen",
+                loc: "Vietnam",
+                lat: 10.85, lng: 106.75,
+                status: "success",
+                html: `
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book & Janvision <span class="cite-tag">[cite: 5, 7]</span></h3>
+                        <div class="info-box">
+                            <h4>Top 4 Priorités Textiles (Linings)[cite: 5]</h4>
+                            <ul>
+                                <li>1. Lignes Verticales (Vertical Stripes)[cite: 5]</li>
+                                <li>2. Lignes Horizontales (Horizontal Stripes)[cite: 5]</li>
+                                <li>3. Marques de Pliage (Teinture)[cite: 5]</li>
+                                <li>4. Bow & Skew[cite: 5]</li>
+                            </ul>
+                        </div>
+                        <p>Daluen est également le fournisseur du tissu <b>Janvision (100% PES)</b> testé chez Doni pour régler les problèmes de trous d'aiguilles GBS. Le test a révélé 5 trous restants (solution incomplète)[cite: 7].</p>
+                    </div>
+                `
+            },
+            "birong": {
+                name: "Birong",
+                loc: "Chine",
+                lat: 24.50, lng: 118.00,
+                status: "alert",
+                html: `
+                    <div class="data-card">
+                        <h3><i class="fa-solid fa-ban"></i> Test Tissu Surje (GBS) <span class="cite-tag">[cite: 7]</span></h3>
+                        <div class="alert-box">
+                            <h4>Fournisseur Non Nominé (Historique China Dive)[cite: 7]</h4>
+                            <p><b>Matériau testé :</b> Tissu Surje (100% PA, Price $1.20-$1.30/yd)[cite: 7].<br>
+                            <b>Résultat Wetsuit 4/3 (Doni) :</b> Apparition massive de trous d'aiguilles ("many needle holes"). Statut : <b>NO GO</b>[cite: 7].</p>
+                        </div>
+                    </div>
+                `
+            }
+        };
 
         /**
-         * 2. APPLICATION CORE ENGINE
+         * 2. CORE APPLICATION ENGINE
          */
         const app = {
-            currentPage: 1,
-            rowsPerPage: 15,
-            filteredData: [...db],
             mapInstance: null,
             chartsInit: false,
 
             init() {
-                // Initialiser les KPIs
-                document.getElementById('kpi-count').innerText = new Intl.NumberFormat('fr-FR').format(db.length);
-                this.renderTable();
+                this.initMap();
                 this.initCharts();
             },
 
-            // --- ROUTER SYSTEM ---
+            // --- VIEW ROUTER ---
             route(viewId) {
-                // Nettoyage CSS de toutes les sections
-                document.querySelectorAll('.view-section').forEach(el => {
-                    el.classList.remove('active');
-                    el.style.animation = 'none'; // reset anim
-                });
+                // If supplier clicked
+                if(viewId.startsWith('sup-')) {
+                    const supKey = viewId.replace('sup-', '');
+                    this.openSupplier(supKey);
+                    return;
+                }
+            },
+
+            showMap() {
+                document.getElementById('analytics-view').classList.remove('active');
+                document.getElementById('network-map').style.display = 'block';
+                document.getElementById('map-header').style.display = 'flex';
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                
-                // Activation de la nouvelle section
-                const target = document.getElementById(viewId);
-                target.classList.add('active');
-                target.style.animation = 'fadeView 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-                
-                // Set nav button active
-                if(event && event.currentTarget) event.currentTarget.classList.add('active');
-
-                // Gestion affichage sous-menu "Usines Détaillées"
-                const navSup = document.getElementById('nav-suppliers');
-                if (viewId === 'map' || viewId.startsWith('sup-')) {
-                    navSup.style.display = 'block';
-                } else {
-                    navSup.style.display = 'none';
-                }
-
-                // Initialisation différée de Leaflet (bug de taille)
-                if(viewId === 'map') {
-                    if(!this.mapInstance) setTimeout(() => this.initMap(), 400);
-                    else setTimeout(() => this.mapInstance.invalidateSize(), 400);
-                }
+                event.currentTarget.classList.add('active');
+                if(this.mapInstance) setTimeout(() => this.mapInstance.invalidateSize(), 100);
             },
 
-            // --- SIMULATION API PACE ---
-            syncPace() {
-                const btn = document.getElementById('btn-sync');
-                const pBar = document.getElementById('sync-progress');
-                const pFill = document.getElementById('sync-fill');
-                const timeStr = document.getElementById('sync-time');
-                
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Synchronisation...';
-                pBar.style.display = 'block';
-                pFill.style.width = '0%';
-                
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * 25;
-                    if(progress > 100) progress = 100;
-                    pFill.style.width = progress + '%';
-                    
-                    if(progress === 100) {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            pBar.style.display = 'none';
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Synchroniser PACE';
-                            const d = new Date();
-                            timeStr.innerText = `Dernière mise à jour: ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-                        }, 600);
-                    }
-                }, 250);
+            showAnalytics() {
+                document.getElementById('network-map').style.display = 'none';
+                document.getElementById('map-header').style.display = 'none';
+                this.closeSupplier();
+                document.getElementById('analytics-view').classList.add('active');
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                event.currentTarget.classList.add('active');
             },
 
-            // --- DATATABLE ENGINE ---
-            renderTable() {
-                const tbody = document.getElementById('tableBody');
-                tbody.innerHTML = '';
-                const start = (this.currentPage - 1) * this.rowsPerPage;
-                const end = start + this.rowsPerPage;
-                const paginated = this.filteredData.slice(start, end);
+            // --- SUPPLIER SLIDE-OVER ---
+            openSupplier(key) {
+                const data = suppliersData[key];
+                if(!data) return;
 
-                paginated.forEach(item => {
-                    let badgeClass = 'b-dev';
-                    if(item.status === 'GO PROD') badgeClass = 'b-prod';
-                    if(item.status === 'GO INDUS') badgeClass = 'b-indus';
-                    if(item.status === 'STOPPED') badgeClass = 'b-stop';
+                document.getElementById('sp-name').innerText = data.name;
+                document.getElementById('sp-loc').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${data.loc}`;
+                document.getElementById('sp-content').innerHTML = data.html;
 
-                    // Colorisation spécifique des textiles
-                    const inColor = item.in.includes('ANAFI') ? '#0ea5e9' : (item.in.includes('PLUSH') ? '#f59e0b' : '#94a3b8');
-                    const outColor = item.out.includes('ANAFI') ? '#0ea5e9' : (item.out.includes('AGIOS') ? '#10b981' : '#94a3b8');
-
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>
-                            <span class="cpt-name">${item.ref}</span>
-                            <span class="cpt-sub"><i class="fa-solid fa-barcode"></i> ${item.paceId}</span>
-                        </td>
-                        <td style="font-weight:600; color: white;">${item.type}</td>
-                        <td style="font-family: monospace; font-size:0.9rem;">
-                            <span style="color:${inColor}">IN: ${item.in}</span><br>
-                            <span style="color:${outColor}">OUT: ${item.out}</span>
-                        </td>
-                        <td><span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px;">${item.thick}</span></td>
-                        <td><b>${item.supplier}</b></td>
-                        <td style="color: var(--text-muted);"><i class="fa-solid fa-cloud"></i> ${item.co2} kg</td>
-                        <td><span class="badge ${badgeClass}">${item.status}</span></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                document.getElementById('pageInfo').innerText = `Page ${this.currentPage} — Affichage ${start + 1} à ${Math.min(end, this.filteredData.length)} sur ${this.filteredData.length} composants`;
-                document.getElementById('btnPrev').disabled = this.currentPage === 1;
-                document.getElementById('btnNext').disabled = end >= this.filteredData.length;
+                document.getElementById('supplier-panel').classList.add('open');
             },
 
-            filterTable() {
-                const query = document.getElementById('searchInput').value.toLowerCase();
-                this.filteredData = db.filter(item => 
-                    item.ref.toLowerCase().includes(query) || 
-                    item.supplier.toLowerCase().includes(query) || 
-                    item.type.toLowerCase().includes(query) ||
-                    item.paceId.includes(query)
-                );
-                this.currentPage = 1;
-                this.renderTable();
-            },
-
-            changePage(dir) {
-                const maxPage = Math.ceil(this.filteredData.length / this.rowsPerPage);
-                this.currentPage += dir;
-                if(this.currentPage < 1) this.currentPage = 1;
-                if(this.currentPage > maxPage) this.currentPage = maxPage;
-                this.renderTable();
+            closeSupplier() {
+                document.getElementById('supplier-panel').classList.remove('open');
             },
 
             // --- LEAFLET MAP ENGINE ---
             initMap() {
-                // CartoDB Dark Matter setup pour un rendu Dashboard Premium
-                this.mapInstance = L.map('app-map', { zoomControl: false, minZoom: 4 }).setView([16.0, 108.0], 5);
+                // Background map is CartoDB Dark Matter
+                this.mapInstance = L.map('network-map', { zoomControl: false }).setView([18.0, 110.0], 5);
                 L.control.zoom({ position: 'bottomright' }).addTo(this.mapInstance);
                 
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                     attribution: '&copy; CartoDB',
-                    subdomains: 'abcd',
-                    maxZoom: 20
+                    maxZoom: 12
                 }).addTo(this.mapInstance);
 
-                const icon = L.divIcon({ className: 'custom-pin', iconSize: [18,18], iconAnchor: [9,9] });
+                // Add markers dynamically from suppliersData
+                Object.keys(suppliersData).forEach(key => {
+                    const sup = suppliersData[key];
+                    let iconColor = 'var(--color-primary)';
+                    let pulseColor = 'rgba(59,130,246,0.8)';
+                    let alertClass = '';
 
-                // Données géographiques exactes
-                const pins = [
-                    { name: "Nam Chau", lat: 10.95, lng: 106.82, route: "sup-namchau", role: "Slicing & Lamination" },
-                    { name: "Scavi", lat: 16.4637, lng: 107.5909, route: "sup-scavi", role: "Assemblage FG" },
-                    { name: "Le Hung", lat: 11.10, lng: 106.65, route: "sup-lehung", role: "Slicing & Lamination" },
-                    { name: "PI Pattana", lat: 13.75, lng: 100.50, route: "sup-pipattana", role: "Moussage NR" },
-                    { name: "Doni", lat: 32.39, lng: 119.41, route: "sup-doni", role: "Usine Intégrée" },
-                    { name: "Daluen", lat: 10.85, lng: 106.75, route: "sup-daluen", role: "Tricotage Linings" },
-                    { name: "Sheico HQ", lat: 24.68, lng: 121.76, route: "dashboard", role: "Usine Intégrée" },
-                    { name: "Nam Liong", lat: 23.02, lng: 120.22, route: "dashboard", role: "Mousse Hybride" }
-                ];
+                    if(sup.status === 'alert') { iconColor = 'var(--color-danger)'; pulseColor = 'rgba(239,68,68,0.8)'; alertClass = 'alert'; }
+                    if(sup.status === 'warning') { iconColor = 'var(--color-warning)'; pulseColor = 'rgba(245,158,11,0.8)'; }
+                    if(sup.status === 'success') { iconColor = 'var(--color-success)'; pulseColor = 'rgba(16,185,129,0.8)'; }
 
-                pins.forEach(p => {
-                    const marker = L.marker([p.lat, p.lng], {icon: icon}).addTo(this.mapInstance);
+                    const iconHtml = `<div class="map-pin ${alertClass}" style="width:20px; height:20px; background:${iconColor}; box-shadow: 0 0 0 ${pulseColor};"></div>`;
+                    
+                    const icon = L.divIcon({ className: '', html: iconHtml, iconSize: [20,20], iconAnchor: [10,10] });
+
+                    const marker = L.marker([sup.lat, sup.lng], {icon: icon}).addTo(this.mapInstance);
                     marker.bindPopup(`
-                        <div style="font-family: 'Plus Jakarta Sans', sans-serif; padding: 5px;">
-                            <b style="font-size: 1.1rem; color: white;">${p.name}</b><br>
-                            <span style="color: #38bdf8; font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">${p.role}</span><br>
-                            <p style="margin-top: 10px; color: #94a3b8; font-size: 0.8rem;">Cliquez sur le marqueur pour ouvrir le rapport d'audit qualité détaillé.</p>
+                        <div style="padding:5px;">
+                            <b style="font-size:1.2rem; color:white;">${sup.name}</b><br>
+                            <span style="color:${iconColor}; font-weight:700; text-transform:uppercase; font-size:0.8rem;">Statut d'Audit Actif</span>
                         </div>
                     `);
                     
-                    // Click routing to dedicated supplier page
-                    marker.on('click', () => {
-                        if(p.route !== 'dashboard') {
-                            this.route(p.route);
-                        }
-                    });
+                    marker.on('click', () => this.openSupplier(key));
                 });
             },
 
             // --- CHART.JS ENGINE ---
             initCharts() {
                 if(this.chartsInit) return;
-                
-                // ChartJS Global Settings
                 Chart.defaults.color = '#94a3b8';
                 Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
                 Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
 
-                // Extraction des données de la DB massive pour les graphiques
-                const typeCounts = { 'Natural Rubber': 0, 'Hybride Bio': 0, 'Polychloroprène': 0, 'SBR/CR Blend': 0 };
-                const statCounts = { 'GO PROD': 0, 'GO INDUS': 0, 'STOPPED': 0, 'IN DEV': 0 };
-                
-                db.forEach(item => { 
-                    if(typeCounts[item.type] !== undefined) typeCounts[item.type]++; 
-                    if(statCounts[item.status] !== undefined) statCounts[item.status]++;
-                });
-
-                // Graphique en Barres (Technologies)
-                new Chart(document.getElementById('barChart'), {
+                // Bar Chart (Claim Values Le Hung vs PI Pattana)[cite: 4]
+                new Chart(document.getElementById('claimChart'), {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(typeCounts),
+                        labels: ['Défauts Slicing (Total)', 'Facturé Le Hung (90%)', 'Facturé PI (10%)', 'Défauts Foam (PI)'],
                         datasets: [{
-                            label: 'Volumes de Composants',
-                            data: Object.values(typeCounts),
-                            backgroundColor: [
-                                'rgba(16, 185, 129, 0.8)', // Vert (NR)
-                                'rgba(14, 165, 233, 0.8)', // Bleu (Hybride)
-                                'rgba(239, 68, 68, 0.8)',  // Rouge (CR)
-                                'rgba(245, 158, 11, 0.8)'  // Orange (SBR)
-                            ],
-                            borderColor: [
-                                '#10b981', '#0ea5e9', '#ef4444', '#f59e0b'
-                            ],
-                            borderWidth: 1,
-                            borderRadius: 8
+                            label: 'Valeur ($ USD)',
+                            data: [48321, 43488, 4832, 15082],
+                            backgroundColor: ['rgba(239, 68, 68, 0.8)', '#ef4444', '#3b82f6', '#0ea5e9'],
+                            borderRadius: 6
                         }]
                     },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} } }
+                });
+
+                // Radar Chart (Supplier Quality Risk Assessment)
+                new Chart(document.getElementById('radarChart'), {
+                    type: 'radar',
+                    data: {
+                        labels: ['HSE & Sécurité', 'Viscosité Colle', 'Inspection Slicing', 'Needle Holes GBS', 'Gestion Textiles'],
+                        datasets: [
+                            {
+                                label: 'Nam Chau',
+                                data: [2, 3, 7, 8, 8],
+                                backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                                borderColor: '#f59e0b',
+                                pointBackgroundColor: '#f59e0b'
+                            },
+                            {
+                                label: 'Doni',
+                                data: [8, 8, 2, 3, 9], // Very bad at slicing inspection and GBS needle holes
+                                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                                borderColor: '#ef4444',
+                                pointBackgroundColor: '#ef4444'
+                            }
+                        ]
+                    },
                     options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        plugins: { legend: {display: false} },
-                        scales: { y: { beginAtZero: true } }
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { r: { angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#f8fafc', font: {size: 11} }, ticks: {display: false, min:0, max:10} } }
                     }
                 });
 
-                // Graphique Doughnut (Statuts)
-                new Chart(document.getElementById('doughnutChart'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(statCounts),
-                        datasets: [{
-                            data: Object.values(statCounts),
-                            backgroundColor: [
-                                '#10b981', // Prod
-                                '#f59e0b', // Indus
-                                '#ef4444', // Stopped
-                                '#6366f1'  // Dev
-                            ],
-                            borderWidth: 0,
-                            hoverOffset: 15
-                        }]
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        cutout: '75%',
-                        plugins: {
-                            legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
-                        }
-                    }
-                });
-                
                 this.chartsInit = true;
             }
         };
 
         // Bootstrap App
-        document.addEventListener("DOMContentLoaded", () => {
-            app.init();
-        });
+        window.onload = () => app.init();
     </script>
 </body>
 </html>
