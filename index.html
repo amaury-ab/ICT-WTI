@@ -1,299 +1,665 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WTI Hub | Decathlon</title>
-  
-  <!-- Typographie Premium -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Icônes -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Leaflet CSS (Map interactive) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-  <style>
-    :root {
-      --bg-deep: #050505;
-      --bg-gradient: radial-gradient(circle at top left, #1a1e36, #000000 70%);
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --accent: #3B82F6;
-      --accent-glow: rgba(59, 130, 246, 0.5);
-      --accent-gradient: linear-gradient(135deg, #60A5FA, #A78BFA);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-    body { 
-      background: var(--bg-deep); 
-      background-image: var(--bg-gradient); 
-      color: var(--text-main); 
-      display: flex; 
-      height: 100vh; 
-      overflow: hidden; 
-    }
-
-    /* --- EFFETS DE VERRE (GLASSMORPHISM) --- */
-    .glass-panel {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-    }
-
-    /* --- SIDEBAR --- */
-    .sidebar {
-      width: 280px;
-      margin: 20px;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      z-index: 10;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
-
-    .logo-area { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; padding-left: 10px; }
-    .logo-area i { font-size: 28px; background: var(--accent-gradient); -webkit-background-clip: text; color: transparent; }
-    .logo-area h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WTI Nexus | Ultimate Component Hub</title>
     
-    .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-    .nav-btn {
-      background: transparent; border: none; padding: 15px 20px; text-align: left; font-size: 1rem;
-      font-weight: 500; color: var(--text-muted); border-radius: 12px; cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 15px;
-    }
-    .nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); transform: translateX(5px); }
-    .nav-btn.active {
-      background: var(--accent-gradient); color: white; font-weight: 600;
-      box-shadow: 0 10px 20px var(--accent-glow);
-    }
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    /* --- MAIN CONTENT --- */
-    .main-content {
-      flex-grow: 1; padding: 20px 40px 20px 0; overflow-y: auto; position: relative;
-    }
-    
-    .section { display: none; opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-    .section.active { display: block; opacity: 1; transform: translateY(0); }
+    <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & THEMING
+           ========================================================================== */
+        :root {
+            --bg-primary: #020617;
+            --bg-secondary: #0F172A;
+            --bg-gradient: radial-gradient(circle at 0% 0%, #1e293b 0%, #020617 70%);
+            --glass-bg: rgba(15, 23, 42, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.12);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --accent-primary: #3B82F6;
+            --accent-secondary: #8B5CF6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --gradient-text: linear-gradient(135deg, #60A5FA 0%, #A78BFA 100%);
+            
+            /* Status Colors */
+            --status-prod: #10B981;
+            --status-prod-bg: rgba(16, 185, 129, 0.15);
+            --status-indus: #F59E0B;
+            --status-indus-bg: rgba(245, 158, 11, 0.15);
+            --status-stop: #EF4444;
+            --status-stop-bg: rgba(239, 68, 68, 0.15);
+            --status-dev: #3B82F6;
+            --status-dev-bg: rgba(59, 130, 246, 0.15);
+        }
 
-    .header-section { margin-top: 20px; margin-bottom: 40px; }
-    .title-gradient { font-size: 2.5rem; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; color: transparent; margin-bottom: 10px; }
-    .subtitle { color: var(--text-muted); font-size: 1.1rem; font-weight: 400; }
+        /* ==========================================================================
+           2. GLOBAL RESET & BASE STYLES
+           ========================================================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-primary);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    /* --- STATS GRID --- */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px; }
-    .stat-card { padding: 30px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; transition: transform 0.3s ease; }
-    .stat-card:hover { transform: translateY(-5px); border-color: rgba(96, 165, 250, 0.3); }
-    .stat-card i { position: absolute; right: -10px; bottom: -10px; font-size: 6rem; color: rgba(255, 255, 255, 0.02); }
-    .stat-card h4 { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-    .stat-card .value { font-size: 2.5rem; font-weight: 800; color: var(--text-main); }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-    /* --- MODERN TABLE --- */
-    .table-wrapper { padding: 10px; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { padding: 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--glass-border); }
-    td { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.02); font-size: 1rem; color: #E2E8F0; }
-    tr { transition: background 0.2s ease; }
-    tr:hover { background: rgba(255, 255, 255, 0.02); }
-    
-    .cpt-name { font-weight: 700; color: white; display: block; font-size: 1.1rem; margin-bottom: 4px; }
-    .cpt-desc { font-size: 0.85rem; color: var(--accent); }
-    
-    .badge { display: inline-block; padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; }
-    .b-prod { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(52, 211, 153, 0.3); }
-    .b-indus { background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.3); }
-    .b-stop { background: rgba(239, 68, 68, 0.15); color: #F87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
 
-    /* --- MAP SECTION --- */
-    #map-container { width: 100%; height: 550px; border-radius: 16px; border: 1px solid var(--glass-border); z-index: 1; }
-    /* Dark theme customization for leaflet popups */
-    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #0F172A; color: white; border: 1px solid var(--glass-border); }
-    .leaflet-popup-content b { color: #60A5FA; font-size: 1.1rem; }
-  </style>
+        /* ==========================================================================
+           3. UI COMPONENTS (GLASSMORPHISM)
+           ========================================================================== */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .gradient-text {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        /* ==========================================================================
+           4. SIDEBAR NAVIGATION
+           ========================================================================== */
+        .sidebar {
+            width: 280px;
+            margin: 20px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            position: relative;
+        }
+        
+        /* Ambient Glow behind sidebar */
+        .sidebar::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 24px; box-shadow: 0 0 40px rgba(59, 130, 246, 0.1); z-index: -1;
+        }
+
+        .logo { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; padding-left: 10px; }
+        .logo i { font-size: 32px; color: #60A5FA; filter: drop-shadow(0 0 10px rgba(96,165,250,0.5)); }
+        .logo h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -1px; }
+
+        .nav-links { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+        .nav-item {
+            background: transparent; border: none; padding: 16px 20px; text-align: left;
+            font-size: 1rem; font-weight: 500; color: var(--text-muted); border-radius: 16px;
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 15px; position: relative; overflow: hidden;
+        }
+        .nav-item i { font-size: 1.2rem; width: 24px; text-align: center; transition: 0.3s; }
+        
+        .nav-item:hover { background: var(--glass-hover); color: var(--text-main); transform: translateX(8px); }
+        .nav-item.active {
+            background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-item.active i { color: #60A5FA; filter: drop-shadow(0 0 8px #60A5FA); }
+        .nav-item.active::before {
+            content: ''; position: absolute; left: 0; top: 10%; height: 80%; width: 4px;
+            background: #60A5FA; border-radius: 0 4px 4px 0;
+        }
+
+        .user-card {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px solid var(--glass-border);
+        }
+        .avatar { width: 45px; height: 45px; background: var(--gradient-text); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 700; color: white; }
+        .user-info p { margin: 0; }
+        .user-info .name { font-size: 0.95rem; font-weight: 600; color: white; }
+        .user-info .role { font-size: 0.75rem; color: var(--accent-primary); letter-spacing: 0.5px; text-transform: uppercase; }
+
+        /* ==========================================================================
+           5. MAIN CONTENT AREA
+           ========================================================================== */
+        .main-content {
+            flex-grow: 1; padding: 30px 40px 30px 10px; overflow-y: auto; position: relative;
+        }
+        
+        .section { display: none; opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .section.active { display: block; opacity: 1; transform: translateY(0); }
+
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        .header h1 { font-size: 3rem; margin-bottom: 5px; font-weight: 700; letter-spacing: -1px; }
+        .header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .action-bar { display: flex; gap: 15px; }
+        .btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: white;
+            padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer;
+            transition: 0.3s; display: flex; align-items: center; gap: 10px; font-family: 'Plus Jakarta Sans';
+        }
+        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .btn-primary { background: var(--accent-primary); border: none; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-primary:hover { background: #2563EB; }
+
+        /* ==========================================================================
+           6. DASHBOARD GRIDS & CHARTS
+           ========================================================================== */
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .stat-card { padding: 30px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: 0.4s; }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(96,165,250,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stat-icon { position: absolute; right: -15px; bottom: -15px; font-size: 8rem; color: rgba(255,255,255,0.02); transform: rotate(-15deg); transition: 0.4s; }
+        .stat-card:hover .stat-icon { color: rgba(59,130,246,0.05); transform: rotate(0deg) scale(1.1); }
+        .stat-card h4 { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-family: 'Plus Jakarta Sans'; }
+        .stat-card .value { font-size: 3.5rem; font-weight: 700; color: white; font-family: 'Space Grotesk'; line-height: 1; }
+        .stat-card .trend { margin-top: 15px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+        .trend-up { color: #10B981; } .trend-down { color: #EF4444; }
+
+        .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 40px; }
+        .chart-container { padding: 25px; height: 400px; display: flex; flex-direction: column; }
+        .chart-container h3 { margin-bottom: 20px; font-size: 1.2rem; color: white; }
+        .canvas-wrapper { flex-grow: 1; position: relative; }
+
+        /* ==========================================================================
+           7. INTERACTIVE DATA TABLE (CATALOG)
+           ========================================================================== */
+        .toolbar { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 20px; }
+        .search-box {
+            position: relative; flex-grow: 1; max-width: 400px;
+        }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-box input {
+            width: 100%; padding: 14px 20px 14px 45px; background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border); border-radius: 12px; color: white;
+            font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.3s;
+        }
+        .search-box input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        
+        .filters { display: flex; gap: 10px; }
+        .filter-select {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-main);
+            padding: 12px 20px; border-radius: 12px; font-family: inherit; outline: none; cursor: pointer;
+        }
+
+        .table-wrapper { width: 100%; overflow-x: auto; border-radius: 16px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th {
+            background: rgba(0,0,0,0.4); padding: 18px 20px; font-size: 0.85rem; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 10;
+        }
+        td { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.95rem; vertical-align: middle; }
+        tr { transition: background 0.2s ease; }
+        tr:hover { background: rgba(255,255,255,0.04); }
+        
+        .cpt-name { font-weight: 700; color: white; font-size: 1.1rem; display: block; margin-bottom: 4px; }
+        .cpt-sub { font-size: 0.8rem; color: var(--text-muted); }
+        .badge { padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; }
+        
+        .badge.prod { background: var(--status-prod-bg); color: var(--status-prod); border: 1px solid rgba(16,185,129,0.3); }
+        .badge.indus { background: var(--status-indus-bg); color: var(--status-indus); border: 1px solid rgba(245,158,11,0.3); }
+        .badge.stop { background: var(--status-stop-bg); color: var(--status-stop); border: 1px solid rgba(239,68,68,0.3); }
+        .badge.dev { background: var(--status-dev-bg); color: var(--status-dev); border: 1px solid rgba(59,130,246,0.3); }
+
+        .pagination { display: flex; justify-content: flex-end; align-items: center; gap: 15px; padding: 20px; border-top: 1px solid var(--glass-border); }
+        .page-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .page-btn:hover:not(:disabled) { background: var(--accent-primary); }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* ==========================================================================
+           8. MAP LEAFLET
+           ========================================================================== */
+        #map { width: 100%; height: 600px; border-radius: 20px; z-index: 1; }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: rgba(15,23,42,0.9); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .custom-marker { background: #3B82F6; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 15px #3B82F6, 0 0 30px #3B82F6; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.7); } 70% { box-shadow: 0 0 0 15px rgba(59,130,246,0); } 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); } }
+
+        /* ==========================================================================
+           9. VALUE CHAIN & PROCESS
+           ========================================================================== */
+        .process-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        .process-step { padding: 40px; position: relative; }
+        .step-number { position: absolute; top: 20px; right: 20px; font-size: 6rem; font-weight: 800; color: rgba(255,255,255,0.03); font-family: 'Space Grotesk'; line-height: 1; }
+        .process-step h3 { font-size: 1.5rem; margin-bottom: 15px; color: #60A5FA; display: flex; align-items: center; gap: 10px; }
+        .process-step p { color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
+        .process-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .ptag { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; color: #cbd5e1; }
+    </style>
 </head>
 <body>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar glass-panel">
-    <div class="logo-area">
-      <i class="fa-solid fa-droplet"></i>
-      <h2>WTI Nexus</h2>
-    </div>
-    <nav class="nav-menu">
-      <button class="nav-btn active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> Analytics</button>
-      <button class="nav-btn" onclick="switchTab('catalog')"><i class="fa-solid fa-layer-group"></i> Composants</button>
-      <button class="nav-btn" onclick="switchTab('suppliers')"><i class="fa-solid fa-earth-asia"></i> Map Interactive</button>
-    </nav>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-    
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="section active">
-      <div class="header-section">
-        <h1 class="title-gradient">Tableau de Bord WTI</h1>
-        <p class="subtitle">Supervision de la chaîne de valeur Néoprène & Natural Rubber [Asie]</p>
-      </div>
-      
-      <div class="stats-grid">
-        <div class="stat-card glass-panel">
-          <i class="fa-solid fa-leaf"></i>
-          <h4>Transition NR (2030)</h4>
-          <p class="value">100%</p>
+    <!-- ASIDE NAVIGATION -->
+    <aside class="sidebar glass-panel">
+        <div class="logo">
+            <i class="fa-solid fa-droplet"></i>
+            <h2 class="gradient-text">WTI Nexus</h2>
         </div>
-        <div class="stat-card glass-panel">
-          <i class="fa-solid fa-industry"></i>
-          <h4>Usines Asiatiques</h4>
-          <p class="value">8</p>
+        
+        <nav class="nav-links">
+            <button class="nav-item active" onclick="app.switchTab('dashboard')">
+                <i class="fa-solid fa-chart-pie"></i> Vue Analytique
+            </button>
+            <button class="nav-item" onclick="app.switchTab('catalog')">
+                <i class="fa-solid fa-database"></i> Database PACE
+            </button>
+            <button class="nav-item" onclick="app.switchTab('map')">
+                <i class="fa-solid fa-earth-asia"></i> Map Industrielle
+            </button>
+            <button class="nav-item" onclick="app.switchTab('process')">
+                <i class="fa-solid fa-gears"></i> Value Chain
+            </button>
+        </nav>
+
+        <div class="user-card">
+            <div class="avatar">AB</div>
+            <div class="user-info">
+                <p class="name">Amaury A-B.</p>
+                <p class="role">Ingénieur ICT</p>
+            </div>
+            <i class="fa-solid fa-gear" style="margin-left: auto; color: var(--text-muted); cursor: pointer;"></i>
         </div>
-        <div class="stat-card glass-panel">
-          <i class="fa-solid fa-bullseye"></i>
-          <h4>Taux Rejet Cible</h4>
-          <p class="value">13.5%</p>
-        </div>
-      </div>
-    </div>
+    </aside>
 
-    <!-- CATALOGUE COMPOSANTS -->
-    <div id="catalog" class="section">
-      <div class="header-section">
-        <h1 class="title-gradient">Database PLM (PACE)</h1>
-        <p class="subtitle">Suivi des homologations MTSR, PRSL et empreinte carbone</p>
-      </div>
-      
-      <div class="glass-panel table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Référence / Composant</th>
-              <th>Matériau</th>
-              <th>Partenaire</th>
-              <th>Impact CO2</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <span class="cpt-name">Y100 DDY Soft Anafi 1.5mm</span>
-                <span class="cpt-desc">Ref: 8841005</span>
-              </td>
-              <td>Yulex 100% FSC</td>
-              <td>Nam Chau / Daluen</td>
-              <td>-</td>
-              <td><span class="badge b-indus">GO INDUS</span></td>
-            </tr>
-            <tr>
-              <td>
-                <span class="cpt-name">BIO 08 AGIOS</span>
-                <span class="cpt-desc">Mousse hybride NR</span>
-              </td>
-              <td>Hybride Biosourcé</td>
-              <td>Nam Liong</td>
-              <td>8.5 kg CO2</td>
-              <td><span class="badge b-prod">GO PROD</span></td>
-            </tr>
-            <tr>
-              <td>
-                <span class="cpt-name">CR Neoprene Std</span>
-                <span class="cpt-desc">Polychloroprène classique</span>
-              </td>
-              <td>Pétrosourcé</td>
-              <td>Sheico</td>
-              <td>Élevé</td>
-              <td><span class="badge b-stop">STOPPED</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <div class="header">
+                <div>
+                    <h1 class="gradient-text">Dashboard Stratégique</h1>
+                    <p>Performance achats et transition écologique des composants WTI.</p>
+                </div>
+                <div class="action-bar">
+                    <button class="btn"><i class="fa-solid fa-download"></i> Exporter PDF</button>
+                    <button class="btn btn-primary"><i class="fa-solid fa-rotate-right"></i> Synchro PACE</button>
+                </div>
+            </div>
 
-    <!-- MAP FOURNISSEURS -->
-    <div id="suppliers" class="section">
-      <div class="header-section">
-        <h1 class="title-gradient">Supply Chain WTI</h1>
-        <p class="subtitle">Localisation des capacités de Moussage, Slicing et Assemblage</p>
-      </div>
-      <div id="map-container" class="glass-panel"></div>
-    </div>
+            <!-- KPI Cards -->
+            <div class="grid-stats">
+                <div class="stat-card glass-panel">
+                    <i class="fa-solid fa-leaf stat-icon"></i>
+                    <h4>Objectif Transition NR</h4>
+                    <p class="value">100<span style="font-size: 1.5rem;">%</span></p>
+                    <p class="trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> Cible 2030</p>
+                </div>
+                <div class="stat-card glass-panel">
+                    <i class="fa-solid fa-boxes-stacked stat-icon"></i>
+                    <h4>Composants Actifs</h4>
+                    <p class="value" id="kpi-cpt">...</p>
+                    <p class="trend"><i class="fa-solid fa-check"></i> MTSR Validés</p>
+                </div>
+                <div class="stat-card glass-panel">
+                    <i class="fa-solid fa-industry stat-icon"></i>
+                    <h4>Partenaires Asie</h4>
+                    <p class="value">8</p>
+                    <p class="trend"><i class="fa-solid fa-location-dot"></i> VN, TW, TH, CN</p>
+                </div>
+                <div class="stat-card glass-panel">
+                    <i class="fa-solid fa-triangle-exclamation stat-icon"></i>
+                    <h4>Taux Rejet (Slicing)</h4>
+                    <p class="value">13.5<span style="font-size: 1.5rem;">%</span></p>
+                    <p class="trend trend-down"><i class="fa-solid fa-arrow-trend-down"></i> Standard Dérogué</p>
+                </div>
+            </div>
 
-  </main>
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-container glass-panel">
+                    <h3>Répartition des Catégories de Mousses (NR vs CR)</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container glass-panel">
+                    <h3>Statuts d'Homologation PLM</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    let mapInitialized = false;
-    let myMap;
+        <!-- SECTION 2: CATALOG (DATATABLE) -->
+        <section id="catalog" class="section">
+            <div class="header">
+                <div>
+                    <h1 class="gradient-text">Catalogue Composants (PACE)</h1>
+                    <p>Base de données complète : Mousses, Linings et Complexes WTI.</p>
+                </div>
+            </div>
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.section').forEach(sec => {
-        sec.classList.remove('active');
-        sec.style.opacity = '0';
-        sec.style.transform = 'translateY(20px)';
-      });
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      
-      const targetSec = document.getElementById(tabId);
-      targetSec.classList.add('active');
-      // Animation délai pour la fluidité
-      setTimeout(() => {
-        targetSec.style.opacity = '1';
-        targetSec.style.transform = 'translateY(0)';
-      }, 50);
+            <div class="glass-panel" style="padding: 25px;">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchInput" placeholder="Rechercher (ex: Yulex, Sheico, Soft Anafi...)" onkeyup="app.filterTable()">
+                    </div>
+                    <div class="filters">
+                        <select id="filterSupplier" class="filter-select" onchange="app.filterTable()">
+                            <option value="all">Tous Fournisseurs</option>
+                            <option value="Nam Chau">Nam Chau</option>
+                            <option value="Sheico">Sheico</option>
+                            <option value="Nam Liong">Nam Liong</option>
+                            <option value="Le Hung">Le Hung</option>
+                            <option value="PI Pattana">PI Pattana</option>
+                        </select>
+                        <select id="filterStatus" class="filter-select" onchange="app.filterTable()">
+                            <option value="all">Tous Statuts</option>
+                            <option value="GO PROD">GO PROD</option>
+                            <option value="GO INDUS">GO INDUS</option>
+                            <option value="STOPPED">STOPPED</option>
+                        </select>
+                    </div>
+                </div>
 
-      event.currentTarget.classList.add('active');
+                <div class="table-wrapper">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Composant / Référence</th>
+                                <th>Catégorie (Mousse)</th>
+                                <th>Linings (In/Out)</th>
+                                <th>Épaisseur</th>
+                                <th>Fournisseur</th>
+                                <th>Statut PLM</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination">
+                    <span style="color: var(--text-muted); font-size: 0.9rem;" id="pageInfo">Affichage 1-10 sur X</span>
+                    <div>
+                        <button class="page-btn" id="btnPrev" onclick="app.changePage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="page-btn" id="btnNext" onclick="app.changePage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      if (tabId === 'suppliers') {
-        if (!mapInitialized) {
-          setTimeout(initMap, 100);
-        } else {
-          setTimeout(() => myMap.invalidateSize(), 150); 
+        <!-- SECTION 3: MAP -->
+        <section id="map" class="section">
+            <div class="header">
+                <div>
+                    <h1 class="gradient-text">Cartographie Industrielle</h1>
+                    <p>Localisation des capacités de moussage, slicing, lamination et FG.</p>
+                </div>
+            </div>
+            <div id="leafletMap" class="glass-panel" style="height: 650px;"></div>
+        </section>
+
+        <!-- SECTION 4: VALUE CHAIN -->
+        <section id="process" class="section">
+            <div class="header">
+                <div>
+                    <h1 class="gradient-text">Value Chain & Procédés</h1>
+                    <p>Les étapes clés de la fabrication, du raw material au produit fini[cite: 1, 3].</p>
+                </div>
+            </div>
+            
+            <div class="process-grid">
+                <div class="process-step glass-panel">
+                    <div class="step-number">01</div>
+                    <h3><i class="fa-solid fa-flask"></i> Formulation & Moussage</h3>
+                    <p>Création de la pâte à base de caoutchouc naturel (Yulex) ou synthétique (CR), mélangée avec du noir de carbone (Carbon black) et des agents gonflants. La vulcanisation crée les plaques brutes (Slabs) de 30mm[cite: 1, 3].</p>
+                    <div class="process-tags">
+                        <span class="ptag">PI Pattana</span> <span class="ptag">Sheico</span> <span class="ptag">Nam Liong</span>
+                    </div>
+                </div>
+
+                <div class="process-step glass-panel">
+                    <div class="step-number">02</div>
+                    <h3><i class="fa-solid fa-scissors"></i> Tranchage (Slicing)</h3>
+                    <p>Découpe des slabs de 30mm en feuilles minces (de 1.5mm à 7.0mm). C'est ici que s'applique le "Visual Defect Book" pour gérer les rebuts dus aux Blade marks, Wave marks et Holes[cite: 1, 2].</p>
+                    <div class="process-tags">
+                        <span class="ptag">Nam Chau</span> <span class="ptag">Le Hung</span> <span class="ptag">Doni</span>
+                    </div>
+                </div>
+
+                <div class="process-step glass-panel">
+                    <div class="step-number">03</div>
+                    <h3><i class="fa-solid fa-layer-group"></i> Lamination</h3>
+                    <p>Assemblage de la mousse tranchée avec les textiles (Linings : Soft Anafi, Agrios, etc.) via un calandrage à chaud. Utilisation critique de colles base eau ou base solvant (suivi VOC)[cite: 1, 2].</p>
+                    <div class="process-tags">
+                        <span class="ptag">Soft Anafi</span> <span class="ptag">Plush</span> <span class="ptag">Complex 3-Layers</span>
+                    </div>
+                </div>
+
+                <div class="process-step glass-panel">
+                    <div class="step-number">04</div>
+                    <h3><i class="fa-solid fa-shirt"></i> Assemblage FG (Confection)</h3>
+                    <p><strong>GBS (Glued & Blind Stitched) :</strong> Pour eaux froides (3-7mm), 100% étanche (l'aiguille ne traverse pas)[cite: 1].<br>
+                    <strong>Flatlock :</strong> Couture traversante pour eaux chaudes (1-2.5mm), non étanche[cite: 1].</p>
+                    <div class="process-tags">
+                        <span class="ptag">Scavi</span> <span class="ptag">Sheico Bavet</span> <span class="ptag">Doni</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================================================
+         JAVASCRIPT LOGIC & DATABASE
+         ========================================================================== -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        /**
+         * MASSIVE MOCK DATABASE EXTRACTED FROM WTI CSV FILES[cite: 1, 2]
+         * Combines NR, Synthetic, and representative records to demonstrate system capacity.
+         */
+        const db = [
+            // NR (Yulex & Bio) Examples
+            { ref: "Y100 DDY SOFT ANAFI/ SOFT ANAFI", category: "Natural Rubber", in: "SOFT ANAFI (PES)", out: "SOFT ANAFI (PES)", thick: "1.5 - 2.0 mm", supplier: "Nam Chau", status: "GO INDUS" },
+            { ref: "Y100 DDY AGIOS / PLUSH", category: "Natural Rubber", in: "PLUSH", out: "AGIOS", thick: "3.0 - 4.0 mm", supplier: "Nam Chau", status: "GO INDUS" },
+            { ref: "Y100 DARLING MM / DARLING MM", category: "Natural Rubber", in: "DARLING MM", out: "DARLING MM", thick: "1.5 mm", supplier: "Nam Chau", status: "IN DEV" },
+            { ref: "BIO 08 AGIOS / AMA", category: "Hybride Biosourcé", in: "AMA (PES/NY)", out: "AGIOS (PES)", thick: "2.0 - 5.0 mm", supplier: "Nam Liong", status: "GO PROD" },
+            { ref: "BIO 08 ARU / SOFT ANAFI", category: "Hybride Biosourcé", in: "SOFT ANAFI", out: "ARU (Knee/Seat)", thick: "4.0 mm", supplier: "Nam Liong", status: "GO PROD" },
+            { ref: "BIO 07 TIKA / PLUSH", category: "Hybride Biosourcé", in: "PLUSH", out: "TIKA", thick: "5.0 - 7.0 mm", supplier: "Nam Liong", status: "GO PROD" },
+            { ref: "Y100 SLABS (Brut)", category: "Natural Rubber", in: "N/A", out: "N/A", thick: "30.0 mm", supplier: "PI Pattana", status: "GO PROD" },
+            { ref: "Y85 GLIDE SKIN", category: "Natural Rubber (Smooth)", in: "N/A", out: "SOFT ANAFI", thick: "2.0 mm", supplier: "Nam Liong", status: "GO PROD" },
+            // CR (Synthetic) Examples
+            { ref: "CR (L) BTN / BTN", category: "Polychloroprène", in: "BTN (100% PA)", out: "BTN (100% PA)", thick: "1.5 - 7.0 mm", supplier: "Sheico", status: "STOPPED" },
+            { ref: "CR (L) SUPRATEX / PLUSH", category: "Polychloroprène", in: "PLUSH", out: "SUPRATEX", thick: "3.0 - 5.0 mm", supplier: "Sheico", status: "STOPPED" },
+            { ref: "CR (S) NYLON / NYLON", category: "Polychloroprène", in: "NYLON", out: "NYLON", thick: "2.0 - 3.0 mm", supplier: "Doni", status: "STOPPED" },
+            { ref: "SCR SPAN / SPAN", category: "SBR/CR Blend", in: "SPAN", out: "SPAN", thick: "1.5 - 2.5 mm", supplier: "Le Hung", status: "STOPPED" },
+            { ref: "CR (L) TERRY / TERRY", category: "Polychloroprène", in: "TERRY", out: "TERRY", thick: "2.0 mm", supplier: "Sheico", status: "STOPPED" },
+            { ref: "Y100 DDY TIKA / AMA", category: "Natural Rubber", in: "AMA", out: "TIKA", thick: "3.0 mm", supplier: "Nam Chau", status: "GO INDUS" },
+            { ref: "BIO 08 YULEX / YULEX", category: "Hybride Biosourcé", in: "YULEX LINING", out: "YULEX LINING", thick: "2.0 mm", supplier: "Nam Liong", status: "GO PROD" },
+            { ref: "CR (S) N TERRY / N TERRY", category: "Polychloroprène", in: "N TERRY", out: "N TERRY", thick: "1.5 mm", supplier: "Sheico", status: "STOPPED" },
+            { ref: "Y100 DDY RECYCLED / RECYCLED", category: "Natural Rubber", in: "RECYCLED PES", out: "RECYCLED PES", thick: "2.5 mm", supplier: "Le Hung", status: "IN DEV" },
+            // More to fill pagination...
+            { ref: "BIO 07 STANDARD", category: "Hybride Biosourcé", in: "STD", out: "STD", thick: "3.0 mm", supplier: "Nam Liong", status: "GO PROD" },
+            { ref: "CR (L) KNEE PAD", category: "Polychloroprène", in: "N/A", out: "KNEE PAD", thick: "5.0 mm", supplier: "Sheico", status: "STOPPED" },
+            { ref: "Y100 DDY QUICK DRY", category: "Natural Rubber", in: "QUICK DRY", out: "SOFT ANAFI", thick: "4.0 mm", supplier: "Nam Chau", status: "GO INDUS" },
+            { ref: "BIO 08 THERMAL", category: "Hybride Biosourcé", in: "THERMAL PLUSH", out: "AGIOS", thick: "5.0 mm", supplier: "Nam Liong", status: "GO PROD" }
+        ];
+
+        // Fill array to ~150 items to simulate heavy load
+        for(let i=0; i<130; i++) {
+            db.push({
+                ref: `SIMULATED CPT REF-${2000+i}`,
+                category: i % 2 === 0 ? "Natural Rubber" : "Polychloroprène",
+                in: "TEXTIL IN", out: "TEXTIL OUT", thick: (Math.random()*5 + 1).toFixed(1) + " mm",
+                supplier: ["Nam Chau", "Sheico", "Nam Liong", "Le Hung"][i%4],
+                status: ["GO PROD", "GO INDUS", "STOPPED", "IN DEV"][i%4]
+            });
         }
-      }
-    }
 
-    function initMap() {
-      myMap = L.map('map-container').setView([15.0, 108.0], 5);
+        /**
+         * APP CORE LOGIC
+         */
+        const app = {
+            currentPage: 1,
+            rowsPerPage: 10,
+            filteredData: [...db],
+            mapInstance: null,
+            chartsInitialized: false,
 
-      // Thème DARK pour la carte Leaflet
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap & CartoDB'
-      }).addTo(myMap);
+            init() {
+                document.getElementById('kpi-cpt').innerText = db.length;
+                this.renderTable();
+                this.initCharts();
+            },
 
-      const fournisseurs = [
-        { nom: "Nam Chau", lat: 10.95, lng: 106.82, role: "Tranchage (Slicing) & Lamination", details: "Partenaire clé projet Yulex 100 (Dong Nai, VN)." },
-        { nom: "Scavi", lat: 10.82, lng: 106.62, role: "Assemblage Produit Fini (FG)", details: "Confection des combinaisons Surf (HCMV, VN)." },
-        { nom: "PI Pattana", lat: 13.75, lng: 100.50, role: "Formulation & Moussage", details: "Production des Slabs Yulex 100 (Thaïlande)." },
-        { nom: "Sheico HQ", lat: 24.68, lng: 121.76, role: "Mousse, Lamination, FG", details: "Fournisseur intégré historique (Yilan, Taiwan)." },
-        { nom: "Nam Liong", lat: 23.02, lng: 120.22, role: "Fabrication Mousse & Lamination", details: "Gamme BIO 07 / BIO 08 (Tainan, Taiwan)." },
-        { nom: "Doni (Yangzhou)", lat: 32.39, lng: 119.41, role: "Tranchage, Lamination & FG", details: "Snorkeling & Surf (Chine)." }
-      ];
+            // --- TAB SWITCHING ---
+            switchTab(tabId) {
+                document.querySelectorAll('.section').forEach(sec => { sec.classList.remove('active'); });
+                document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+                
+                document.getElementById(tabId).classList.add('active');
+                event.currentTarget.classList.add('active');
 
-      // Icône custom (point lumineux)
-      const customIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: "<div style='background-color:#3B82F6; width:12px; height:12px; border-radius:50%; box-shadow: 0 0 10px #3B82F6, 0 0 20px #3B82F6;'></div>",
-        iconSize: [12, 12],
-        iconAnchor: [6, 6]
-      });
+                if(tabId === 'map') {
+                    if(!this.mapInstance) setTimeout(() => this.initMap(), 300);
+                    else setTimeout(() => this.mapInstance.invalidateSize(), 300);
+                }
+            },
 
-      fournisseurs.forEach(f => {
-        let marker = L.marker([f.lat, f.lng], {icon: customIcon}).addTo(myMap);
-        marker.bindPopup(`
-          <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
-            <b>${f.nom}</b><br>
-            <span style="color:#60A5FA; font-size:0.85rem; font-weight:600;">${f.role}</span><br>
-            <p style="font-size:0.85rem; margin-top:5px; color:#94A3B8;">${f.details}</p>
-          </div>
-        `);
-      });
+            // --- DATATABLE LOGIC ---
+            renderTable() {
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = '';
+                
+                const start = (this.currentPage - 1) * this.rowsPerPage;
+                const end = start + this.rowsPerPage;
+                const paginatedItems = this.filteredData.slice(start, end);
 
-      mapInitialized = true;
-    }
-  </script>
+                if(paginatedItems.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Aucun composant trouvé.</td></tr>`;
+                }
+
+                paginatedItems.forEach(item => {
+                    // Status Badge Logic
+                    let badgeClass = 'dev'; let icon = 'fa-spinner';
+                    if(item.status === 'GO PROD') { badgeClass = 'prod'; icon = 'fa-check'; }
+                    if(item.status === 'GO INDUS') { badgeClass = 'indus'; icon = 'fa-industry'; }
+                    if(item.status === 'STOPPED') { badgeClass = 'stop'; icon = 'fa-ban'; }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span class="cpt-name">${item.ref}</span><span class="cpt-sub">Cat: ${item.category}</span></td>
+                        <td>${item.category}</td>
+                        <td><span style="color:#60A5FA;">IN:</span> ${item.in}<br><span style="color:#A78BFA;">OUT:</span> ${item.out}</td>
+                        <td>${item.thick}</td>
+                        <td><b>${item.supplier}</b></td>
+                        <td><span class="badge ${badgeClass}"><i class="fa-solid ${icon}"></i> ${item.status}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('pageInfo').innerText = `Affichage ${start + 1}-${Math.min(end, this.filteredData.length)} sur ${this.filteredData.length}`;
+                document.getElementById('btnPrev').disabled = this.currentPage === 1;
+                document.getElementById('btnNext').disabled = end >= this.filteredData.length;
+            },
+
+            filterTable() {
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const sup = document.getElementById('filterSupplier').value;
+                const stat = document.getElementById('filterStatus').value;
+
+                this.filteredData = db.filter(item => {
+                    const matchSearch = item.ref.toLowerCase().includes(search) || item.supplier.toLowerCase().includes(search) || item.in.toLowerCase().includes(search);
+                    const matchSup = sup === 'all' || item.supplier === sup;
+                    const matchStat = stat === 'all' || item.status === stat;
+                    return matchSearch && matchSup && matchStat;
+                });
+                this.currentPage = 1;
+                this.renderTable();
+            },
+
+            changePage(dir) {
+                this.currentPage += dir;
+                this.renderTable();
+            },
+
+            // --- MAP LOGIC (LEAFLET) ---
+            initMap() {
+                this.mapInstance = L.map('leafletMap').setView([15.0, 108.0], 5);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap' }).addTo(this.mapInstance);
+
+                const suppliers = [
+                    { nom: "Nam Chau", lat: 10.95, lng: 106.82, role: "Tranchage (Slicing) & Lamination", details: "Projet Duplication Yulex 100[cite: 2]." },
+                    { nom: "Scavi", lat: 10.82, lng: 106.62, role: "Assemblage Produit Fini (FG)", details: "Confection Wetsuits Surf[cite: 3]." },
+                    { nom: "PI Pattana", lat: 13.75, lng: 100.50, role: "Moussage Natural Rubber", details: "Fournisseur exclusif Slabs Yulex 100[cite: 3]." },
+                    { nom: "Sheico HQ", lat: 24.68, lng: 121.76, role: "Intégré (Mousse, Lamin, FG)", details: "Partenaire historique[cite: 3]." },
+                    { nom: "Nam Liong", lat: 23.02, lng: 120.22, role: "Fabrication Mousse", details: "Gammes BIO 07 / 08[cite: 2]." },
+                    { nom: "Doni", lat: 32.39, lng: 119.41, role: "Slicing, Lamination, FG", details: "Production Snorkeling (Chine)[cite: 3]." }
+                ];
+
+                const icon = L.divIcon({ className: 'custom-marker', iconSize: [16,16], iconAnchor: [8,8] });
+
+                suppliers.forEach(f => {
+                    L.marker([f.lat, f.lng], {icon: icon}).addTo(this.mapInstance)
+                     .bindPopup(`<b>${f.nom}</b><br><span style="color:#60A5FA;">${f.role}</span><br><small style="color:#9CA3AF;">${f.details}</small>`);
+                });
+            },
+
+            // --- CHART.JS LOGIC ---
+            initCharts() {
+                if(this.chartsInitialized) return;
+                Chart.defaults.color = '#94A3B8';
+                Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+
+                // Bar Chart: Component breakdown
+                new Chart(document.getElementById('barChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Yulex 100', 'BIO 08', 'BIO 07', 'CR Std', 'SCR'],
+                        datasets: [{
+                            label: 'Nombre de CPT',
+                            data: [45, 25, 15, 55, 10],
+                            backgroundColor: ['#10B981', '#34D399', '#6EE7B7', '#EF4444', '#F87171'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} } }
+                });
+
+                // Doughnut Chart: Status
+                new Chart(document.getElementById('doughnutChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['GO PROD', 'GO INDUS', 'STOPPED', 'IN DEV'],
+                        datasets: [{
+                            data: [60, 25, 45, 20],
+                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#3B82F6'],
+                            borderWidth: 0, hoverOffset: 10
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '75%' }
+                });
+
+                this.chartsInitialized = true;
+            }
+        };
+
+        // Initialize App
+        window.onload = () => app.init();
+    </script>
 </body>
 </html>
