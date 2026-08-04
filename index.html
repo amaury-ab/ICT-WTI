@@ -9,7 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    
+    <!-- FIX: Leaflet CSS with explicit integrity and crossorigin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -17,34 +20,27 @@
            1. CORE DESIGN TOKENS & VARIABLES
            ========================================================================== */
         :root {
-            /* Palette de base - Dark Mode Profond */
             --bg-base: #030305;
             --bg-surface: #0a0a0e;
-            --bg-panel: rgba(15, 15, 20, 0.75);
-            --bg-panel-hover: rgba(25, 25, 32, 0.85);
+            --bg-panel: rgba(15, 15, 20, 0.85);
+            --bg-panel-hover: rgba(25, 25, 32, 0.95);
             --bg-gradient: radial-gradient(circle at 100% 0%, #1a1a2e, #030305 70%);
             
-            /* Bordures & Ombres (Glassmorphism) */
             --border-glass: rgba(255, 255, 255, 0.08);
             --border-highlight: rgba(255, 255, 255, 0.2);
             --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.3);
             
-            /* Typographie */
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --text-accent: #38bdf8;
             --font-main: 'Outfit', sans-serif;
             --font-display: 'Space Grotesk', sans-serif;
             
-            /* Couleurs Sémantiques */
             --color-primary: #0ea5e9;
             --color-primary-dark: #0284c7;
             --color-primary-glow: rgba(14, 165, 233, 0.5);
             --color-secondary: #8b5cf6;
-            --color-secondary-glow: rgba(139, 92, 246, 0.5);
             
-            /* Couleurs d'États (Status) */
             --stat-success: #10b981; 
             --stat-success-bg: rgba(16, 185, 129, 0.15);
             --stat-warning: #f59e0b; 
@@ -54,162 +50,69 @@
             --stat-info: #6366f1; 
             --stat-info-bg: rgba(99, 102, 241, 0.15);
             
-            /* Animations & Transitions */
-            --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-fast: all 0.2s var(--ease-out);
-            --transition-smooth: all 0.4s var(--ease-out);
-            --transition-slow: all 0.6s var(--ease-out);
-            
-            /* Dimensions */
             --sidebar-width: 320px;
-            --panel-width: 800px;
-            --header-height: 80px;
-            --border-radius-sm: 8px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 20px;
-            --border-radius-xl: 30px;
+            --panel-width: 850px;
+            --transition-fast: all 0.2s ease-in-out;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* ==========================================================================
            2. GLOBAL RESET & BASE STYLES
            ========================================================================== */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { font-size: 16px; scroll-behavior: smooth; }
-        
         body {
             font-family: var(--font-main);
             background-color: var(--bg-base);
             background-image: var(--bg-gradient);
-            background-attachment: fixed;
             color: var(--text-main);
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            overflow: hidden;
+            height: 100vh; width: 100vw;
+            display: flex; overflow: hidden;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-        }
-
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; }
         a { text-decoration: none; color: inherit; transition: var(--transition-fast); }
         ul, ol { list-style: none; }
         button, input, textarea, select { font-family: inherit; outline: none; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
 
         /* ==========================================================================
-           3. REUSABLE UI COMPONENTS
+           3. UTILITIES & REUSABLE COMPONENTS
            ========================================================================== */
-        /* Glassmorphism Panels */
         .glass-panel {
             background: var(--bg-panel);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-glass);
-            border-radius: var(--border-radius-lg);
+            border-radius: 20px;
             box-shadow: var(--shadow-glass);
             transition: var(--transition-smooth);
         }
-        
-        .glass-panel:hover {
-            border-color: var(--border-highlight);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-        }
+        .glass-panel:hover { border-color: var(--border-highlight); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); }
 
-        /* Typography Utilities */
-        .text-gradient {
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: inline-block;
-        }
+        .text-gradient { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .text-muted { color: var(--text-muted); }
         .text-success { color: var(--stat-success); }
         .text-warning { color: var(--stat-warning); }
         .text-danger { color: var(--stat-danger); }
-        
-        /* Buttons */
-        .btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            color: var(--text-main);
-            padding: 12px 24px;
-            border-radius: var(--border-radius-md);
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 150%; height: 150%;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translate(-50%, -50%) scale(0) rotate(45deg);
-            transition: transform 0.6s var(--ease-out);
-            border-radius: 50%;
-        }
-        
-        .btn:hover::after { transform: translate(-50%, -50%) scale(1) rotate(45deg); }
-        .btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--border-highlight); transform: translateY(-2px); }
-        .btn:active { transform: translateY(0); }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-            border: none;
-            box-shadow: 0 4px 15px var(--color-primary-glow);
-            color: white;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
-            box-shadow: 0 6px 25px var(--color-primary-glow);
-        }
-        
-        .btn-success { background: var(--stat-success-bg); color: var(--stat-success); border-color: rgba(16, 185, 129, 0.3); }
-        .btn-success:hover { background: rgba(16, 185, 129, 0.2); }
-        
-        .btn-icon {
-            width: 40px; height: 40px; padding: 0; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-        }
 
-        /* Badges */
+        .btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass);
+            color: var(--text-main); padding: 12px 24px; border-radius: 12px; font-weight: 600;
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            transition: var(--transition-fast); position: relative; overflow: hidden;
+        }
+        .btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--border-highlight); transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); border: none; box-shadow: 0 4px 15px var(--color-primary-glow); color: white; }
+        .btn-primary:hover { background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary)); box-shadow: 0 6px 25px var(--color-primary-glow); }
+
         .badge {
-            padding: 6px 12px;
-            border-radius: var(--border-radius-sm);
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
+            padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
         }
         .badge-success { background: var(--stat-success-bg); color: var(--stat-success); border: 1px solid rgba(16, 185, 129, 0.3); }
         .badge-warning { background: var(--stat-warning-bg); color: var(--stat-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
@@ -217,522 +120,295 @@
         .badge-info { background: var(--stat-info-bg); color: var(--color-primary); border: 1px solid rgba(14, 165, 233, 0.3); }
         .badge-outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
-        .form-control {
-            width: 100%;
-            padding: 14px 18px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--border-radius-md);
-            color: var(--text-main);
-            font-size: 1rem;
-            transition: var(--transition-fast);
-            resize: vertical;
-        }
-        .form-control:focus {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-        }
-
         /* ==========================================================================
            4. LAYOUT ARCHITECTURE
            ========================================================================== */
-        /* Sidebar */
         .sidebar {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            background: rgba(3, 3, 5, 0.85);
-            border-right: 1px solid var(--border-glass);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            transition: var(--transition-smooth);
+            width: var(--sidebar-width); min-width: var(--sidebar-width);
+            background: rgba(3, 3, 5, 0.95); border-right: 1px solid var(--border-glass);
+            display: flex; flex-direction: column; z-index: 1000;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.5);
         }
         
-        .sidebar-header {
-            padding: 32px 24px 24px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
+        .sidebar-header { padding: 32px 24px 24px; display: flex; align-items: center; gap: 16px; }
         .sidebar-logo {
-            width: 48px; height: 48px;
+            width: 48px; height: 48px; border-radius: 12px;
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(139, 92, 246, 0.2));
-            border-radius: var(--border-radius-md);
-            border: 1px solid rgba(14, 165, 233, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: var(--color-primary);
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.4); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--color-primary); box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
         }
-        
-        .sidebar-title h2 { font-size: 1.8rem; color: white; letter-spacing: -1px; line-height: 1; }
+        .sidebar-title h2 { font-size: 1.8rem; color: white; }
         .sidebar-title span { font-size: 0.75rem; color: var(--color-primary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
 
-        .sidebar-scroll {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 0 24px 24px;
-        }
-
+        .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 0 24px 24px; }
         .nav-section { margin-bottom: 32px; }
-        .nav-section-title {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 12px;
-            font-weight: 700;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .nav-section-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--border-glass); }
-
+        .nav-section-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-weight: 700; }
+        
         .nav-link {
-            width: 100%;
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-muted);
-            text-align: left;
-            padding: 12px 16px;
-            margin-bottom: 6px;
-            border-radius: var(--border-radius-md);
-            font-size: 0.95rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            position: relative;
-            overflow: hidden;
+            width: 100%; background: transparent; border: 1px solid transparent; color: var(--text-muted);
+            text-align: left; padding: 12px 16px; margin-bottom: 6px; border-radius: 12px;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: var(--transition-fast);
+            display: flex; align-items: center; gap: 16px; position: relative;
         }
-        
-        .nav-link i { width: 20px; text-align: center; font-size: 1.1rem; transition: var(--transition-fast); }
-        
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.03);
-            color: white;
-            transform: translateX(4px);
-        }
-        
-        .nav-link.active {
-            background: linear-gradient(90deg, rgba(14, 165, 233, 0.1), transparent);
-            border-color: rgba(14, 165, 233, 0.2);
-            color: var(--color-primary);
-            font-weight: 700;
-        }
-        .nav-link.active i { color: var(--color-primary); filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.6)); }
+        .nav-link i { width: 20px; text-align: center; font-size: 1.1rem; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.03); color: white; transform: translateX(4px); }
+        .nav-link.active { background: linear-gradient(90deg, rgba(14, 165, 233, 0.1), transparent); border-color: rgba(14, 165, 233, 0.2); color: var(--color-primary); font-weight: 700; }
 
-        .supplier-nav-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            padding-left: 12px;
-            border-left: 1px solid var(--border-glass);
-            margin-left: 12px;
-        }
-        
+        .supplier-nav-list { display: flex; flex-direction: column; gap: 4px; padding-left: 12px; border-left: 1px solid var(--border-glass); margin-left: 12px; }
         .sup-nav-item {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            text-align: left;
-            padding: 10px 16px;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            position: relative;
+            background: transparent; border: none; color: var(--text-muted); text-align: left;
+            padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: var(--transition-fast);
+            display: flex; align-items: center; gap: 12px; font-size: 0.9rem;
         }
-        
         .sup-nav-item:hover { color: white; background: rgba(255, 255, 255, 0.05); }
         .sup-nav-item.active { color: white; background: rgba(255, 255, 255, 0.1); font-weight: 600; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
 
-        .sidebar-footer {
-            padding: 24px;
-            border-top: 1px solid var(--border-glass);
-            background: rgba(0, 0, 0, 0.2);
-        }
-        
-        .user-widget {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px;
-            border-radius: var(--border-radius-md);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glass);
-            transition: var(--transition-fast);
-        }
-        .user-widget:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--border-highlight); }
-        .user-widget .avatar {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 800; font-size: 1rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .user-widget-info flex { flex-direction: column; }
+        .sidebar-footer { padding: 24px; border-top: 1px solid var(--border-glass); background: rgba(0, 0, 0, 0.2); }
+        .user-widget { display: flex; align-items: center; gap: 16px; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); }
+        .user-widget .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; }
         .user-widget-info strong { font-size: 0.95rem; color: white; display: block; }
         .user-widget-info span { font-size: 0.75rem; color: var(--text-muted); }
 
-        /* Main Wrapper */
-        .main-container {
-            flex-grow: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            background: transparent;
-        }
-
-        /* Router Views */
+        .main-container { flex-grow: 1; position: relative; display: flex; flex-direction: column; height: 100vh; width: calc(100vw - var(--sidebar-width)); }
+        
         .view-layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out);
-            transform: scale(0.98) translateY(10px);
-            overflow-y: auto;
-            padding: 40px;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            overflow-y: auto; overflow-x: hidden; padding: 40px; z-index: 10;
         }
+        .view-layer.active { opacity: 1; pointer-events: auto; z-index: 20; }
         
-        .view-layer.active {
-            opacity: 1; pointer-events: auto;
-            transform: scale(1) translateY(0);
-            z-index: 10;
-        }
-        
-        /* Specific Views Overrides */
-        #view-map { padding: 0; overflow: hidden; }
+        #view-map { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
 
         /* ==========================================================================
-           5. MAP VIEW & LEAFLET CUSTOMIZATION
+           5. MAP VIEW & LEAFLET
            ========================================================================== */
-        #leaflet-map {
-            width: 100%; height: 100%;
+        .map-overlay-header {
+            position: absolute; top: 32px; left: 32px; z-index: 400;
+            pointer-events: none; display: flex; flex-direction: column; gap: 16px;
+        }
+        .map-overlay-header h1 { font-size: 3.5rem; color: white; text-shadow: 0 4px 24px rgba(0,0,0,0.9); pointer-events: auto; }
+        .map-overlay-header p { font-size: 1.1rem; color: rgba(255,255,255,0.9); text-shadow: 0 2px 12px rgba(0,0,0,0.9); max-width: 600px; pointer-events: auto; }
+        .map-legend { display: flex; flex-wrap: wrap; gap: 12px; pointer-events: auto; background: rgba(10, 10, 15, 0.85); padding: 12px 20px; border-radius: 20px; border: 1px solid var(--border-glass); backdrop-filter: blur(10px); }
+
+        /* FIX: Map container sizing */
+        #leaflet-map-container {
+            width: 100%;
+            height: 100%;
+            flex-grow: 1;
             background: #020203;
             z-index: 1;
-        }
-
-        .map-overlay-header {
             position: absolute;
-            top: 32px; left: 32px;
-            z-index: 400;
-            pointer-events: none;
-            display: flex; flex-direction: column; gap: 16px;
-        }
-        
-        .map-overlay-header h1 {
-            font-size: 4rem; color: white;
-            text-shadow: 0 4px 24px rgba(0,0,0,0.9);
-            pointer-events: auto;
-        }
-        
-        .map-overlay-header p {
-            font-size: 1.2rem; color: rgba(255,255,255,0.9);
-            text-shadow: 0 2px 12px rgba(0,0,0,0.9);
-            max-width: 600px; line-height: 1.5;
-            pointer-events: auto;
+            top: 0; left: 0; bottom: 0; right: 0;
         }
 
-        .map-legend {
-            display: flex; gap: 16px; margin-top: 16px; pointer-events: auto;
-            background: rgba(10, 10, 15, 0.8); padding: 12px 20px; border-radius: var(--border-radius-xl);
-            border: 1px solid var(--border-glass); backdrop-filter: blur(10px);
-        }
-
-        /* Leaflet Customizations */
-        .leaflet-popup-content-wrapper {
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            color: white;
-            border: 1px solid var(--border-glass);
-            border-radius: var(--border-radius-md);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            padding: 8px;
-        }
+        .leaflet-container { font-family: var(--font-main); background: #000; }
+        .leaflet-popup-content-wrapper { background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px); color: white; border: 1px solid var(--border-glass); border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.8); padding: 5px; }
         .leaflet-popup-tip { background: rgba(15, 15, 20, 0.95); border: 1px solid var(--border-glass); }
         
-        /* Animated Map Markers */
-        .marker-pulse {
-            border-radius: 50%;
-            border: 2px solid #fff;
-            cursor: pointer;
-            transition: transform 0.3s var(--ease-spring);
-        }
+        .marker-pulse { border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: transform 0.3s; }
         .marker-pulse:hover { transform: scale(1.3) !important; z-index: 1000 !important; }
-        
         .marker-danger { background: var(--stat-danger); box-shadow: 0 0 0 rgba(239, 68, 68, 0.7); animation: pulseDanger 2s infinite; }
         .marker-warning { background: var(--stat-warning); box-shadow: 0 0 0 rgba(245, 158, 11, 0.7); animation: pulseWarning 2.5s infinite; }
         .marker-success { background: var(--stat-success); box-shadow: 0 0 0 rgba(16, 185, 129, 0.7); animation: pulseSuccess 3s infinite; }
         .marker-info { background: var(--color-primary); box-shadow: 0 0 0 rgba(14, 165, 233, 0.7); animation: pulseInfo 2s infinite; }
         
-        @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        @keyframes pulseWarning { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
-        @keyframes pulseSuccess { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-        @keyframes pulseInfo { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
-
-        /* Popup Content */
-        .popup-custom { font-family: var(--font-main); }
-        .popup-title { font-size: 1.2rem; font-family: var(--font-display); font-weight: 700; margin-bottom: 4px; color: white; }
-        .popup-role { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 12px; display: block; }
+        @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pulseWarning { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+        @keyframes pulseSuccess { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes pulseInfo { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
 
         /* ==========================================================================
            6. SLIDE-OVER SUPPLIER PANEL
            ========================================================================== */
         .slide-panel {
-            position: absolute;
-            top: 0; right: -100%; /* Hidden by default */
-            width: var(--panel-width);
-            max-width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 14, 0.95);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border-left: 1px solid var(--border-glass);
-            box-shadow: -20px 0 60px rgba(0,0,0,0.8);
-            z-index: 500;
-            display: flex;
-            flex-direction: column;
-            transition: right 0.5s var(--ease-spring);
+            position: absolute; top: 0; right: -120%; width: var(--panel-width); max-width: 100%; height: 100%;
+            background: rgba(10, 10, 14, 0.98); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border-left: 1px solid var(--border-glass); box-shadow: -20px 0 60px rgba(0,0,0,0.9);
+            z-index: 9999; display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
         .slide-panel.open { right: 0; }
         
-        .panel-header {
-            padding: 40px 40px 24px 40px;
-            border-bottom: 1px solid var(--border-glass);
-            background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
-            position: relative;
-        }
-        
+        .panel-header { padding: 40px; border-bottom: 1px solid var(--border-glass); background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent); position: relative; }
         .panel-close-btn {
-            position: absolute;
-            top: 40px; right: 40px;
-            width: 40px; height: 40px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-glass);
-            border-radius: 50%; color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition-fast);
-            z-index: 10;
+            position: absolute; top: 40px; right: 40px; width: 44px; height: 44px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); border-radius: 50%; color: white;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); z-index: 10; font-size: 1.2rem;
         }
         .panel-close-btn:hover { background: var(--stat-danger); transform: rotate(90deg); border-color: var(--stat-danger); }
-
-        .panel-title { font-size: 3.5rem; color: white; margin-bottom: 12px; padding-right: 60px; }
+        .panel-title { font-size: 3rem; color: white; margin-bottom: 12px; padding-right: 60px; }
         .panel-subtitle { font-size: 1.1rem; color: var(--color-primary); display: flex; align-items: center; gap: 8px; font-weight: 500; margin-bottom: 24px; }
         
-        /* Panel Tabs */
-        .panel-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0; margin-top: 24px; }
+        .panel-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-top: 24px; }
         .tab-btn {
-            background: transparent; border: none; color: var(--text-muted);
-            padding: 12px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;
+            background: transparent; border: none; color: var(--text-muted); padding: 12px 24px; font-size: 1rem; font-weight: 600; cursor: pointer;
             border-bottom: 3px solid transparent; transition: var(--transition-fast);
-            font-family: var(--font-main);
         }
         .tab-btn:hover { color: white; background: rgba(255,255,255,0.03); border-radius: 8px 8px 0 0; }
         .tab-btn.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
 
-        /* Panel Content Area */
-        .panel-content {
-            flex-grow: 1; overflow-y: auto; padding: 40px;
-            display: flex; flex-direction: column; gap: 32px;
-            position: relative;
-        }
-        
-        .tab-pane { display: none; opacity: 0; animation: fadeView 0.4s forwards; }
+        .panel-content { flex-grow: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; gap: 32px; position: relative; }
+        .tab-pane { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
         .tab-pane.active { display: block; }
+        @keyframes fadeIn { to { opacity: 1; } }
 
-        /* Content Blocks inside Panel */
-        .info-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--border-radius-lg);
-            padding: 24px;
-        }
-        .info-card h3 { font-size: 1.25rem; color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px; }
-        .info-card p { font-size: 1rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 16px; }
+        .info-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 20px; padding: 32px; }
+        .info-card h3 { font-size: 1.4rem; color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 16px; }
+        .info-card p { font-size: 1.05rem; line-height: 1.7; color: #cbd5e1; margin-bottom: 16px; }
 
-        .alert-box {
-            padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;
-            border-left: 4px solid transparent; background: rgba(255,255,255,0.02);
-        }
-        .alert-danger { background: var(--stat-danger-bg); border-left-color: var(--stat-danger); border-right: 1px solid rgba(239,68,68,0.2); border-top: 1px solid rgba(239,68,68,0.2); border-bottom: 1px solid rgba(239,68,68,0.2); }
-        .alert-danger h4 { color: var(--stat-danger); margin-bottom: 8px; }
-        .alert-warning { background: var(--stat-warning-bg); border-left-color: var(--stat-warning); }
-        .alert-warning h4 { color: var(--stat-warning); margin-bottom: 8px; }
-        
+        .alert-box { padding: 24px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid transparent; background: rgba(255,255,255,0.02); }
+        .alert-danger { background: var(--stat-danger-bg); border-left-color: var(--stat-danger); border: 1px solid rgba(239,68,68,0.2); }
+        .alert-danger h4 { color: var(--stat-danger); margin-bottom: 12px; font-size: 1.1rem; }
+        .alert-warning { background: var(--stat-warning-bg); border-left-color: var(--stat-warning); border: 1px solid rgba(245,158,11,0.2); }
+        .alert-warning h4 { color: var(--stat-warning); margin-bottom: 12px; font-size: 1.1rem; }
         .alert-list { padding-left: 20px; margin-top: 12px; }
-        .alert-list li { margin-bottom: 8px; line-height: 1.5; color: #f8fafc; font-size: 0.95rem; }
+        .alert-list li { margin-bottom: 12px; line-height: 1.6; color: #f8fafc; font-size: 1rem; }
 
         .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .mini-kpi { background: rgba(0,0,0,0.4); padding: 20px; border-radius: var(--border-radius-md); border: 1px solid var(--border-glass); }
-        .mini-kpi-label { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .mini-kpi-val { font-size: 1.8rem; font-family: var(--font-display); font-weight: 700; color: white; }
+        .mini-kpi { background: rgba(0,0,0,0.4); padding: 24px; border-radius: 16px; border: 1px solid var(--border-glass); }
+        .mini-kpi-label { display: block; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .mini-kpi-val { font-size: 2rem; font-family: var(--font-display); font-weight: 700; color: white; }
 
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        .data-table th, .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-glass); text-align: left; }
-        .data-table th { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 16px; border-bottom: 1px solid var(--border-glass); text-align: left; }
+        .data-table th { background: rgba(0,0,0,0.4); color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
         .data-table td { color: #e2e8f0; font-size: 0.95rem; }
 
-        /* ==========================================================================
-           7. INTERACTIVE NOTES SYSTEM
-           ========================================================================== */
+        /* Notes System */
         .notes-container { display: flex; flex-direction: column; gap: 24px; height: 100%; }
-        .note-editor {
-            background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass);
-            border-radius: var(--border-radius-md); padding: 20px;
-        }
-        .note-editor textarea {
-            width: 100%; height: 120px; background: transparent; border: none;
-            color: white; font-size: 1rem; resize: none; margin-bottom: 16px;
-            font-family: var(--font-main); line-height: 1.5;
-        }
-        .note-editor textarea::placeholder { color: rgba(255,255,255,0.2); }
+        .note-editor { background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; }
+        .note-editor textarea { width: 100%; height: 120px; background: transparent; border: none; color: white; font-size: 1.05rem; resize: none; margin-bottom: 16px; font-family: var(--font-main); line-height: 1.6; }
+        .note-editor textarea::placeholder { color: rgba(255,255,255,0.3); }
         .note-actions { display: flex; justify-content: flex-end; }
-        
         .notes-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; }
-        .note-item {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass);
-            border-left: 3px solid var(--color-primary); border-radius: var(--border-radius-md);
-            padding: 20px; position: relative; transition: var(--transition-fast);
-        }
-        .note-item:hover { background: rgba(255,255,255,0.04); }
-        .note-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .note-date { font-size: 0.8rem; color: var(--text-muted); font-family: monospace; }
-        .note-delete { background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .note-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-left: 4px solid var(--color-primary); border-radius: 12px; padding: 24px; position: relative; }
+        .note-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
+        .note-date { font-size: 0.85rem; color: var(--text-muted); font-family: monospace; }
+        .note-delete { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
         .note-delete:hover { color: var(--stat-danger); }
-        .note-body { font-size: 0.95rem; color: #e2e8f0; line-height: 1.6; white-space: pre-wrap; }
-        
-        .empty-notes { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+        .note-body { font-size: 1rem; color: #e2e8f0; line-height: 1.7; white-space: pre-wrap; }
+        .empty-notes { text-align: center; padding: 60px; color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px dashed var(--border-glass); }
 
-        /* Toast Notification */
-        .toast-container { position: fixed; bottom: 32px; right: 32px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
-        .toast {
-            background: rgba(15, 15, 20, 0.95); border: 1px solid var(--border-glass); border-left: 4px solid var(--stat-success);
-            color: white; padding: 16px 24px; border-radius: var(--border-radius-md);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: flex; align-items: center; gap: 12px; font-weight: 500;
-            animation: slideInRight 0.4s var(--ease-spring) forwards;
-        }
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+        /* Toast */
+        .toast-container { position: fixed; bottom: 32px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; }
+        .toast { background: rgba(15, 15, 20, 0.95); border: 1px solid var(--border-glass); border-left: 4px solid var(--stat-success); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-weight: 500; animation: slideIn 0.4s var(--ease-spring) forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* ==========================================================================
-           8. DASHBOARD & PROCESS VIEWS
+           9. DASHBOARD VIEW
            ========================================================================== */
-        .dash-header { margin-bottom: 40px; }
-        .dash-header h1 { font-size: 3rem; margin-bottom: 12px; color: white; }
-        
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .g-card { padding: 32px; display: flex; flex-direction: column; justify-content: center; }
-        .g-card h4 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
-        .g-card .g-val { font-size: 4rem; color: white; line-height: 1; font-family: var(--font-display); }
-
-        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .chart-box { padding: 32px; height: 450px; display: flex; flex-direction: column; }
-        .chart-box h3 { font-size: 1.25rem; margin-bottom: 24px; color: white; }
+        .dash-header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .dash-header h1 { font-size: 3.5rem; margin-bottom: 12px; color: white; }
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 48px; }
+        .g-card { padding: 32px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+        .g-card::after { content: ''; position: absolute; top:0; left:0; width: 4px; height: 100%; background: var(--color-primary); }
+        .g-card.danger::after { background: var(--stat-danger); }
+        .g-card.warning::after { background: var(--stat-warning); }
+        .g-card h4 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+        .g-card .g-val { font-size: 4.5rem; color: white; line-height: 1; font-family: var(--font-display); }
+        .charts-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; }
+        .chart-box { padding: 32px; height: 500px; display: flex; flex-direction: column; }
+        .chart-box h3 { font-size: 1.4rem; margin-bottom: 32px; color: white; }
         .canvas-wrap { flex-grow: 1; position: relative; }
 
     </style>
 </head>
 <body>
 
-    <!-- ==========================================================================
-         SIDEBAR APP NAVIGATION
-         ========================================================================== -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="logo-area">
-            <i class="fa-solid fa-network-wired"></i>
-            <h2>WTI Hub</h2>
-        </div>
-        
-        <div class="nav-section">
-            <div class="nav-section-title">Core Views</div>
-            <button class="nav-link active" data-target="view-map" onclick="app.router('view-map', this)">
-                <i class="fa-solid fa-earth-asia"></i> Map Industrielle
-            </button>
-            <button class="nav-link" data-target="view-dashboard" onclick="app.router('view-dashboard', this)">
-                <i class="fa-solid fa-chart-line"></i> Analytics & Claims
-            </button>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-title">Panel Fournisseurs (Asie)</div>
-            <div class="supplier-nav-list" id="sidebar-suppliers-list">
-                <!-- Injected via JS -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fa-solid fa-water"></i></div>
+            <div class="sidebar-title">
+                <h2>WTI Hub</h2>
+                <span>Component Network</span>
             </div>
         </div>
 
-        <div class="user-widget">
-            <div class="avatar">AB</div>
-            <div class="user-widget-info">
-                <strong>Amaury A-B.</strong>
-                <span>Ingénieur ICT - WTI</span>
+        <div class="sidebar-scroll">
+            <div class="nav-section">
+                <div class="nav-section-title">Vues Principales</div>
+                <button class="nav-link active" data-target="view-map" onclick="app.router('view-map', this)">
+                    <i class="fa-solid fa-earth-asia"></i> Map Fournisseurs
+                </button>
+                <button class="nav-link" data-target="view-dashboard" onclick="app.router('view-dashboard', this)">
+                    <i class="fa-solid fa-chart-pie"></i> Analytics & Qualité
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Réseau Asie (Dossiers)</div>
+                <div class="supplier-nav-list" id="sidebar-suppliers-list">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-widget">
+                <div class="avatar">AB</div>
+                <div class="user-widget-info">
+                    <strong>Amaury A-B.</strong>
+                    <span>Ingénieur WTI</span>
+                </div>
             </div>
         </div>
     </aside>
 
-    <!-- ==========================================================================
-         MAIN APPLICATION AREA
-         ========================================================================== -->
+    <!-- MAIN APP CONTAINER -->
     <main class="main-container">
         
-        <!-- 1. MAP VIEW (Default) -->
+        <!-- MAP VIEW -->
         <section id="view-map" class="view-layer active">
             <div class="map-overlay-header">
-                <h1>Network & Quality Map</h1>
-                <p>Supervision en temps réel de la supply chain WTI. Explorez les usines pour consulter les audits, litiges et prendre des notes interactives.</p>
+                <h1>Cartographie Qualité & Industrielle</h1>
+                <p>Supervision des audits HSE, Defect Books et résolution de Claims de la chaîne de valeur Asie. Cliquez sur un point radar pour ouvrir son dossier.</p>
                 <div class="map-legend">
-                    <span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> Action Critique / Litige</span>
-                    <span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass"></i> Audit / Déviation</span>
-                    <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Sous Contrôle</span>
+                    <span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> Litige / Action Critique</span>
+                    <span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass"></i> Audit en cours</span>
+                    <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Sous Contrôle / Stratégique</span>
                     <span class="badge badge-outline"><i class="fa-solid fa-star"></i> Prospect</span>
                 </div>
             </div>
-            <div id="leaflet-map"></div>
+            <!-- LEAFLET MAP CONTAINER -->
+            <div id="leaflet-map-container"></div>
         </section>
 
-        <!-- 2. DASHBOARD VIEW -->
+        <!-- DASHBOARD VIEW -->
         <section id="view-dashboard" class="view-layer">
             <div class="dash-header">
-                <h1>Synthèse Qualité & Financière</h1>
-                <p class="text-muted">Analyse globale des Claims et de l'implémentation du Defect Book.</p>
+                <div>
+                    <h1>Dashboard Qualité WTI</h1>
+                    <p class="text-muted" style="font-size: 1.2rem;">Analyse des litiges de Slicing et déploiement du Defect Book.</p>
+                </div>
             </div>
             
             <div class="grid-cards">
-                <div class="glass-panel g-card" style="border-top: 4px solid var(--stat-danger);">
+                <div class="glass-panel g-card danger">
                     <h4>Total Claims Slicing (Q1 2026)</h4>
                     <p class="g-val text-danger">$48,321</p>
                     <p class="text-muted" style="margin-top: 16px;">Imputé à 90% Le Hung / 10% PI Pattana.</p>
                 </div>
-                <div class="glass-panel g-card" style="border-top: 4px solid var(--stat-warning);">
+                <div class="glass-panel g-card warning">
                     <h4>Taux Rejet Cible (Slicing)</h4>
                     <p class="g-val text-warning">13.5%</p>
-                    <p class="text-muted" style="margin-top: 16px;">Standard Dérogué WTI (Évite +138% coût FG).</p>
+                    <p class="text-muted" style="margin-top: 16px;">Standard Dérogué WTI maintenu.</p>
                 </div>
-                <div class="glass-panel g-card" style="border-top: 4px solid var(--color-primary);">
-                    <h4>Défauts Majeurs Suivis</h4>
+                <div class="glass-panel g-card">
+                    <h4>Top Défauts Priorisés</h4>
                     <p class="g-val">6</p>
-                    <p class="text-muted" style="margin-top: 16px;">Stripes, Folding marks, Bow/Skew, Wave, Blade.</p>
+                    <p class="text-muted" style="margin-top: 16px;">Stripes (V/H), Folding, Bow/Skew, Wave, Blade.</p>
                 </div>
             </div>
 
             <div class="charts-row">
                 <div class="glass-panel chart-box">
-                    <h3>Répartition Financière du Litige Slicing (Jan-Apr 2026)</h3>
+                    <h3>Impact Financier Slicing Claims (USD)</h3>
                     <div class="canvas-wrap"><canvas id="claimChart"></canvas></div>
                 </div>
                 <div class="glass-panel chart-box">
-                    <h3>Matrice d'Évaluation Risque (Nam Chau vs Doni)</h3>
+                    <h3>Matrice Risque Fournisseurs</h3>
                     <div class="canvas-wrap"><canvas id="radarChart"></canvas></div>
                 </div>
             </div>
@@ -740,9 +416,7 @@
 
     </main>
 
-    <!-- ==========================================================================
-         SUPPLIER SLIDE-OVER PANEL
-         ========================================================================== -->
+    <!-- SUPPLIER SLIDE PANEL -->
     <div class="slide-panel" id="slide-panel">
         <button class="panel-close-btn" onclick="app.closePanel()"><i class="fa-solid fa-xmark"></i></button>
         
@@ -752,126 +426,164 @@
             <div id="sp-badges" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 20px;"></div>
             
             <div class="panel-tabs">
-                <button class="tab-btn active" onclick="app.switchTab('tab-overview', this)">Vue d'ensemble & Audits</button>
-                <button class="tab-btn" onclick="app.switchTab('tab-notes', this)"><i class="fa-regular fa-note-sticky"></i> Notes (<span id="note-count">0</span>)</button>
+                <button class="tab-btn active" onclick="app.switchTab('tab-overview', this)"><i class="fa-solid fa-file-contract"></i> Rapport d'Audit</button>
+                <button class="tab-btn" onclick="app.switchTab('tab-notes', this)"><i class="fa-solid fa-pen-to-square"></i> Notes Interactives (<span id="note-count">0</span>)</button>
             </div>
         </div>
 
         <div class="panel-content">
-            <!-- TAB 1: OVERVIEW -->
             <div id="tab-overview" class="tab-pane active">
                 <div id="sp-dynamic-content">
-                    <!-- Injected via JS based on Supplier Data -->
+                    <!-- HTML Injecté -->
                 </div>
             </div>
 
-            <!-- TAB 2: INTERACTIVE NOTES -->
             <div id="tab-notes" class="tab-pane">
                 <div class="notes-container">
                     <div class="note-editor">
-                        <textarea id="note-input" placeholder="Rédigez une note concernant ce fournisseur (ex: suivi de plan d'action, compte-rendu de visite, etc.)..."></textarea>
+                        <textarea id="note-input" placeholder="Rédiger un compte-rendu, suivi de plan d'action..."></textarea>
                         <div class="note-actions">
-                            <button class="btn btn-primary" onclick="app.saveNote()"><i class="fa-solid fa-plus"></i> Ajouter Note</button>
+                            <button class="btn btn-primary" onclick="app.saveNote()"><i class="fa-solid fa-plus"></i> Sauvegarder Note</button>
                         </div>
                     </div>
-                    <div class="notes-list" id="notes-list">
-                        <!-- Notes injected here -->
-                    </div>
+                    <div class="notes-list" id="notes-list"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notifications Container -->
+    <!-- TOASTS -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- ==========================================================================
-         JAVASCRIPT APPLICATION LOGIC & DATA
-         ========================================================================== -->
     <script>
         /**
-         * 1. MASSIVE DATA ARCHITECTURE
-         * Contient l'intégralité des données des audits, des claims et des fiches techniques.
+         * 1. MASSIVE SUPPLIER DATABASE (Incorporating Audit Details)
          */
         const SUPPLIERS = {
-            "namchau": {
-                id: "namchau",
-                name: "Nam Chau",
-                location: "Dong Nai, Vietnam",
-                coords: [10.95, 106.82],
-                role: "Tranchage (Slicing) & Lamination",
-                status: "warning", // alert, warning, success, info, prospect
-                badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (Visit 29 July 2026)</h3>
-                        <p>Visite réalisée par Clarisse G., Amaury A-B., Hung face à Mr Jack, Tom et QC Leader.</p>
-                        
-                        <div class="alert-box alert-danger">
-                            <h4><i class="fa-solid fa-skull-crossbones"></i> HSE & Tolérance Zéro</h4>
-                            <ul class="alert-list">
-                                <li><b>EPI Inadéquats :</b> Masques de protection insuffisants pour la zone de lamination. Risque d'exposition aux éclaboussures chimiques lors du remplissage des colles.</li>
-                                <li><b>Sécurité Poste de Travail :</b> Présence d'objets tranchants (règles métalliques) sur les tables QC, créant un risque de blessure et d'endommagement des feuilles de néoprène.</li>
-                                <li><b>Hygiène :</b> Manque de savon approprié dans les sanitaires (utilisation de lessive). Action immédiate exigée.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="alert-box alert-warning">
-                            <h4><i class="fa-solid fa-flask"></i> Gestion de la Colle & Process</h4>
-                            <ul class="alert-list">
-                                <li><b>Contamination :</b> Présence de corps étrangers détectés à l'intérieur de la colle.</li>
-                                <li><b>SOP Manquant :</b> Aucun contrôle formel de la viscosité ni de définition du temps d'ouverture en bouteille. Action requise avec le fournisseur de colle.</li>
-                                <li><b>Calibration Machine :</b> Absence de SOP clair pour l'alignement parallèle et la planéité des rouleaux de lamination.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-eye"></i> Visual Defect Book & Slicing Quality</h3>
-                        <p>Formation de l'équipe QC réalisée avec succès sur le Defect Book.</p>
-                        <p><b>Problème d'inspection Blademarks :</b> L'évaluation de 2 batchs (Purple/Blue) a montré de graves divergences d'appréciation entre les opérateurs. Cause identifiée : Éclairage inadapté et mauvaise posture (tenue de la feuille en l'air au lieu d'être à plat).</p>
-                        
-                        <div class="kpi-row" style="margin-top: 20px;">
-                            <div class="mini-kpi">
-                                <span class="mini-kpi-label">Action Requise</span>
-                                <span class="mini-kpi-val" style="font-size: 1.2rem; color: var(--color-primary);">Lightbox à 45°</span>
-                            </div>
-                            <div class="mini-kpi">
-                                <span class="mini-kpi-label">Taux de Rejet Dérogué</span>
-                                <span class="mini-kpi-val text-warning">13.5%</span>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
             "lehung": {
                 id: "lehung",
                 name: "Le Hung",
                 location: "Binh Duong, Vietnam",
                 coords: [11.10, 106.65],
-                role: "Tranchage & Lamination",
+                role: "Tranchage (Slicing) & Lamination",
                 status: "alert",
                 badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
                 html: `
                     <div class="info-card">
                         <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026)</h3>
-                        <p>Résolution du litige financier concernant les rejets post-tranchage des feuilles Slabs.</p>
+                        <p>Résolution du litige financier massif concernant les rejets post-tranchage.</p>
                         
                         <div class="alert-box alert-danger">
                             <h4>Contexte du Litige avec PI Pattana</h4>
                             <ul class="alert-list">
-                                <li><b>Erreurs de Données :</b> Omission initiale des feuilles de 1.8mm défectueuses par l'équipe Le Hung.</li>
-                                <li><b>Erreurs Sémantiques :</b> Le défaut "Wave" a été imputé à tort au Foam, et "Sticky" imputé à tort au Slicing.</li>
-                                <li><b>Montants initiaux :</b> Slicing defects ($48,321 pour 1.5mm et 1.8mm) et Foam defects ($15,082).</li>
-                                <li><b>Absence de règle :</b> Aucune règle formelle d'allocation n'existait, forçant une revue manuelle feuille par feuille insoutenable.</li>
+                                <li><b>Erreurs de Données :</b> Omission des feuilles de 1.8mm défectueuses par l'équipe (Ni Li).</li>
+                                <li><b>Erreurs Sémantiques :</b> Défaut "Wave" imputé à tort au Foam, et "Sticky" imputé au Slicing.</li>
+                                <li><b>Montants initiaux :</b> Slicing defects ($48,321) et Foam defects ($15,082).</li>
                             </ul>
                         </div>
                         
                         <div class="alert-box alert-warning" style="border-left-color: var(--color-primary); background: rgba(14, 165, 233, 0.05);">
                             <h4 style="color: var(--color-primary);">Décision WTI (Clarisse G.)</h4>
                             <p style="color: #f8fafc; line-height: 1.6;">Application d'un ratio <b>90% Le Hung / 10% PI Pattana</b> pour les défauts Slicing.<br><br>
-                            <b>Justification :</b> La responsabilité du process physique est in-house chez Le Hung. Les Slabs de PI respectent le MTSR malgré des variations acceptables de stickiness. Les 10% de PI reconnaissent la difficulté opérationnelle sans incriminer injustement le raw material.<br><br>
-                            La note de débit de PI Pattana passe ainsi de $63,403 à <b>$19,914</b>.</p>
+                            La note de débit de PI Pattana passe ainsi de $63,403 à <b>$19,914</b>, assurant une équité (les slabs respectent le MTSR malgré un effet sticky inhérent au naturel).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-book-open"></i> Visual Defect Book</h3>
+                        <div class="kpi-row">
+                            <div class="mini-kpi">
+                                <span class="mini-kpi-label">Wavemarks</span>
+                                <span class="mini-kpi-val text-warning">Lvl 1/4</span>
+                            </div>
+                            <div class="mini-kpi">
+                                <span class="mini-kpi-label">Blademarks</span>
+                                <span class="mini-kpi-val" style="color:var(--color-primary);">SPORT</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            "namchau": {
+                id: "namchau",
+                name: "Nam Chau",
+                location: "Dong Nai, Vietnam",
+                coords: [10.95, 106.82],
+                role: "Tranchage & Lamination",
+                status: "warning",
+                badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
+                html: `
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (29 July 2026)</h3>
+                        <p>Visite : Clarisse, Amaury, Hung avec Mr Jack, Tom, QC Leader.</p>
+                        
+                        <div class="alert-box alert-danger">
+                            <h4><i class="fa-solid fa-skull-crossbones"></i> Tolérance Zéro : HSE</h4>
+                            <ul class="alert-list">
+                                <li>Masques inadéquats pour la lamination (EPI).</li>
+                                <li>Outils tranchants (règles métal) sur les tables QC.</li>
+                                <li>Absence de savon (lessive utilisée) dans les sanitaires.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="alert-box alert-warning">
+                            <h4><i class="fa-solid fa-flask"></i> Process Colle & Viscosité</h4>
+                            <p style="color:white;">Contamination visible dans la colle. Absence totale de SOP pour le contrôle de viscosité et le temps d'ouverture. Action exigée via le fournisseur de colle.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-eye"></i> QC & Blademarks Inspection</h3>
+                        <p>Divergence entre opérateurs QC due à une mauvaise installation.</p>
+                        <table class="data-table" style="margin-top: 15px;">
+                            <tr><th>Problème Constaté</th><th>Solution WTI Exigée</th></tr>
+                            <tr><td>Contrôle en l'air, feuille non plate</td><td>Table d'inspection longue</td></tr>
+                            <tr><td>Éclairage plafond classique</td><td>Lightbox avec angle à 45°</td></tr>
+                        </table>
+                    </div>
+                `
+            },
+            "doni": {
+                id: "doni",
+                name: "Doni (Yangzhou)",
+                location: "Yangzhou, Chine",
+                coords: [32.39, 119.41],
+                role: "Intégré (Slicing/Lamin/FG)",
+                status: "alert",
+                badges: ['GBS Holes', 'Passing Machine NOK', '4 Points System'],
+                html: `
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-industry"></i> Working Report (July 2026)</h3>
+                        
+                        <div class="alert-box alert-danger">
+                            <h4><i class="fa-solid fa-search-minus"></i> Faille Inspection Slicing</h4>
+                            <p style="color: white; line-height:1.7;"><b>Doni ne réalise aucune inspection visuelle dédiée post-tranchage.</b><br>L'inspection se fait en ligne pendant la lamination, à haute vitesse, sous la colle. Il est <b>impossible de garantir l'absence de défauts majeurs (Trous/Hollows)</b>. De plus, la découpe retire ~2mm de peau en un passage, laissant des résidus.</p>
+                        </div>
+                        
+                        <div class="kpi-row">
+                            <div class="mini-kpi">
+                                <span class="mini-kpi-label">Vitesse Slicing</span>
+                                <span class="mini-kpi-val text-danger">Très Haute</span>
+                            </div>
+                            <div class="mini-kpi">
+                                <span class="mini-kpi-label">Test Détection</span>
+                                <span class="mini-kpi-val text-warning">Exigé</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fa-solid fa-shirt"></i> Problème Needle Holes (GBS 4/3)</h3>
+                        <p>Recherche d'un tissu alternatif au Soft Anafi pour supprimer les trous d'aiguille.</p>
+                        <table class="data-table">
+                            <tr><th>Tissu (Supplier)</th><th>Test Mass Prod</th></tr>
+                            <tr><td><b>Janvision</b> (Daluen)</td><td><span class="badge badge-warning">5 trous (Partiel)</span></td></tr>
+                            <tr><td><b>Surje</b> (Birong)</td><td><span class="badge badge-danger">Massifs (NO GO)</span></td></tr>
+                        </table>
+                        <br>
+                        <div class="alert-box alert-warning">
+                            <h4>Passing Machine Textile NOK</h4>
+                            <p style="color:white;">Géométrie inadaptée créant un effet de drapé et de haute tension. Masque les Vertical Stripes. <b>Priorité Niveau 1 de correction.</b></p>
                         </div>
                     </div>
                 `
@@ -881,19 +593,14 @@
                 name: "PI Pattana",
                 location: "Bangkok, Thaïlande",
                 coords: [13.75, 100.50],
-                role: "Formulation & Moussage",
+                role: "Formulation & Moussage NR",
                 status: "success",
                 badges: ['Yulex 100', 'Slabs Maker', 'FSC'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-tree"></i> Partenaire Yulex 100 Stratégique</h3>
-                        <p>PI Pattana est le fournisseur exclusif de la pâte et du moussage du caoutchouc naturel certifié FSC pour la création des Slabs de 30mm d'épaisseur.</p>
-                        
+                        <h3><i class="fa-solid fa-tree"></i> Partenaire Yulex 100 Exclusif</h3>
+                        <p>PI Pattana gère la création des Slabs de 30mm en caoutchouc naturel (FSC). C'est la clé de voûte écologique de la stratégie WTI.</p>
                         <div class="kpi-row" style="margin-top: 24px;">
-                            <div class="mini-kpi">
-                                <span class="mini-kpi-label">Matériau</span>
-                                <span class="mini-kpi-val text-success">100% NR</span>
-                            </div>
                             <div class="mini-kpi">
                                 <span class="mini-kpi-label">Conformité MTSR</span>
                                 <span class="mini-kpi-val text-success">PASS</span>
@@ -903,50 +610,6 @@
                                 <span class="mini-kpi-val text-warning">10% Slicing</span>
                             </div>
                         </div>
-                        
-                        <table class="data-table">
-                            <tr><th>Spécification</th><th>Valeur</th></tr>
-                            <tr><td>Épaisseur Slab</td><td>30.0 mm (Tolérance +/- 1mm)</td></tr>
-                            <tr><td>Défauts Foam (Jan-Apr 26)</td><td>927 pcs évaluées à $15,082</td></tr>
-                            <tr><td>Statut Légal Claim</td><td>Acceptation ratio 90/10 établie.</td></tr>
-                        </table>
-                    </div>
-                `
-            },
-            "doni": {
-                id: "doni",
-                name: "Doni",
-                location: "Yangzhou, Chine",
-                coords: [32.39, 119.41],
-                role: "Usine Intégrée (Slicing/Lamin/FG)",
-                status: "warning",
-                badges: ['GBS Holes', 'Passing Machine NOK', '4 Points System'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-industry"></i> Working Report (22-23 July 2026)</h3>
-                        <p>Visite réalisée par Jericho (PL) et Clarisse (ME).</p>
-                        
-                        <div class="alert-box alert-danger">
-                            <h4><i class="fa-solid fa-search-minus"></i> Faille dans l'Inspection Slicing</h4>
-                            <p style="color: #f8fafc; line-height: 1.6;">Doni <b>ne réalise aucune inspection visuelle dédiée post-tranchage</b>. L'inspection se fait en ligne pendant la lamination, à haute vitesse, avec la mousse masquée par la colle, un mauvais éclairage, et un opérateur éloigné.<br><br>
-                            <b>Conclusion :</b> Il est impossible de garantir la non-intégration de défauts majeurs (Trous, Hollows) dans les produits finis avec cette méthode. De plus, Doni retire ~2mm de peau en un passage, laissant des résidus sur la feuille.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-shirt"></i> Problématique Needle Holes (GBS 4/3)</h3>
-                        <p>Recherche d'un tissu alternatif au Soft Anafi pour supprimer les trous d'aiguille sur l'assemblage GBS.</p>
-                        
-                        <table class="data-table" style="margin-bottom: 24px;">
-                            <tr><th>Tissu (Supplier)</th><th>Comp.</th><th>Résultat Test Mass Prod</th></tr>
-                            <tr><td><b>Janvision</b> (Daluen)</td><td>100% PES</td><td><span class="badge badge-warning">5 trous restants (Partiel)</span></td></tr>
-                            <tr><td><b>Surje</b> (Birong)</td><td>100% PA</td><td><span class="badge badge-danger">Nombreux trous (NO GO)</span></td></tr>
-                        </table>
-                        
-                        <div class="alert-box alert-warning">
-                            <h4>Problème Passing Machine (Tissu)</h4>
-                            <p style="color: #f8fafc;">Géométrie NOK : Rouleau lourd monté trop bas. Crée un effet de drapé cachant les défauts verticaux et générant un ré-enroulement sous haute tension. <b>Action de priorité 1 exigée.</b></p>
-                        </div>
                     </div>
                 `
             },
@@ -955,20 +618,18 @@
                 name: "Daluen",
                 location: "Vietnam",
                 coords: [10.85, 106.75],
-                role: "Fabrication Textile (Linings)",
+                role: "Fabrication Textile",
                 status: "success",
                 badges: ['Janvision', 'Soft Anafi', 'Agrios'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-swatchbook"></i> Textiles & Visual Defect Book</h3>
-                        <p>Fournisseur nominé pour les tissus Janvision, Soft Anafi et autres linings stratégiques.</p>
-                        
-                        <h4 style="margin: 20px 0 10px; color: var(--color-primary);">Top 4 Priorités d'Inspection Visuelle</h4>
-                        <ul class="alert-list" style="background: rgba(255,255,255,0.02); padding: 20px 20px 20px 40px; border-radius: 8px;">
+                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile)</h3>
+                        <p>Fournisseur de Linings. Les 4 priorités fixées pour l'inspection :</p>
+                        <ul class="alert-list" style="background: rgba(0,0,0,0.3); padding: 20px 40px; border-radius: 12px; margin-top: 15px;">
                             <li>Lignes Verticales (Vertical Stripes)</li>
                             <li>Lignes Horizontales (Horizontal Stripes)</li>
-                            <li>Marques de pliage liées à la teinture (Folding marks)</li>
-                            <li>Bow & Skew (Objectif MTSR < 6%)</li>
+                            <li>Marques de pliage liées à la teinture</li>
+                            <li>Bow & Skew (Objectif < 6%)</li>
                         </ul>
                     </div>
                 `
@@ -978,17 +639,16 @@
                 name: "Scavi",
                 location: "Hué, Vietnam",
                 coords: [16.4637, 107.5909],
-                role: "Assemblage Produit Fini (FG)",
+                role: "Assemblage Produit Fini",
                 status: "info",
                 badges: ['GBS', 'Flatlock', 'Nesting'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-scissors"></i> Fin de Chaine de Valeur</h3>
-                        <p>Scavi réceptionne les feuilles laminées (complexes) produites par Nam Chau et Le Hung pour confectionner les combinaisons Wetsuits (Surf) et Snorkeling.</p>
-                        
-                        <div class="alert-box alert-warning" style="border-left-color: var(--stat-info); background: var(--stat-info-bg);">
-                            <h4 style="color: var(--stat-info);">Gestion Intelligente des Défauts (Nesting)</h4>
-                            <p style="color: #f8fafc;">Pour soutenir le taux de rejet dérogué de 13.5% en amont (Slicing), les opérateurs de matelassage chez Scavi repèrent les <b>rubans adhésifs jaunes</b> posés sur les feuilles par Nam Chau. Ils décalent leurs patronages pour s'assurer que ces défauts mineurs tombent dans les chutes de coupe (scraps) et non sur les panneaux finaux du produit.</p>
+                        <h3><i class="fa-solid fa-scissors"></i> Fin de Chaine (Finished Goods)</h3>
+                        <p>Réceptionne les complexes de Nam Chau et Le Hung pour confection Surf.</p>
+                        <div class="alert-box alert-warning" style="border-left-color: var(--color-primary); background: rgba(14, 165, 233, 0.05);">
+                            <h4 style="color: var(--color-primary);">Gestion Intelligente (Nesting)</h4>
+                            <p style="color: white;">Les opérateurs repèrent les rubans adhésifs jaunes posés par Nam Chau (défauts mineurs) et décalent les patronages pour placer ces défauts dans les chutes (scraps). Cela sécurise le taux de rejet dérogué de 13.5% en amont.</p>
                         </div>
                     </div>
                 `
@@ -998,46 +658,35 @@
                 name: "Sheico HQ",
                 location: "Yilan, Taiwan",
                 coords: [24.68, 121.76],
-                role: "Usine Intégrée (Polychloroprène)",
+                role: "Usine Intégrée",
                 status: "success",
-                badges: ['CR', 'Historique', 'Intégré'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-building"></i> Partenaire Historique</h3>
-                        <p>Fournisseur historique verticalement intégré, maîtrisant le moussage du Polychloroprène (CR pétrosourcé), la lamination et l'assemblage FG.</p>
-                        <p>L'enjeu actuel est la transition technologique vers le Yulex et la sécurisation des Lead Times face à la forte consolidation sur leurs sites (Cambodge, Thaïlande).</p>
-                    </div>
-                `
+                badges: ['CR', 'Historique'],
+                html: `<div class="info-card"><h3><i class="fa-solid fa-building"></i> Partenaire Historique</h3><p>Maîtrise verticale du moussage CR pétrosourcé à l'assemblage.</p></div>`
             },
             "namliong": {
                 id: "namliong",
                 name: "Nam Liong",
                 location: "Tainan, Taiwan",
                 coords: [23.02, 120.22],
-                role: "Mousse Hybride & Lamination",
+                role: "Mousse Hybride",
                 status: "success",
-                badges: ['BIO 08', 'BIO 07', 'Hybride'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-flask"></i> Développement Mousses Biosourcées</h3>
-                        <p>Expertise pointue sur les complexes hybrides BIO 07 et BIO 08 (mélange de Natural Rubber et de mousses synthétiques) pour atteindre les cibles d'éco-conception WTI.</p>
-                    </div>
-                `
+                badges: ['BIO 08', 'BIO 07'],
+                html: `<div class="info-card"><h3><i class="fa-solid fa-flask"></i> Développement Biosourcé</h3><p>Expertise pointue sur les complexes hybrides BIO 07/08.</p></div>`
             },
             "birong": {
                 id: "birong",
                 name: "Birong",
                 location: "Chine",
                 coords: [24.50, 118.00],
-                role: "Fournisseur Textile (Non nominé)",
-                status: "danger",
-                badges: ['Surje', 'NO GO', 'Needle Holes'],
+                role: "Prospect Textile",
+                status: "alert",
+                badges: ['Surje', 'NO GO'],
                 html: `
                     <div class="info-card">
                         <h3><i class="fa-solid fa-ban"></i> Échec Test GBS</h3>
                         <div class="alert-box alert-danger">
                             <h4>Tissu Surje Rejeté</h4>
-                            <p style="color: #f8fafc;">Fournisseur non nominé possédant un historique avec China Dive. Test du tissu <b>Surje (100% PA)</b> chez Doni pour assemblage GBS 4/3. Résultat désastreux avec d'innombrables trous d'aiguille. Option définitivement écartée.</p>
+                            <p style="color:white;">Tissu Surje (100% PA) testé chez Doni : apparition massive de trous d'aiguilles. NO GO définitif.</p>
                         </div>
                     </div>
                 `
@@ -1048,338 +697,250 @@
                 location: "Chine",
                 coords: [22.80, 113.50],
                 role: "Prospect Usine",
-                status: "prospect",
+                status: "info",
                 badges: ['Prospect', '4 Points System'],
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-star"></i> Évaluation Prospect (Juillet 2026)</h3>
-                        <p>Usine candidate appliquant la méthode "4 Points System". À l'instar de Doni, l'usine ne considère pas les fines lignes verticales textiles comme un défaut bloquant, s'alignant avec la volonté WTI de limiter la sur-qualité.</p>
-                    </div>
-                `
+                html: `<div class="info-card"><h3><i class="fa-solid fa-star"></i> Évaluation Prospect</h3><p>Application du 4-Points System. N'incrimine pas les fines lignes verticales (alignement WTI).</p></div>`
             }
         };
 
         /**
-         * 2. STATE MANAGER & APP LOGIC
+         * 2. NOTES MANAGER (LocalStorage)
          */
-        class WTIApp {
+        class NotesManager {
             constructor() {
-                this.map = null;
-                this.charts = {};
-                this.notesManager = new NotesManager();
-                this.currentSupplierId = null;
+                this.key = 'wti_notes_v2';
+                this.notes = JSON.parse(localStorage.getItem(this.key)) || {};
             }
-
-            init() {
-                this.buildSidebarSupplierList();
-                this.initMap();
-                this.initCharts();
+            add(supId, text) {
+                if(!this.notes[supId]) this.notes[supId] = [];
+                this.notes[supId].unshift({
+                    id: Date.now(),
+                    text: text,
+                    date: new Date().toLocaleString('fr-FR', {dateStyle:'short', timeStyle:'short'})
+                });
+                this.save();
             }
-
-            // --- ROUTER ---
-            router(viewId, btnElement) {
-                // Handle views
-                document.querySelectorAll('.view-layer').forEach(v => v.classList.remove('active'));
-                document.getElementById(viewId).classList.add('active');
-
-                // Handle Nav active state
-                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-                if(btnElement) btnElement.classList.add('active');
-
-                // Close slide panel if open
-                this.closePanel();
-
-                // Trigger reflows
-                if (viewId === 'view-map' && this.map) {
-                    setTimeout(() => this.map.invalidateSize(), 300);
+            remove(supId, noteId) {
+                if(this.notes[supId]) {
+                    this.notes[supId] = this.notes[supId].filter(n => n.id !== noteId);
+                    this.save();
                 }
             }
+            save() { localStorage.setItem(this.key, JSON.stringify(this.notes)); }
+            get(supId) { return this.notes[supId] || []; }
+        }
 
-            // --- SIDEBAR GENERATOR ---
-            buildSidebarSupplierList() {
-                const container = document.getElementById('sidebar-suppliers-list');
-                container.innerHTML = '';
+        /**
+         * 3. APPLICATION CONTROLLER
+         */
+        const app = {
+            map: null,
+            chartsDone: false,
+            notesManager: new NotesManager(),
+            currentSupId: null,
+
+            init() {
+                this.buildSidebar();
+                this.initMap();
+                this.initCharts();
+            },
+
+            router(viewId, btn) {
+                document.querySelectorAll('.view-layer').forEach(v => v.classList.remove('active'));
+                document.getElementById(viewId).classList.add('active');
                 
+                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+                if(btn) btn.classList.add('active');
+
+                this.closePanel();
+                if (viewId === 'view-map' && this.map) {
+                    setTimeout(() => this.map.invalidateSize(true), 100); // Fix Leaflet resize bug
+                }
+            },
+
+            buildSidebar() {
+                const container = document.getElementById('sidebar-suppliers-list');
                 Object.values(SUPPLIERS).forEach(sup => {
-                    let dotColor = 'var(--text-muted)';
-                    if(sup.status === 'alert') dotColor = 'var(--stat-danger)';
-                    if(sup.status === 'warning') dotColor = 'var(--stat-warning)';
-                    if(sup.status === 'success') dotColor = 'var(--stat-success)';
-                    if(sup.status === 'info') dotColor = 'var(--color-primary)';
+                    let c = 'var(--text-muted)';
+                    if(sup.status === 'alert') c = 'var(--stat-danger)';
+                    if(sup.status === 'warning') c = 'var(--stat-warning)';
+                    if(sup.status === 'success') c = 'var(--stat-success)';
+                    if(sup.status === 'info') c = 'var(--color-primary)';
 
                     const btn = document.createElement('button');
                     btn.className = 'sup-nav-item';
-                    btn.innerHTML = `<div class="status-dot" style="color: ${dotColor}; background: currentColor;"></div> ${sup.name}`;
+                    btn.innerHTML = `<div class="status-dot" style="color:${c}; background:currentColor;"></div> ${sup.name}`;
                     btn.onclick = () => {
-                        // Ensure map view is active to show panel over it
                         this.router('view-map', document.querySelector('[data-target="view-map"]'));
-                        this.openSupplier(sup.id);
+                        this.openPanel(sup.id);
                     };
                     container.appendChild(btn);
                 });
-            }
+            },
 
-            // --- LEAFLET MAP ---
             initMap() {
-                this.map = L.map('leaflet-map', { zoomControl: false, minZoom: 4 }).setView([18.0, 110.0], 5);
+                this.map = L.map('leaflet-map-container', { zoomControl: false }).setView([18.0, 110.0], 5);
                 L.control.zoom({ position: 'bottomright' }).addTo(this.map);
                 
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; CartoDB',
-                    subdomains: 'abcd',
-                    maxZoom: 20
+                    attribution: '&copy; CartoDB', maxZoom: 18
                 }).addTo(this.map);
 
                 Object.values(SUPPLIERS).forEach(sup => {
-                    let markerClass = 'marker-pulse ';
-                    if(sup.status === 'alert') markerClass += 'marker-danger';
-                    else if(sup.status === 'warning') markerClass += 'marker-warning';
-                    else if(sup.status === 'success') markerClass += 'marker-success';
-                    else if(sup.status === 'info') markerClass += 'marker-info';
-                    else markerClass += 'marker-info'; // fallback
+                    let mClass = 'marker-pulse ';
+                    if(sup.status === 'alert') mClass += 'marker-danger';
+                    else if(sup.status === 'warning') mClass += 'marker-warning';
+                    else if(sup.status === 'success') mClass += 'marker-success';
+                    else mClass += 'marker-info';
 
                     const icon = L.divIcon({
                         className: '',
-                        html: `<div class="${markerClass}" style="width: 20px; height: 20px;"></div>`,
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10]
+                        html: `<div class="${mClass}" style="width:24px; height:24px;"></div>`,
+                        iconSize: [24, 24], iconAnchor: [12, 12]
                     });
 
-                    const marker = L.marker([sup.coords[0], sup.coords[1]], {icon}).addTo(this.map);
-                    
+                    const marker = L.marker(sup.coords, {icon}).addTo(this.map);
                     marker.bindPopup(`
-                        <div class="popup-custom">
-                            <div class="popup-title">${sup.name}</div>
-                            <span class="popup-role">${sup.role}</span>
-                            <span style="font-size:0.8rem; color: #cbd5e1;">Cliquez pour ouvrir le dossier.</span>
+                        <div style="font-family:var(--font-main);">
+                            <strong style="font-size:1.2rem; color:white;">${sup.name}</strong><br>
+                            <span style="color:var(--color-primary); font-size:0.8rem; text-transform:uppercase;">${sup.role}</span>
                         </div>
                     `);
-
-                    marker.on('click', () => this.openSupplier(sup.id));
+                    marker.on('click', () => this.openPanel(sup.id));
                 });
-            }
+                
+                // Force size calculation immediately
+                setTimeout(() => this.map.invalidateSize(true), 500);
+            },
 
-            // --- SLIDE PANEL & TABS ---
-            openSupplier(id) {
+            openPanel(id) {
                 const sup = SUPPLIERS[id];
                 if(!sup) return;
+                this.currentSupId = id;
                 
-                this.currentSupplierId = id;
                 document.getElementById('sp-title').innerText = sup.name;
                 document.getElementById('sp-subtitle').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${sup.location}`;
-                
-                const badgesHtml = sup.badges.map(b => `<span class="badge badge-outline">${b}</span>`).join('');
-                document.getElementById('sp-badges').innerHTML = badgesHtml;
-                
+                document.getElementById('sp-badges').innerHTML = sup.badges.map(b => `<span class="badge badge-outline">${b}</span>`).join('');
                 document.getElementById('sp-dynamic-content').innerHTML = sup.html;
                 
-                this.notesManager.loadNotesForSupplier(id);
-
-                // Reset tabs to overview
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-                document.querySelector('.tab-btn').classList.add('active'); // First tab
-                document.getElementById('tab-overview').classList.add('active');
-
-                // Visual active state in sidebar
+                this.switchTab('tab-overview', document.querySelector('.tab-btn'));
+                this.renderNotes();
+                
+                // Active state in sidebar
                 document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
-                const btnArray = Array.from(document.querySelectorAll('.sup-nav-item'));
-                const targetBtn = btnArray.find(b => b.innerText.includes(sup.name));
-                if(targetBtn) targetBtn.classList.add('active');
+                Array.from(document.querySelectorAll('.sup-nav-item')).find(b => b.innerText.includes(sup.name))?.classList.add('active');
 
                 document.getElementById('slide-panel').classList.add('open');
-            }
+            },
 
             closePanel() {
                 document.getElementById('slide-panel').classList.remove('open');
                 document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
-                this.currentSupplierId = null;
-            }
+                this.currentSupId = null;
+            },
 
             switchTab(tabId, btn) {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
                 btn.classList.add('active');
                 document.getElementById(tabId).classList.add('active');
-            }
+            },
 
-            // --- NOTES INTERACTION ---
+            // --- NOTES ---
+            renderNotes() {
+                const notes = this.notesManager.get(this.currentSupId);
+                document.getElementById('note-count').innerText = notes.length;
+                const container = document.getElementById('notes-list');
+                
+                if(notes.length === 0) {
+                    container.innerHTML = `<div class="empty-notes">Aucune note enregistrée. Rédigez le compte-rendu d'audit ci-dessus.</div>`;
+                    return;
+                }
+                
+                container.innerHTML = notes.map(n => `
+                    <div class="note-item">
+                        <div class="note-header">
+                            <span class="note-date"><i class="fa-regular fa-clock"></i> ${n.date}</span>
+                            <button class="note-delete" onclick="app.deleteNote(${n.id})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <div class="note-body">${n.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+                    </div>
+                `).join('');
+            },
+
             saveNote() {
-                const input = document.getElementById('note-input');
-                const text = input.value.trim();
-                if(!text || !this.currentSupplierId) return;
-                
-                this.notesManager.addNote(this.currentSupplierId, text);
-                input.value = '';
-                this.notesManager.loadNotesForSupplier(this.currentSupplierId);
-                
-                this.showToast('Note ajoutée avec succès !');
-            }
+                const text = document.getElementById('note-input').value.trim();
+                if(!text || !this.currentSupId) return;
+                this.notesManager.add(this.currentSupId, text);
+                document.getElementById('note-input').value = '';
+                this.renderNotes();
+                this.toast('Note sauvegardée.');
+            },
 
-            deleteNote(timestamp) {
-                if(!this.currentSupplierId) return;
-                this.notesManager.deleteNote(this.currentSupplierId, timestamp);
-                this.notesManager.loadNotesForSupplier(this.currentSupplierId);
-                this.showToast('Note supprimée.');
-            }
+            deleteNote(id) {
+                this.notesManager.remove(this.currentSupId, id);
+                this.renderNotes();
+                this.toast('Note supprimée.');
+            },
 
-            // --- CHART.JS ---
+            toast(msg) {
+                const c = document.getElementById('toast-container');
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
+                c.appendChild(t);
+                setTimeout(() => {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateX(100px)';
+                    t.style.transition = 'all 0.4s';
+                    setTimeout(() => t.remove(), 400);
+                }, 3000);
+            },
+
+            // --- CHARTS ---
             initCharts() {
                 Chart.defaults.color = '#94a3b8';
-                Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
-                Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
-
-                // Claim Distribution Chart
+                Chart.defaults.font.family = "'Outfit', sans-serif";
+                
                 const ctxClaim = document.getElementById('claimChart');
                 if(ctxClaim) {
                     new Chart(ctxClaim, {
                         type: 'bar',
                         data: {
-                            labels: ['Total Slicing Defect', 'Facturé Le Hung (90%)', 'Facturé PI Pattana (10%)', 'Total Foam Defect (PI)'],
+                            labels: ['Total Slicing', 'Le Hung (90%)', 'PI Pattana (10%)', 'Total Foam (PI)'],
                             datasets: [{
                                 label: 'USD ($)',
                                 data: [48321, 43488, 4832, 15082],
-                                backgroundColor: [
-                                    'rgba(239, 68, 68, 0.8)',
-                                    'rgba(239, 68, 68, 0.5)',
-                                    'rgba(14, 165, 233, 0.8)',
-                                    'rgba(14, 165, 233, 0.5)'
-                                ],
+                                backgroundColor: ['rgba(239,68,68,0.8)', '#ef4444', '#0ea5e9', 'rgba(14,165,233,0.5)'],
                                 borderRadius: 8
                             }]
                         },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            plugins: { legend: { display: false } }
-                        }
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} } }
                     });
                 }
 
-                // Radar Risk Chart
                 const ctxRadar = document.getElementById('radarChart');
                 if(ctxRadar) {
                     new Chart(ctxRadar, {
                         type: 'radar',
                         data: {
-                            labels: ['Risque HSE', 'Process Colle', 'Défaut Inspection', 'Risque Trous GBS', 'Machine Textile NOK'],
+                            labels: ['HSE', 'Process Colle', 'Slicing Insp.', 'GBS Holes', 'Machine Textile'],
                             datasets: [
-                                {
-                                    label: 'Nam Chau',
-                                    data: [8, 7, 5, 2, 2], // High HSE risk, med inspection issue
-                                    backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                                    borderColor: '#f59e0b',
-                                    pointBackgroundColor: '#f59e0b'
-                                },
-                                {
-                                    label: 'Doni',
-                                    data: [2, 2, 9, 8, 8], // Very high inspection gap, holes, and machine geometry
-                                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                                    borderColor: '#ef4444',
-                                    pointBackgroundColor: '#ef4444'
-                                }
+                                { label: 'Nam Chau', data: [8,7,5,2,2], backgroundColor: 'rgba(245,158,11,0.2)', borderColor: '#f59e0b' },
+                                { label: 'Doni', data: [2,2,9,8,8], backgroundColor: 'rgba(239,68,68,0.2)', borderColor: '#ef4444' }
                             ]
                         },
                         options: {
                             responsive: true, maintainAspectRatio: false,
-                            scales: {
-                                r: {
-                                    angleLines: { color: 'rgba(255,255,255,0.1)' },
-                                    grid: { color: 'rgba(255,255,255,0.1)' },
-                                    pointLabels: { color: '#f8fafc', font: { size: 12 } },
-                                    ticks: { display: false, min: 0, max: 10 }
-                                }
-                            }
+                            scales: { r: { angleLines:{color:'rgba(255,255,255,0.1)'}, grid:{color:'rgba(255,255,255,0.1)'}, pointLabels:{color:'#f8fafc'}, ticks:{display:false, max:10} } }
                         }
                     });
                 }
+                this.chartsDone = true;
             }
+        };
 
-            // --- UTILS ---
-            showToast(msg) {
-                const container = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
-                container.appendChild(toast);
-                
-                setTimeout(() => {
-                    toast.style.animation = 'fadeOut 0.4s forwards';
-                    setTimeout(() => toast.remove(), 400);
-                }, 3000);
-            }
-        }
-
-        /**
-         * 3. LOCAL STORAGE NOTES MANAGER
-         */
-        class NotesManager {
-            constructor() {
-                this.storageKey = 'wti_supplier_notes';
-                this.notes = JSON.parse(localStorage.getItem(this.storageKey)) || {};
-            }
-
-            addNote(supplierId, text) {
-                if(!this.notes[supplierId]) this.notes[supplierId] = [];
-                this.notes[supplierId].unshift({
-                    text: text,
-                    timestamp: Date.now(),
-                    dateStr: new Date().toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })
-                });
-                this.save();
-            }
-
-            deleteNote(supplierId, timestamp) {
-                if(!this.notes[supplierId]) return;
-                this.notes[supplierId] = this.notes[supplierId].filter(n => n.timestamp !== timestamp);
-                this.save();
-            }
-
-            save() {
-                localStorage.setItem(this.storageKey, JSON.stringify(this.notes));
-            }
-
-            loadNotesForSupplier(supplierId) {
-                const container = document.getElementById('notes-list');
-                const counter = document.getElementById('note-count');
-                const supsNotes = this.notes[supplierId] || [];
-                
-                counter.innerText = supsNotes.length;
-                container.innerHTML = '';
-                
-                if(supsNotes.length === 0) {
-                    container.innerHTML = `<div class="empty-notes">Aucune note enregistrée pour ce fournisseur. Utilisez le champ ci-dessus pour en ajouter une.</div>`;
-                    return;
-                }
-                
-                supsNotes.forEach(note => {
-                    const el = document.createElement('div');
-                    el.className = 'note-item';
-                    el.innerHTML = `
-                        <div class="note-header">
-                            <span class="note-date"><i class="fa-regular fa-clock"></i> ${note.dateStr}</span>
-                            <button class="note-delete" onclick="app.deleteNote(${note.timestamp})"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                        <div class="note-body">${this.escapeHtml(note.text)}</div>
-                    `;
-                    container.appendChild(el);
-                });
-            }
-
-            escapeHtml(unsafe) {
-                return unsafe
-                     .replace(/&/g, "&amp;")
-                     .replace(/</g, "&lt;")
-                     .replace(/>/g, "&gt;")
-                     .replace(/"/g, "&quot;")
-                     .replace(/'/g, "&#039;");
-            }
-        }
-
-        // Initialize Application
-        const app = new WTIApp();
-        window.addEventListener('DOMContentLoaded', () => {
-            app.init();
-        });
+        window.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
 </html>
