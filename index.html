@@ -58,6 +58,8 @@
             --transition-smooth: all 0.5s var(--ease-out-expo);
         }
 
+        .cite-tag { display: none; }
+
         /* ==========================================================================
            2. GLOBAL RESET & BASE STYLES
            ========================================================================== */
@@ -798,7 +800,7 @@
             <div class="grid-cards">
                 <div class="glass-panel g-card danger">
                     <h4>Total Claims Slicing (Q1 2026)</h4>
-                    <p class="g-val text-danger">$48,321</p>
+                    <p class="g-val text-danger">$48,321<span class="cite-tag">[cite: 4]</span></p>
                     <p class="text-muted" style="margin-top: 16px;">Imputé à 90% Le Hung / 10% PI Pattana.</p>
                 </div>
                 <div class="glass-panel g-card warning">
@@ -808,7 +810,7 @@
                 </div>
                 <div class="glass-panel g-card">
                     <h4>Top Défauts Priorisés</h4>
-                    <p class="g-val">6</p>
+                    <p class="g-val">6<span class="cite-tag"></span></p>
                     <p class="text-muted" style="margin-top: 16px;">Stripes (V/H), Folding, Bow/Skew, Wave, Blade.</p>
                 </div>
             </div>
@@ -828,7 +830,7 @@
         <!-- VISUAL DEFECT BOOK VIEW (NEW 3D SECTION) -->
         <section id="view-visual" class="view-layer">
             <div class="visual-header">
-                <h1>Visual Defect Book</h1>
+                <h1>Visual Defect Book <span class="cite-tag">[cite: 3]</span></h1>
                 <p class="text-muted" style="font-size: 1.2rem; max-width: 800px; margin: 20px auto;">
                     Standard d'inspection interactif pour les feuilles tranchées (Slicing).
                     Outil de formation des fournisseurs basé sur les règles WTI mises à jour en Juin 2026.
@@ -837,20 +839,20 @@
 
             <!-- BLADEMARKS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--color-primary);"></i> 1. Blademarks : La Règle des 45°</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--color-primary);"></i> 1. Blademarks : La Règle des 45° <span class="cite-tag">[cite: 3]</span></h2>
                 <div class="scene-container">
                     <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">L'Angle de Lumière Parfait (45°)</h3>
                         <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
                             Les "Blademarks" sont des coupures profondes laissées par la lame. 
-                            Pour les détecter efficacement, <b>la lumière DOIT provenir du côté avec un angle d'inclinaison strict de 45°</b> par rapport à la feuille posée à plat.
+                            Pour les détecter efficacement, <b>la lumière DOIT provenir du côté avec un angle d'inclinaison strict de 45°</b> par rapport à la feuille posée à plat. <span class="cite-tag">[cite: 3]</span>
                         </p>
                         <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            C'est pourquoi l'utilisation d'une table d'inspection lumineuse (Lightbox) avec un <b>support incliné à 45°</b> est la seule méthode validée pour révéler l'ombre portée des coupures, sans quoi le défaut devient totalement invisible à l'œil nu.
+                            C'est pourquoi l'utilisation d'une table d'inspection lumineuse (Lightbox) avec un <b>support incliné à 45°</b> est la seule méthode validée pour révéler l'ombre portée des coupures, sans quoi le défaut devient totalement invisible à l'œil nu. <span class="cite-tag">[cite: 3]</span>
                         </p>
                         <div class="alert-box alert-warning">
                             <h4><i class="fa-solid fa-triangle-exclamation"></i> Attention</h4>
-                            <p style="color:white;">Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines.</p>
+                            <p style="color:white;">Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines. <span class="cite-tag">[cite: 3]</span></p>
                         </div>
                     </div>
                     
@@ -869,7 +871,7 @@
 
             <!-- HOLES VS HOLLOWS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--stat-warning);"></i> 2. Holes vs Hollows</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--stat-warning);"></i> 2. Holes vs Hollows <span class="cite-tag">[cite: 3]</span></h2>
                 <div class="scene-container">
                     <div class="scene-3d" style="flex:1.5; background: #09090b; padding: 40px; display: flex; flex-direction: column; justify-content: center;">
                         
@@ -899,17 +901,17 @@
                     <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Critères d'Acceptabilité</h3>
                         <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille.
+                            Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille. <span class="cite-tag">[cite: 3]</span>
                         </p>
                         <ul style="list-style: none; display: flex; flex-direction: column; gap: 15px;">
                             <li style="padding: 15px; background: rgba(239,68,68,0.1); border-left: 4px solid var(--stat-danger); border-radius: 8px;">
-                                <b>HOLE (Trou) :</b> Laissent passer la lumière. <b>NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique.
+                                <b>HOLE (Trou) :</b> Laissent passer la lumière. <b>NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique. <span class="cite-tag">[cite: 3]</span>
                             </li>
                             <li style="padding: 15px; background: rgba(16,185,129,0.1); border-left: 4px solid var(--stat-success); border-radius: 8px;">
-                                <b>HOLLOW (Cavité) ≤ 3mm :</b> Ne laissent pas passer la lumière. <b>ACCEPTABLE</b> (Défaut mineur). La colle comblera la cavité lors de la lamination.
+                                <b>HOLLOW (Cavité) ≤ 3mm :</b> Ne laissent pas passer la lumière. <b>ACCEPTABLE</b> (Défaut mineur). La colle comblera la cavité lors de la lamination. <span class="cite-tag">[cite: 3]</span>
                             </li>
                             <li style="padding: 15px; background: rgba(245,158,11,0.1); border-left: 4px solid var(--stat-warning); border-radius: 8px;">
-                                <b>HOLLOW > 3mm :</b> <b>NON ACCEPTABLE</b> (Défaut majeur).
+                                <b>HOLLOW > 3mm :</b> Ne laissent pas passer la lumière. <b>NON ACCEPTABLE</b> (Défaut majeur). <span class="cite-tag">[cite: 3]</span>
                             </li>
                         </ul>
                     </div>
@@ -918,21 +920,21 @@
 
             <!-- DEFECT MARKING FLOW -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--color-secondary);"></i> 3. Traçabilité : Defect Marking Process</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--color-secondary);"></i> 3. Traçabilité : Defect Marking Process <span class="cite-tag">[cite: 3]</span></h2>
                 <div class="scene-container">
                     <div class="glass-panel" style="flex:1; min-width: 300px; padding: 30px;">
                         <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Procédure Opératoire</h3>
                         <p style="color: #cbd5e1; line-height: 1.7; margin-bottom: 20px;">
-                            Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille).
+                            Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille). <span class="cite-tag">[cite: 3]</span>
                         </p>
                         <ol style="margin-left: 20px; color: white; line-height: 2; font-size: 1.1rem;">
-                            <li><b>Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape).</li>
-                            <li><b>Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche.</li>
-                            <li><b>Étape 3 :</b> Coller une étiquette sur la tranche alignée avec le défaut, en indiquant la distance.</li>
+                            <li><b>Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape). <span class="cite-tag">[cite: 3]</span></li>
+                            <li><b>Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche. <span class="cite-tag">[cite: 3]</span></li>
+                            <li><b>Étape 3 :</b> Coller une étiquette sur la tranche alignée avec le défaut, en indiquant la distance. <span class="cite-tag">[cite: 3]</span></li>
                         </ol>
                         <div class="alert-box" style="background: rgba(14,165,233,0.1); border-left: 4px solid var(--color-primary); margin-top: 20px;">
                             <h4 style="color: var(--color-primary);">Objectif pour Scavi / Doni</h4>
-                            <p style="color: white; margin-top: 5px;">Détection visuelle et tactile sous le tissu après lamination. Permet au matelasseur d'exclure cette zone des patronages principaux.</p>
+                            <p style="color: white; margin-top: 5px;">Détection visuelle et tactile sous le tissu après lamination. Permet au matelasseur d'exclure cette zone des patronages principaux. <span class="cite-tag">[cite: 3]</span></p>
                         </div>
                     </div>
 
@@ -998,14 +1000,14 @@
 
     <script>
         /**
-         * 1. MASSIVE SUPPLIER DATABASE (10 Suppliers Included)
+         * 1. MASSIVE SUPPLIER DATABASE (Incorporating Audit Details)
          */
         const SUPPLIERS = {
             "lehung": {
                 id: "lehung", name: "Le Hung", location: "Binh Duong, Vietnam", coords: [11.10, 106.65], role: "Tranchage (Slicing) & Lamination", status: "alert", badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026)</h3>
+                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026) <span class="cite-tag">[cite: 4]</span></h3>
                         <p>Résolution du litige financier massif concernant les rejets post-tranchage.</p>
                         <div class="alert-box alert-danger">
                             <h4>Contexte du Litige avec PI Pattana</h4>
@@ -1072,7 +1074,7 @@
                 id: "daluen", name: "Daluen", location: "Vietnam", coords: [10.85, 106.75], role: "Fabrication Textile", status: "success", badges: ['Janvision', 'Soft Anafi', 'Agrios'],
                 html: `
                     <div class="info-card">
-                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile)</h3>
+                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile) <span class="cite-tag"></span></h3>
                         <p>Les 4 priorités fixées pour l'inspection : Vertical Stripes, Horizontal Stripes, Folding marks, Bow & Skew.</p>
                     </div>
                 `
