@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WTI Hub | Apple-Grade Enterprise UI</title>
     
     <!-- Preconnect & Fonts -->
@@ -16,721 +16,20 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        /* ==========================================================================
-           1. APPLE-STYLE DESIGN TOKENS & VARIABLES
-           ========================================================================== */
-        :root {
-            /* Apple Dark Mode Palette */
-            --bg-base: #000000;
-            --bg-surface: #1c1c1e;
-            --bg-elevated: #2c2c2e;
-            
-            /* Glassmorphism / Vibrancy */
-            --glass-bg: rgba(28, 28, 30, 0.65);
-            --glass-bg-hover: rgba(44, 44, 46, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.15);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            
-            /* Typography (San Francisco fallback + Space Grotesk) */
-            --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --font-display: 'Space Grotesk', -apple-system, sans-serif;
-            
-            /* Colors */
-            --text-primary: #ffffff;
-            --text-secondary: #ebebf599; /* iOS Secondary Label */
-            --text-tertiary: #ebebf54d;
-            
-            --system-blue: #0a84ff;
-            --system-blue-glow: rgba(10, 132, 255, 0.4);
-            --system-green: #30d158;
-            --system-orange: #ff9f0a;
-            --system-red: #ff453a;
-            --system-purple: #bf5af2;
-            
-            --sidebar-width: 320px;
-            
-            /* Spring Physics Animations */
-            --spring-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
-            --spring-bouncy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            --transition-fast: all 0.2s var(--spring-soft);
-            --transition-smooth: all 0.4s var(--spring-soft);
-            --transition-layout: all 0.6s var(--spring-bouncy);
-        }
-
-        /* ==========================================================================
-           2. GLOBAL RESET & BASE STYLES
-           ========================================================================== */
-        *, *::before, *::after { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-        }
-        
-        html { 
-            font-size: 16px; 
-            scroll-behavior: smooth;
-            background-color: var(--bg-base);
-        }
-        
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            height: 100vh; 
-            width: 100vw;
-            display: flex; 
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            position: relative;
-        }
-
-        /* Subtle Noise Overlay for Texture */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.03"/%3E%3C/svg%3E');
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        h1, h2, h3, h4, h5, h6 { 
-            font-family: var(--font-display); 
-            font-weight: 700; 
-            letter-spacing: -0.02em; 
-            line-height: 1.1; 
-        }
-
-        a { text-decoration: none; color: inherit; transition: var(--transition-fast); }
-        button, input, textarea, select { font-family: inherit; outline: none; border: none; }
-
-        /* MacOS style scrollbars */
-        ::-webkit-scrollbar { width: 12px; height: 12px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: rgba(255, 255, 255, 0.2); 
-            border-radius: 10px; 
-            border: 3px solid transparent; 
-            background-clip: padding-box; 
-        }
-        ::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 255, 255, 0.4); }
-
-        /* ==========================================================================
-           3. APPLE-GRADE GLASSMORPHISM & UTILITIES
-           ========================================================================== */
-        .apple-glass {
-            background: var(--glass-bg);
-            backdrop-filter: saturate(180%) blur(30px);
-            -webkit-backdrop-filter: saturate(180%) blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--glass-shadow);
-            transition: var(--transition-smooth);
-        }
-        
-        .apple-glass:hover { 
-            background: var(--glass-bg-hover);
-            border-color: var(--glass-highlight); 
-            transform: translateY(-2px);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6); 
-        }
-
-        .text-gradient { 
-            background: linear-gradient(135deg, #ffffff, #a1a1a6); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-        }
-        
-        .text-muted { color: var(--text-secondary); }
-
-        /* Spring Buttons */
-        .btn {
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary); 
-            padding: 14px 28px; 
-            border-radius: 100px; /* Pill shape typical of Apple */
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px;
-            transition: transform 0.2s var(--spring-bouncy), background 0.2s, box-shadow 0.2s;
-            position: relative; 
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn:hover { 
-            background: rgba(255, 255, 255, 0.15); 
-            transform: scale(1.02); 
-        }
-        
-        .btn:active {
-            transform: scale(0.96);
-        }
-        
-        .btn-primary { 
-            background: var(--system-blue); 
-            color: white; 
-            border: none;
-            box-shadow: 0 4px 15px var(--system-blue-glow); 
-        }
-        
-        .btn-primary:hover { 
-            background: #0071e3; 
-            box-shadow: 0 6px 20px var(--system-blue-glow); 
-        }
-
-        .btn-danger { background: rgba(255, 69, 58, 0.2); color: var(--system-red); border-color: rgba(255, 69, 58, 0.3); }
-        .btn-danger:hover { background: rgba(255, 69, 58, 0.3); }
-        
-        .btn-success { background: rgba(48, 209, 88, 0.2); color: var(--system-green); border-color: rgba(48, 209, 88, 0.3); }
-        .btn-success:hover { background: rgba(48, 209, 88, 0.3); }
-
-        /* Status Badges */
-        .badge {
-            padding: 6px 14px; 
-            border-radius: 100px; 
-            font-size: 0.75rem; 
-            font-weight: 600;
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px; 
-            white-space: nowrap;
-            backdrop-filter: blur(10px);
-        }
-        .badge-success { background: rgba(48, 209, 88, 0.15); color: var(--system-green); border: 1px solid rgba(48, 209, 88, 0.3); }
-        .badge-warning { background: rgba(255, 159, 10, 0.15); color: var(--system-orange); border: 1px solid rgba(255, 159, 10, 0.3); }
-        .badge-danger { background: rgba(255, 69, 58, 0.15); color: var(--system-red); border: 1px solid rgba(255, 69, 58, 0.3); }
-        .badge-info { background: rgba(10, 132, 255, 0.15); color: var(--system-blue); border: 1px solid rgba(10, 132, 255, 0.3); }
-
-        /* ==========================================================================
-           4. SIDEBAR NAVIGATION
-           ========================================================================== */
-        .sidebar {
-            width: var(--sidebar-width); 
-            min-width: var(--sidebar-width);
-            background: rgba(28, 28, 30, 0.3); 
-            backdrop-filter: saturate(180%) blur(40px);
-            -webkit-backdrop-filter: saturate(180%) blur(40px);
-            border-right: 1px solid var(--glass-border);
-            display: flex; 
-            flex-direction: column; 
-            z-index: 1000;
-        }
-        
-        .sidebar-header { 
-            padding: 40px 24px 24px; 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-        }
-        
-        .sidebar-logo {
-            width: 48px; 
-            height: 48px; 
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-size: 1.5rem; 
-            color: white; 
-            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.4);
-        }
-        
-        .sidebar-title h2 { font-size: 1.6rem; color: white; letter-spacing: -1px; }
-        .sidebar-title span { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
-
-        .sidebar-scroll { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            padding: 0 24px 24px; 
-        }
-        
-        .nav-section { margin-bottom: 36px; }
-        
-        .nav-section-title { 
-            font-size: 0.75rem; 
-            color: var(--text-tertiary); 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            margin-bottom: 12px; 
-            font-weight: 700; 
-            padding-left: 12px;
-        }
-        
-        .nav-link {
-            width: 100%; 
-            background: transparent; 
-            color: var(--text-secondary);
-            text-align: left; 
-            padding: 12px 16px; 
-            margin-bottom: 4px; 
-            border-radius: 12px;
-            font-size: 0.95rem; 
-            font-weight: 500; 
-            cursor: pointer; 
-            transition: var(--transition-fast);
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            position: relative;
-        }
-        
-        .nav-link i { width: 24px; text-align: center; font-size: 1.2rem; }
-        
-        .nav-link:hover { 
-            background: rgba(255, 255, 255, 0.05); 
-            color: white; 
-        }
-        
-        .nav-link.active { 
-            background: var(--system-blue); 
-            color: white; 
-            font-weight: 600; 
-            box-shadow: 0 4px 12px var(--system-blue-glow);
-        }
-
-        .supplier-nav-list { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 4px; 
-        }
-        
-        .sup-nav-item {
-            background: transparent; 
-            color: var(--text-secondary); 
-            text-align: left;
-            padding: 10px 16px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            transition: var(--transition-fast);
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            font-size: 0.95rem;
-        }
-        
-        .sup-nav-item:hover { 
-            color: white; 
-            background: rgba(255, 255, 255, 0.05); 
-        }
-        
-        .sup-nav-item.active { 
-            color: white; 
-            background: rgba(255, 255, 255, 0.1); 
-            font-weight: 600; 
-        }
-        
-        .status-indicator { 
-            width: 8px; height: 8px; 
-            border-radius: 50%; 
-            box-shadow: 0 0 8px currentColor; 
-            position: relative;
-        }
-
-        .sidebar-footer { 
-            padding: 24px; 
-            border-top: 1px solid var(--glass-border); 
-            background: rgba(0, 0, 0, 0.2); 
-            backdrop-filter: blur(10px);
-        }
-        
-        .user-widget { 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            padding: 12px; 
-            border-radius: 16px; 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid var(--glass-border); 
-            transition: var(--transition-fast);
-            cursor: pointer;
-        }
-        .user-widget:hover { background: rgba(255, 255, 255, 0.08); transform: scale(1.02); }
-        
-        .user-widget .avatar { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            background: linear-gradient(135deg, var(--system-purple), var(--system-blue)); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-weight: 700; 
-        }
-        
-        .user-widget-info strong { font-size: 0.95rem; color: white; display: block; margin-bottom: 2px;}
-        .user-widget-info span { font-size: 0.75rem; color: var(--text-secondary); }
-
-        /* ==========================================================================
-           5. MAIN ROUTER VIEWS
-           ========================================================================== */
-        .main-container { 
-            flex-grow: 1; 
-            position: relative; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            width: calc(100vw - var(--sidebar-width)); 
-        }
-        
-        .view-layer {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            opacity: 0; pointer-events: none; 
-            transition: opacity 0.5s var(--spring-soft), transform 0.6s var(--spring-bouncy);
-            transform: scale(0.97) translateY(20px);
-            overflow-y: auto; overflow-x: hidden; 
-            padding: 50px 60px; z-index: 10;
-        }
-        
-        .view-layer.active { 
-            opacity: 1; 
-            pointer-events: auto; 
-            z-index: 20; 
-            transform: scale(1) translateY(0);
-        }
-        
-        /* Map specific reset */
-        #view-map { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-
-        /* ==========================================================================
-           6. LEAFLET MAP VIEW
-           ========================================================================== */
-        .map-overlay-header {
-            position: absolute; top: 40px; left: 40px; z-index: 400;
-            pointer-events: none; display: flex; flex-direction: column; gap: 16px;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(20px);
-            padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border);
-        }
-        
-        .map-overlay-header h1 { font-size: 2.5rem; color: white; pointer-events: auto; }
-        .map-overlay-header p { font-size: 1.05rem; color: var(--text-secondary); max-width: 500px; pointer-events: auto; line-height: 1.5; }
-        
-        .map-legend { 
-            display: flex; flex-wrap: wrap; gap: 10px; pointer-events: auto; 
-            margin-top: 10px;
-        }
-
-        #leaflet-map-container {
-            width: 100%; height: 100%; flex-grow: 1;
-            background: var(--bg-base); z-index: 1;
-            position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-        }
-
-        .leaflet-container { font-family: var(--font-main); background: #000; }
-        
-        /* Premium Map Popups */
-        .leaflet-popup-content-wrapper { 
-            background: rgba(28, 28, 30, 0.85); 
-            backdrop-filter: saturate(180%) blur(20px); 
-            color: white; 
-            border: 1px solid var(--glass-border); 
-            border-radius: 16px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
-            padding: 10px; 
-        }
-        .leaflet-popup-tip { background: rgba(28, 28, 30, 0.85); border: 1px solid var(--glass-border); }
-        
-        /* Animated Markers */
-        .marker-pulse { border-radius: 50%; border: 3px solid #fff; cursor: pointer; transition: transform 0.4s var(--spring-bouncy); }
-        .marker-pulse:hover { transform: scale(1.4) !important; z-index: 1000 !important; }
-        .marker-danger { background: var(--system-red); box-shadow: 0 0 0 rgba(255, 69, 58, 0.6); animation: pulseDanger 2s infinite; }
-        .marker-warning { background: var(--system-orange); box-shadow: 0 0 0 rgba(255, 159, 10, 0.6); animation: pulseWarning 2.5s infinite; }
-        .marker-success { background: var(--system-green); box-shadow: 0 0 0 rgba(48, 209, 88, 0.6); animation: pulseSuccess 3s infinite; }
-        .marker-info { background: var(--system-blue); box-shadow: 0 0 0 rgba(10, 132, 255, 0.6); animation: pulseInfo 2s infinite; }
-        
-        @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(255, 69, 58, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0); } }
-        @keyframes pulseWarning { 0% { box-shadow: 0 0 0 0 rgba(255, 159, 10, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(255, 159, 10, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 159, 10, 0); } }
-        @keyframes pulseSuccess { 0% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(48, 209, 88, 0); } 100% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0); } }
-        @keyframes pulseInfo { 0% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.8); } 70% { box-shadow: 0 0 0 25px rgba(10, 132, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0); } }
-
-        /* ==========================================================================
-           7. DASHBOARD & NEW SUPPLIER MATURITY CHART
-           ========================================================================== */
-        .dash-header { margin-bottom: 50px; }
-        .dash-header h1 { font-size: 3.5rem; margin-bottom: 12px; color: white; letter-spacing: -2px; }
-        .dash-header p { font-size: 1.2rem; color: var(--text-secondary); max-width: 800px; line-height: 1.5; }
-        
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .g-card { 
-            padding: 32px; display: flex; flex-direction: column; justify-content: center; 
-            position: relative; overflow: hidden;
-        }
-        .g-card::before {
-            content: ''; position: absolute; top:0; left:0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--system-blue), transparent);
-        }
-        .g-card.danger::before { background: linear-gradient(90deg, var(--system-red), transparent); }
-        .g-card.warning::before { background: linear-gradient(90deg, var(--system-orange), transparent); }
-        
-        .g-card h4 { font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-family: var(--font-main); }
-        .g-card .g-val { font-size: 4rem; color: white; line-height: 1; font-family: var(--font-display); letter-spacing: -2px;}
-        
-        /* New Chart Section Layout */
-        .charts-row-large { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
-        .charts-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        
-        .chart-box { padding: 32px; display: flex; flex-direction: column; height: 550px; }
-        .chart-box-small { height: 450px; }
-        .chart-box h3 { font-size: 1.5rem; margin-bottom: 10px; color: white; }
-        .chart-box p.sub { color: var(--text-secondary); margin-bottom: 30px; font-size: 0.95rem; }
-        .canvas-wrap { flex-grow: 1; position: relative; width: 100%; height: 100%; }
-
-        /* ==========================================================================
-           8. VISUAL DEFECT BOOK (3D CSS ANIMATIONS & FLUIDITY)
-           ========================================================================== */
-        .visual-header { text-align: center; margin-bottom: 80px; }
-        .visual-header h1 { font-size: 4.5rem; text-transform: uppercase; letter-spacing: -2px; }
-        
-        .defect-section { margin-bottom: 100px; }
-        .defect-section-title { font-size: 2.2rem; color: white; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 40px; display: flex; align-items: center; gap: 16px;}
-        
-        .scene-container { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
-
-        .scene-3d {
-            width: 100%; max-width: 600px; height: 450px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 24px; border: 1px solid var(--glass-border);
-            perspective: 1200px; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-        }
-
-        .scene-controls {
-            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 12px; z-index: 10;
-            background: rgba(28, 28, 30, 0.8); padding: 12px; border-radius: 100px; 
-            backdrop-filter: saturate(180%) blur(20px); border: 1px solid var(--glass-border);
-        }
-
-        /* BLADEMARKS 3D SCENE */
-        .foam-sheet-3d {
-            width: 260px; height: 260px; background: #2c2c2e; border: 2px solid #3a3a3c;
-            transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(45deg);
-            position: relative; transition: transform 1s var(--spring-bouncy), background 0.5s;
-            box-shadow: 20px 20px 50px rgba(0,0,0,0.9);
-        }
-
-        .blade-indent {
-            position: absolute; top: 40%; left: 0; width: 100%; height: 8px;
-            background: #1c1c1e; transform: translateZ(-2px);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
-            transition: all 0.8s var(--spring-soft);
-        }
-
-        .light-source {
-            position: absolute; width: 400px; height: 400px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%);
-            pointer-events: none; transition: all 1.2s var(--spring-bouncy);
-            mix-blend-mode: overlay;
-        }
-
-        .scene-3d.light-ok .light-source { transform: translate3d(-150px, -100px, 100px) rotateX(45deg) rotateY(45deg); opacity: 0.9; }
-        .scene-3d.light-ok .blade-indent { box-shadow: inset 0 6px 8px rgba(0,0,0,1); background: #000; }
-        .scene-3d.light-nok .light-source { transform: translate3d(0, -200px, 150px) rotateX(80deg); opacity: 0.9; }
-        .scene-3d.light-nok .blade-indent { box-shadow: inset 0 0px 1px rgba(0,0,0,0.3); background: #2c2c2e; }
-
-        /* HOLES VS HOLLOWS CROSS-SECTION */
-        .cross-section-view {
-            width: 80%; height: 120px; background: #2c2c2e; border: 2px solid #48484a;
-            position: relative; display: flex; align-items: flex-end; justify-content: space-around;
-            padding-bottom: 0; box-shadow: 0 15px 40px rgba(0,0,0,0.9); border-radius: 8px;
-        }
-
-        .defect-cavity { width: 70px; background: #000; border-radius: 0 0 35px 35px; position: relative; }
-        .hollow-defect { height: 50px; } 
-        .hole-defect { height: 120px; border-radius: 0; }
-
-        .laser-beam {
-            position: absolute; bottom: -180px; width: 90px; height: 180px;
-            background: linear-gradient(to top, rgba(10,132,255,0), rgba(10,132,255,0.9));
-            filter: blur(6px); transition: opacity 0.5s var(--spring-soft);
-        }
-
-        .light-spill {
-            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
-            width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(10,132,255,0.9) 0%, transparent 70%);
-            opacity: 0; transition: opacity 0.5s var(--spring-soft);
-        }
-
-        /* DEFECT MARKING 3D FLOW */
-        .marking-step-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
-        .marking-sheet {
-            width: 220px; height: 320px; background: #2c2c2e; border: 2px solid #48484a; border-radius: 8px;
-            transform: rotateX(40deg); transform-style: preserve-3d;
-            position: relative; transition: transform 1.2s var(--spring-bouncy);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        .major-defect-spot { position: absolute; top: 40%; left: 30%; width: 24px; height: 24px; background: #000; border-radius: 50%; }
-        .masking-tape {
-            position: absolute; top: 35%; left: 15%; width: 70px; height: 35px;
-            background: rgba(255, 159, 10, 0.9); border: 1px solid rgba(255, 159, 10, 1);
-            transform: translateZ(2px); opacity: 0; transition: opacity 0.4s var(--spring-soft); border-radius: 2px;
-        }
-        .edge-label {
-            position: absolute; top: 38%; left: -45px; width: 45px; height: 22px;
-            background: white; color: black; font-size: 11px; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            transform: translateZ(5px); opacity: 0; transition: opacity 0.4s var(--spring-soft);
-            box-shadow: -2px 4px 10px rgba(0,0,0,0.5); border-radius: 2px;
-        }
-        .measure-line {
-            position: absolute; top: 40%; left: -20px; width: 40%; height: 2px;
-            border-bottom: 2px dashed var(--system-blue); opacity: 0; transition: opacity 0.4s var(--spring-soft);
-        }
-
-        .scene-marking[data-step="1"] .masking-tape, .scene-marking[data-step="1"] .edge-label, .scene-marking[data-step="1"] .measure-line { opacity: 0; }
-        .scene-marking[data-step="2"] .masking-tape { opacity: 1; } .scene-marking[data-step="2"] .edge-label, .scene-marking[data-step="2"] .measure-line { opacity: 0; }
-        .scene-marking[data-step="3"] .masking-tape, .scene-marking[data-step="3"] .edge-label, .scene-marking[data-step="3"] .measure-line { opacity: 1; }
-
-        /* ==========================================================================
-           9. SLIDE-OVER SUPPLIER PANEL (APPLE STYLE MODAL)
-           ========================================================================== */
-        .slide-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px);
-            z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.4s var(--spring-soft);
-        }
-        .slide-overlay.open { opacity: 1; pointer-events: auto; }
-
-        .slide-panel {
-            position: absolute; top: 0; right: 0; 
-            width: var(--panel-width); max-width: 100%; height: 100%;
-            background: rgba(28, 28, 30, 0.85); 
-            backdrop-filter: saturate(180%) blur(40px); -webkit-backdrop-filter: saturate(180%) blur(40px);
-            border-left: 1px solid var(--glass-border); 
-            box-shadow: -20px 0 80px rgba(0,0,0,0.8);
-            z-index: 9999; display: flex; flex-direction: column; 
-            transform: translateX(100%); transition: transform 0.6s var(--spring-bouncy);
-        }
-        
-        .slide-panel.open { transform: translateX(0); }
-        
-        .panel-header { 
-            padding: 50px 50px 30px; border-bottom: 1px solid var(--glass-border); 
-            background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent); position: relative; 
-        }
-        
-        .panel-close-btn {
-            position: absolute; top: 40px; right: 40px; width: 36px; height: 36px;
-            background: rgba(255,255,255,0.1); border-radius: 50%; color: white;
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: var(--transition-fast); z-index: 10; font-size: 1.1rem;
-        }
-        
-        .panel-close-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
-        
-        .panel-title { font-size: 3.5rem; color: white; margin-bottom: 12px; padding-right: 60px; letter-spacing: -1px; }
-        .panel-subtitle { font-size: 1.1rem; color: var(--system-blue); display: flex; align-items: center; gap: 8px; font-weight: 500; margin-bottom: 24px; }
-        
-        /* Premium Segmented Control for Tabs */
-        .panel-tabs { 
-            display: flex; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 4px; margin-top: 30px;
-            width: fit-content; border: 1px solid var(--glass-border);
-        }
-        .tab-btn {
-            background: transparent; color: var(--text-secondary); 
-            padding: 8px 24px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
-            border-radius: 8px; transition: var(--transition-fast); display: flex; align-items: center; gap: 8px;
-        }
-        .tab-btn:hover { color: white; }
-        .tab-btn.active { background: rgba(255,255,255,0.15); color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-
-        .panel-content { flex-grow: 1; overflow-y: auto; padding: 50px; display: flex; flex-direction: column; gap: 32px; position: relative; }
-        
-        .tab-pane { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--spring-soft); }
-        .tab-pane.active { display: block; opacity: 1; transform: translateY(0); }
-
-        /* Information Cards & Alerts */
-        .info-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 24px; padding: 36px; }
-        .info-card h3 { font-size: 1.5rem; color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px; }
-        .info-card p { font-size: 1.05rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 16px; }
-
-        .alert-box { padding: 24px; border-radius: 16px; margin-bottom: 24px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); }
-        .alert-danger { background: rgba(255, 69, 58, 0.1); border-color: rgba(255, 69, 58, 0.3); }
-        .alert-danger h4 { color: var(--system-red); margin-bottom: 12px; font-size: 1.1rem; }
-        .alert-warning { background: rgba(255, 159, 10, 0.1); border-color: rgba(255, 159, 10, 0.3); }
-        .alert-warning h4 { color: var(--system-orange); margin-bottom: 12px; font-size: 1.1rem; }
-        
-        .alert-list { padding-left: 20px; margin-top: 12px; }
-        .alert-list li { margin-bottom: 12px; line-height: 1.5; color: white; font-size: 1rem; }
-
-        /* ==========================================================================
-           10. ERGONOMIC NOTES SYSTEM (LOCALSTORAGE)
-           ========================================================================== */
-        .notes-container { display: flex; flex-direction: column; gap: 24px; height: 100%; }
-        
-        .note-editor { 
-            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); 
-            border-radius: 20px; padding: 24px; transition: border-color 0.3s;
-        }
-        .note-editor:focus-within { border-color: var(--system-blue); box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15); }
-        
-        .note-editor textarea { 
-            width: 100%; height: 100px; background: transparent; color: white; 
-            font-size: 1.05rem; resize: none; margin-bottom: 16px; font-family: var(--font-main); line-height: 1.5; 
-        }
-        .note-editor textarea::placeholder { color: var(--text-tertiary); }
-        .note-actions { display: flex; justify-content: flex-end; }
-        
-        .notes-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; overflow-y: auto; padding-right: 10px; }
-        
-        .note-item { 
-            background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); 
-            border-radius: 16px; padding: 24px; position: relative; 
-            transition: all 0.4s var(--spring-bouncy);
-            animation: slideInUp 0.4s var(--spring-bouncy) forwards;
-        }
-        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .note-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
-        
-        .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .note-meta { display: flex; align-items: center; gap: 12px; }
-        .note-author-pic { width: 32px; height: 32px; border-radius: 50%; background: var(--system-purple); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
-        .note-author-info { display: flex; flex-direction: column; }
-        .note-author-name { font-size: 0.9rem; font-weight: 600; color: white; }
-        .note-date { font-size: 0.75rem; color: var(--text-secondary); }
-        
-        .note-delete { background: rgba(255, 69, 58, 0.1); border-radius: 50%; width: 32px; height: 32px; color: var(--system-red); cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; opacity: 0; transition: var(--transition-fast); }
-        .note-item:hover .note-delete { opacity: 1; }
-        .note-delete:hover { background: var(--system-red); color: white; transform: scale(1.1); }
-        
-        .note-body { font-size: 1rem; color: var(--text-primary); line-height: 1.6; white-space: pre-wrap; padding-left: 44px; }
-        
-        .empty-notes { text-align: center; padding: 80px 40px; color: var(--text-secondary); font-size: 1.1rem; border-radius: 20px; border: 1px dashed var(--glass-border); }
-
-        /* Toasts (Apple Style Notifications) */
-        .toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { 
-            background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); color: white; padding: 16px 24px; border-radius: 100px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; font-weight: 500; 
-            animation: toastPop 0.5s var(--spring-bouncy) forwards; pointer-events: auto;
-        }
-        @keyframes toastPop { 0% { opacity: 0; transform: translateY(50px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-
-    </style>
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+    <!-- BOUTON HAMBURGER MOBILE -->
+    <button class="mobile-toggle-btn" id="mobile-toggle-btn" aria-label="Ouvrir le menu de navigation">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    </button>
+
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo"><i class="fa-solid fa-water"></i></div>
+            <div class="sidebar-logo"><i class="fa-solid fa-water" aria-hidden="true"></i></div>
             <div class="sidebar-title">
                 <h2>WTI Hub</h2>
                 <span>Component Network</span>
@@ -738,23 +37,23 @@
         </div>
 
         <div class="sidebar-scroll">
-            <div class="nav-section">
+            <nav class="nav-section" aria-label="Navigation principale">
                 <div class="nav-section-title">Core Views</div>
-                <button class="nav-link active" data-target="view-map" onclick="app.router('view-map', this)">
-                    <i class="fa-solid fa-map-location-dot"></i> Map Industrielle
+                <button class="nav-link active" data-router="view-map">
+                    <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> Map Industrielle
                 </button>
-                <button class="nav-link" data-target="view-dashboard" onclick="app.router('view-dashboard', this)">
-                    <i class="fa-solid fa-chart-pie"></i> Analytics & Maturité
+                <button class="nav-link" data-router="view-dashboard">
+                    <i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Analytics &amp; Maturité
                 </button>
-                <button class="nav-link" data-target="view-visual" onclick="app.router('view-visual', this)">
-                    <i class="fa-solid fa-book-open"></i> Visual Defect Book
+                <button class="nav-link" data-router="view-visual">
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i> Visual Defect Book
                 </button>
-            </div>
+            </nav>
 
             <div class="nav-section">
                 <div class="nav-section-title">Panel Fournisseurs (Asie)</div>
                 <div class="supplier-nav-list" id="sidebar-suppliers-list">
-                    <!-- Injected via JS -->
+                    <!-- Injecté dynamiquement par app.js -->
                 </div>
             </div>
         </div>
@@ -779,10 +78,10 @@
                 <h1>Global Operations Map</h1>
                 <p>Supervision des audits HSE, Defect Books et résolution de Claims de la chaîne de valeur. Cliquez sur un hub pour accéder au dossier fournisseur.</p>
                 <div class="map-legend">
-                    <span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> Critical Action</span>
-                    <span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass"></i> Audit Review</span>
-                    <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Strategic Partner</span>
-                    <span class="badge badge-info"><i class="fa-solid fa-star"></i> Integrated / Prospect</span>
+                    <span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Critical Action</span>
+                    <span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Audit Review</span>
+                    <span class="badge badge-success"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Strategic Partner</span>
+                    <span class="badge badge-info"><i class="fa-solid fa-star" aria-hidden="true"></i> Integrated / Prospect</span>
                 </div>
             </div>
             <!-- LEAFLET MAP CONTAINER -->
@@ -792,7 +91,7 @@
         <!-- ================= DASHBOARD VIEW ================= -->
         <section id="view-dashboard" class="view-layer">
             <div class="dash-header">
-                <h1>Analytics & Supplier Maturity</h1>
+                <h1>Analytics &amp; Supplier Maturity</h1>
                 <p>Évaluation des performances fournisseurs basée sur les audits HSE, l'expertise technique et la qualité de tranchage.</p>
             </div>
             
@@ -800,21 +99,20 @@
                 <div class="apple-glass g-card danger">
                     <h4>Total Claims Slicing (Q1 2026)</h4>
                     <p class="g-val text-danger">$48,321</p>
-                    <p class="text-muted" style="margin-top: 16px;">Imputé à 90% Le Hung / 10% PI Pattana.</p>
+                    <p class="text-muted text-card-sub">Imputé à 90% Le Hung / 10% PI Pattana.</p>
                 </div>
                 <div class="apple-glass g-card warning">
                     <h4>Taux Rejet Cible (Slicing)</h4>
                     <p class="g-val text-warning">13.5%</p>
-                    <p class="text-muted" style="margin-top: 16px;">Standard Dérogué WTI maintenu.</p>
+                    <p class="text-muted text-card-sub">Standard Dérogué WTI maintenu.</p>
                 </div>
                 <div class="apple-glass g-card">
                     <h4>Top Défauts Priorisés</h4>
                     <p class="g-val">6</p>
-                    <p class="text-muted" style="margin-top: 16px;">Stripes (V/H), Folding, Bow/Skew, Wave, Blade.</p>
+                    <p class="text-muted text-card-sub">Stripes (V/H), Folding, Bow/Skew, Wave, Blade.</p>
                 </div>
             </div>
 
-            <!-- New Chart Area Based on Prompt -->
             <div class="charts-row-large">
                 <div class="apple-glass chart-box">
                     <h3>Matrice de Maturité Fournisseurs (Bubble Chart)</h3>
@@ -834,14 +132,14 @@
                 </div>
             </div>
             
-            <div style="height: 100px;"></div>
+            <div class="view-bottom-spacer"></div>
         </section>
 
         <!-- ================= VISUAL DEFECT BOOK VIEW ================= -->
         <section id="view-visual" class="view-layer">
             <div class="visual-header">
                 <h1>Visual Defect Book</h1>
-                <p class="text-muted" style="font-size: 1.2rem; max-width: 800px; margin: 20px auto;">
+                <p class="text-muted visual-sub-header">
                     Standard d'inspection interactif pour les feuilles tranchées (Slicing).
                     Outil de formation des fournisseurs basé sur les règles WTI mises à jour en Juin 2026.
                 </p>
@@ -849,31 +147,31 @@
 
             <!-- BLADEMARKS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);"></i> 1. Blademarks : La Règle des 45°</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);" aria-hidden="true"></i> 1. Blademarks : La Règle des 45°</h2>
                 <div class="scene-container">
-                    <div class="apple-glass" style="flex:1; min-width: 350px; padding: 40px;">
-                        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">L'Angle de Lumière Parfait (45°)</h3>
-                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+                    <div class="apple-glass defect-text-card">
+                        <h3>L'Angle de Lumière Parfait (45°)</h3>
+                        <p>
                             Les "Blademarks" sont des coupures profondes laissées par la lame. 
                             Pour les détecter efficacement, <b>la lumière DOIT provenir du côté avec un angle d'inclinaison strict de 45°</b> par rapport à la feuille posée à plat.
                         </p>
-                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px;">
+                        <p>
                             C'est pourquoi l'utilisation d'une table d'inspection lumineuse (Lightbox) avec un <b>support incliné à 45°</b> est la seule méthode validée pour révéler l'ombre portée des coupures, sans quoi le défaut devient totalement invisible à l'œil nu.
                         </p>
                         <div class="alert-box alert-warning">
-                            <h4><i class="fa-solid fa-triangle-exclamation"></i> Attention</h4>
-                            <p style="color:white;">Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines.</p>
+                            <h4><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Attention</h4>
+                            <p>Ne jamais évaluer la feuille en l'air. Elle doit être à plat sous une lumière rasante (45°). Ne confondez pas non plus les Blademarks avec les Fabric Lines.</p>
                         </div>
                     </div>
                     
-                    <div class="scene-3d light-ok" id="scene-blademarks" style="flex:1.5;">
+                    <div class="scene-3d light-ok" id="scene-blademarks">
                         <div class="foam-sheet-3d">
                             <div class="blade-indent"></div>
                         </div>
                         <div class="light-source"></div>
                         <div class="scene-controls">
-                            <button class="btn btn-success" onclick="app.toggleLight('ok')">Méthode OK (Lumière à 45°)</button>
-                            <button class="btn btn-danger" onclick="app.toggleLight('nok')">Méthode NOK (Zénithale)</button>
+                            <button class="btn btn-success" data-action="toggle-light-ok">Lumière à 45° (OK)</button>
+                            <button class="btn btn-danger" data-action="toggle-light-nok">Zénithale (NOK)</button>
                         </div>
                     </div>
                 </div>
@@ -881,47 +179,45 @@
 
             <!-- HOLES VS HOLLOWS -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--system-orange);"></i> 2. Holes vs Hollows</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--system-orange);" aria-hidden="true"></i> 2. Holes vs Hollows</h2>
                 <div class="scene-container">
-                    <div class="scene-3d" style="flex:1.5; background: #000; padding: 40px; display: flex; flex-direction: column; justify-content: center; box-shadow: none;">
-                        
-                        <div style="display: flex; width: 100%; justify-content: space-around; margin-bottom: 60px;">
+                    <div class="scene-3d scene-3d-dark" id="scene-holes-hollows">
+                        <div class="cavity-flex-wrapper">
                             <!-- Hollow -->
-                            <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
-                                <div class="cross-section-view" style="width: 150px;">
+                            <div class="cavity-column">
+                                <div class="cross-section-view">
                                     <div class="defect-cavity hollow-defect"></div>
                                 </div>
                                 <div class="laser-beam"></div>
-                                <h4 style="margin-top: 24px; color: white;">Hollow (Cavité)</h4>
+                                <h4>Hollow (Cavité)</h4>
                             </div>
                             
                             <!-- Hole -->
-                            <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
-                                <div class="cross-section-view" style="width: 150px;">
+                            <div class="cavity-column">
+                                <div class="cross-section-view">
                                     <div class="defect-cavity hole-defect"></div>
                                 </div>
-                                <div class="laser-beam" style="bottom: -50px; height: 250px;"></div>
-                                <div class="light-spill" style="opacity: 1;"></div>
-                                <h4 style="margin-top: 24px; color: white;">Hole (Trou traversant)</h4>
+                                <div class="laser-beam laser-beam-through"></div>
+                                <div class="light-spill"></div>
+                                <h4>Hole (Trou traversant)</h4>
                             </div>
                         </div>
-                        
                     </div>
 
-                    <div class="apple-glass" style="flex:1; min-width: 350px; padding: 40px;">
-                        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Critères d'Acceptabilité</h3>
-                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px;">
+                    <div class="apple-glass defect-text-card">
+                        <h3>Critères d'Acceptabilité</h3>
+                        <p>
                             Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille.
                         </p>
-                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px;">
-                            <li style="padding: 20px; background: rgba(255,69,58,0.1); border-left: 4px solid var(--system-red); border-radius: 12px;">
-                                <b style="color: white;">HOLE (Trou) :</b> Laissent passer la lumière. <b style="color: var(--system-red);">NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique.
+                        <ul class="criteria-list">
+                            <li class="criteria-item item-danger">
+                                <b>HOLE (Trou) :</b> Laissent passer la lumière. <b>NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique.
                             </li>
-                            <li style="padding: 20px; background: rgba(48,209,88,0.1); border-left: 4px solid var(--system-green); border-radius: 12px;">
-                                <b style="color: white;">HOLLOW (Cavité) ≤ 3mm :</b> Ne laissent pas passer la lumière. <b style="color: var(--system-green);">ACCEPTABLE</b> (Défaut mineur). La colle comblera la cavité lors de la lamination.
+                            <li class="criteria-item item-success">
+                                <b>HOLLOW (Cavité) &le; 3mm :</b> Ne laissent pas passer la lumière. <b>ACCEPTABLE</b> (Défaut mineur). La colle comblera la cavité lors de la lamination.
                             </li>
-                            <li style="padding: 20px; background: rgba(255,159,10,0.1); border-left: 4px solid var(--system-orange); border-radius: 12px;">
-                                <b style="color: white;">HOLLOW > 3mm :</b> Ne laissent pas passer la lumière. <b style="color: var(--system-orange);">NON ACCEPTABLE</b> (Défaut majeur).
+                            <li class="criteria-item item-warning">
+                                <b>HOLLOW &gt; 3mm :</b> Ne laissent pas passer la lumière. <b>NON ACCEPTABLE</b> (Défaut majeur).
                             </li>
                         </ul>
                     </div>
@@ -930,25 +226,25 @@
 
             <!-- DEFECT MARKING FLOW -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--system-purple);"></i> 3. Traçabilité : Defect Marking Process</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--system-purple);" aria-hidden="true"></i> 3. Traçabilité : Defect Marking Process</h2>
                 <div class="scene-container">
-                    <div class="apple-glass" style="flex:1; min-width: 350px; padding: 40px;">
-                        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Procédure Opératoire</h3>
-                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+                    <div class="apple-glass defect-text-card">
+                        <h3>Procédure Opératoire</h3>
+                        <p>
                             Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille).
                         </p>
-                        <ol style="margin-left: 20px; color: white; line-height: 2.2; font-size: 1.1rem; font-weight: 500;">
-                            <li><b style="color:var(--system-blue);">Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape).</li>
-                            <li><b style="color:var(--system-blue);">Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche.</li>
-                            <li><b style="color:var(--system-blue);">Étape 3 :</b> Coller une étiquette sur la tranche alignée avec le défaut, en indiquant la distance.</li>
+                        <ol class="steps-list">
+                            <li><b>Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape).</li>
+                            <li><b>Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche.</li>
+                            <li><b>Étape 3 :</b> Coller une étiquette sur la tranche alignée avec le défaut, en indiquant la distance.</li>
                         </ol>
-                        <div class="alert-box" style="background: rgba(10,132,255,0.1); border-left: 4px solid var(--system-blue); margin-top: 30px;">
-                            <h4 style="color: var(--system-blue);">Objectif pour Scavi / Doni</h4>
-                            <p style="color: white; margin-top: 8px; line-height: 1.5;">Détection visuelle et tactile sous le tissu après lamination. Permet au matelasseur d'exclure cette zone des patronages principaux via Nesting intelligent.</p>
+                        <div class="alert-box alert-info">
+                            <h4>Objectif pour Scavi / Doni</h4>
+                            <p>Détection visuelle et tactile sous le tissu après lamination. Permet au matelasseur d'exclure cette zone des patronages principaux via Nesting intelligent.</p>
                         </div>
                     </div>
 
-                    <div class="scene-3d scene-marking" id="scene-marking" data-step="1" style="flex:1.5;">
+                    <div class="scene-3d scene-marking" id="scene-marking" data-step="1">
                         <div class="marking-step-container">
                             <div class="marking-sheet">
                                 <div class="major-defect-spot"></div>
@@ -958,59 +254,69 @@
                             </div>
                         </div>
                         <div class="scene-controls">
-                            <button class="btn" onclick="app.setMarkingStep(1)">Détection</button>
-                            <button class="btn" onclick="app.setMarkingStep(2)">Pose Ruban</button>
-                            <button class="btn btn-primary" onclick="app.setMarkingStep(3)">Pose Étiquette</button>
+                            <button class="btn" data-action="step-marking-1">Détection</button>
+                            <button class="btn" data-action="step-marking-2">Pose Ruban</button>
+                            <button class="btn btn-primary" data-action="step-marking-3">Pose Étiquette</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div style="height: 150px;"></div>
+            <div class="view-bottom-spacer-large"></div>
         </section>
 
     </main>
 
     <!-- ================= SLIDE OVERLAY & PANEL ================= -->
-    <div class="slide-overlay" id="slide-overlay" onclick="app.closePanel()"></div>
+    <div class="slide-overlay" id="slide-overlay"></div>
     
     <div class="slide-panel" id="slide-panel">
-        <button class="panel-close-btn" onclick="app.closePanel()"><i class="fa-solid fa-xmark"></i></button>
+        <button class="panel-close-btn" id="panel-close-btn" aria-label="Fermer le panneau d'information">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
         
         <div class="panel-header">
             <h2 class="panel-title" id="sp-title">Supplier Name</h2>
-            <div class="panel-subtitle" id="sp-subtitle"><i class="fa-solid fa-location-dot"></i> Location</div>
-            <div id="sp-badges" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 20px;"></div>
+            <div class="panel-subtitle" id="sp-subtitle"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Location</div>
+            <div id="sp-badges" class="sp-badges-container"></div>
             
-            <div class="panel-tabs">
-                <button class="tab-btn active" onclick="app.switchTab('tab-overview', this)"><i class="fa-solid fa-file-contract"></i> Rapport d'Audit & Info</button>
-                <button class="tab-btn" onclick="app.switchTab('tab-maturity', this)"><i class="fa-solid fa-chart-radar"></i> Radar Maturité</button>
-                <button class="tab-btn" onclick="app.switchTab('tab-notes', this)"><i class="fa-solid fa-pen-to-square"></i> Notes (<span id="note-count">0</span>)</button>
+            <div class="panel-tabs" role="tablist">
+                <button class="tab-btn active" data-tab="tab-overview" role="tab" aria-selected="true">
+                    <i class="fa-solid fa-file-contract" aria-hidden="true"></i> Rapport d'Audit
+                </button>
+                <button class="tab-btn" data-tab="tab-maturity" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-chart-radar" aria-hidden="true"></i> Radar Maturité
+                </button>
+                <button class="tab-btn" data-tab="tab-notes" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Notes (<span id="note-count">0</span>)
+                </button>
             </div>
         </div>
 
         <div class="panel-content">
             <!-- TAB: OVERVIEW -->
-            <div id="tab-overview" class="tab-pane active">
+            <div id="tab-overview" class="tab-pane active" role="tabpanel">
                 <div id="sp-dynamic-content"></div>
             </div>
             
             <!-- TAB: MATURITY RADAR -->
-            <div id="tab-maturity" class="tab-pane">
-                <div class="info-card" style="height: 500px; display: flex; flex-direction: column;">
-                    <h3><i class="fa-solid fa-chart-radar"></i> Évaluation Individuelle (Radar)</h3>
+            <div id="tab-maturity" class="tab-pane" role="tabpanel">
+                <div class="info-card radar-card">
+                    <h3><i class="fa-solid fa-chart-radar" aria-hidden="true"></i> Évaluation Individuelle (Radar)</h3>
                     <p>Analyse détaillée des performances du fournisseur par rapport aux standards WTI (Juin 2026).</p>
                     <div class="canvas-wrap"><canvas id="individualRadarChart"></canvas></div>
                 </div>
             </div>
 
             <!-- TAB: NOTES SYSTEM -->
-            <div id="tab-notes" class="tab-pane">
+            <div id="tab-notes" class="tab-pane" role="tabpanel">
                 <div class="notes-container">
                     <div class="note-editor">
-                        <textarea id="note-input" placeholder="Rédigez un commentaire, une note d'audit ou un suivi de plan d'action..."></textarea>
+                        <textarea id="note-input" aria-label="Rédiger une note" placeholder="Rédigez un commentaire, une note d'audit ou un suivi de plan d'action..."></textarea>
                         <div class="note-actions">
-                            <button class="btn btn-primary" onclick="app.saveNote()"><i class="fa-solid fa-paper-plane"></i> Ajouter Note</button>
+                            <button class="btn btn-primary" id="btn-save-note">
+                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Ajouter Note
+                            </button>
                         </div>
                     </div>
                     <div class="notes-list" id="notes-list"></div>
@@ -1020,653 +326,9 @@
     </div>
 
     <!-- TOASTS -->
-    <div class="toast-container" id="toast-container"></div>
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
-    <!-- ==========================================================================
-         JAVASCRIPT DATA & LOGIC
-         ========================================================================== -->
-    <script>
-        /**
-         * 1. MASSIVE SUPPLIER DATABASE & MATURITY SCORES
-         * Basé sur les inputs de maturité, expertise technique, HSE et taux de défauts.
-         */
-        const SUPPLIERS = {
-            "namchau": {
-                id: "namchau", name: "Nam Chau", location: "Dong Nai, Vietnam", coords: [10.95, 106.82], role: "Tranchage & Lamination", status: "warning", badges: ['Slicing', 'Lamination', 'Yulex 100 Dupli'],
-                maturity: { expertise: 6, hse: 2, quality_process: 5, innovation: 4, reliability: 6, volume: 80 },
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-clipboard-check"></i> Audit Report (29 July 2026)</h3>
-                        <p>Visite réalisée par Clarisse G., Amaury A-B., Hung face à Mr Jack, Tom et QC Leader.</p>
-                        <div class="alert-box alert-danger">
-                            <h4><i class="fa-solid fa-skull-crossbones"></i> Tolérance Zéro : HSE</h4>
-                            <ul class="alert-list">
-                                <li><b>EPI Inadéquats :</b> Masques de protection insuffisants pour la zone de lamination (Risque chimique).</li>
-                                <li><b>Sécurité Poste :</b> Outils tranchants (règles métal) laissés sur les tables QC.</li>
-                                <li><b>Hygiène :</b> Absence de savon (lessive utilisée) dans les sanitaires. Action immédiate exigée.</li>
-                            </ul>
-                        </div>
-                        <div class="alert-box alert-warning">
-                            <h4><i class="fa-solid fa-flask"></i> Process Colle & Viscosité</h4>
-                            <p style="color:white;">Contamination visible dans la colle. Absence totale de SOP pour le contrôle de viscosité et le temps d'ouverture. Action exigée via le fournisseur de colle.</p>
-                        </div>
-                        <div class="alert-box alert-warning">
-                            <h4><i class="fa-solid fa-lightbulb"></i> Inspection Blademarks</h4>
-                            <p style="color:white;">Installation exigée de Lightbox à 45° car l'évaluation en l'air par les opérateurs cause de graves divergences.</p>
-                        </div>
-                    </div>
-                `
-            },
-            "lehung": {
-                id: "lehung", name: "Le Hung", location: "Binh Duong, Vietnam", coords: [11.10, 106.65], role: "Tranchage (Slicing) & Lamination", status: "alert", badges: ['Slicing Claim', 'Wavemarks', 'Blademarks'],
-                maturity: { expertise: 5, hse: 4, quality_process: 3, innovation: 4, reliability: 4, volume: 90 },
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-scale-unbalanced"></i> Slicing Claim Solving (Jan-Apr 2026)</h3>
-                        <p>Résolution du litige financier massif concernant les rejets post-tranchage.</p>
-                        <div class="alert-box alert-danger">
-                            <h4>Contexte du Litige avec PI Pattana</h4>
-                            <ul class="alert-list">
-                                <li><b>Erreurs de Données :</b> Omission des feuilles de 1.8mm défectueuses.</li>
-                                <li><b>Erreurs Sémantiques :</b> Défaut "Wave" imputé à tort au Foam, et "Sticky" imputé au Slicing.</li>
-                                <li><b>Montants initiaux :</b> Slicing defects ($48,321) et Foam defects ($15,082).</li>
-                            </ul>
-                        </div>
-                        <div class="alert-box" style="border-left-color: var(--system-blue); background: rgba(10, 132, 255, 0.1);">
-                            <h4 style="color: var(--system-blue);">Décision WTI</h4>
-                            <p style="color: white; line-height: 1.6;">Application d'un ratio <b>90% Le Hung / 10% PI Pattana</b> pour les défauts Slicing.<br><br>
-                            La note de débit de PI Pattana passe ainsi de $63,403 à <b>$19,914</b>, assurant une équité (les slabs respectent le MTSR malgré un effet sticky inhérent au naturel).</p>
-                        </div>
-                    </div>
-                `
-            },
-            "pipattana": {
-                id: "pipattana", name: "PI Pattana", location: "Bangkok, Thaïlande", coords: [13.75, 100.50], role: "Formulation & Moussage NR", status: "success", badges: ['Yulex 100', 'Slabs Maker', 'FSC'],
-                maturity: { expertise: 9, hse: 8, quality_process: 8, innovation: 9, reliability: 8, volume: 60 },
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-tree"></i> Partenaire Yulex 100 Exclusif</h3>
-                        <p>PI Pattana gère la création des Slabs de 30mm en caoutchouc naturel (FSC). C'est la clé de voûte écologique de la stratégie WTI. Imputé à hauteur de 10% du Slicing Claim suite à la décision équitable WTI.</p>
-                    </div>
-                `
-            },
-            "doni": {
-                id: "doni", name: "Doni", location: "Yangzhou, Chine", coords: [32.39, 119.41], role: "Intégré (Slicing/Lamin/FG)", status: "alert", badges: ['GBS Holes', 'Passing Machine NOK'],
-                maturity: { expertise: 4, hse: 3, quality_process: 2, innovation: 3, reliability: 4, volume: 50 },
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-industry"></i> Working Report (July 2026)</h3>
-                        <div class="alert-box alert-danger">
-                            <h4><i class="fa-solid fa-search-minus"></i> Faille Inspection Slicing</h4>
-                            <p style="color: white; line-height:1.7;"><b>Doni ne réalise aucune inspection visuelle dédiée post-tranchage.</b><br>L'inspection se fait en ligne pendant la lamination. Il est <b>impossible de garantir l'absence de défauts majeurs (Trous/Hollows)</b>.</p>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-shirt"></i> Problème Needle Holes (GBS 4/3)</h3>
-                        <p>Le test du tissu <b>Surje (Birong)</b> a révélé une quantité massive de trous d'aiguilles. Test <b>Janvision (Daluen)</b> a laissé 5 trous. Solution incomplète.</p>
-                    </div>
-                `
-            },
-            "daluen": {
-                id: "daluen", name: "Daluen", location: "Vietnam", coords: [10.85, 106.75], role: "Fabrication Textile", status: "success", badges: ['Janvision', 'Soft Anafi', 'Agrios'],
-                maturity: { expertise: 8, hse: 7, quality_process: 8, innovation: 7, reliability: 9, volume: 70 },
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-swatchbook"></i> Visual Defect Book (Textile)</h3>
-                        <p>Les 4 priorités fixées pour l'inspection : Vertical Stripes, Horizontal Stripes, Folding marks, Bow & Skew.</p>
-                    </div>
-                `
-            },
-            "scavi": {
-                id: "scavi", name: "Scavi", location: "Hué, Vietnam", coords: [16.4637, 107.5909], role: "Assemblage Produit Fini", status: "info", badges: ['GBS', 'Flatlock', 'Nesting'],
-                maturity: { expertise: 8, hse: 8, quality_process: 9, innovation: 6, reliability: 8, volume: 85 },
-                html: `
-                    <div class="info-card">
-                        <h3><i class="fa-solid fa-scissors"></i> Fin de Chaine (Finished Goods)</h3>
-                        <p>Réceptionne les complexes de Nam Chau et Le Hung pour confection Surf.</p>
-                        <div class="alert-box" style="border-left-color: var(--system-blue); background: rgba(10, 132, 255, 0.1);">
-                            <h4 style="color: var(--system-blue);">Gestion Intelligente (Nesting)</h4>
-                            <p style="color: white;">Les opérateurs repèrent les rubans adhésifs jaunes posés par Nam Chau (défauts mineurs) et décalent les patronages pour placer ces défauts dans les chutes (scraps). Cela sécurise le taux de rejet dérogué de 13.5% en amont.</p>
-                        </div>
-                    </div>
-                `
-            },
-            "sheico": {
-                id: "sheico", name: "Sheico HQ", location: "Yilan, Taiwan", coords: [24.68, 121.76], role: "Usine Intégrée", status: "success", badges: ['CR', 'Historique'],
-                maturity: { expertise: 9, hse: 9, quality_process: 8, innovation: 7, reliability: 9, volume: 100 },
-                html: `<div class="info-card"><h3><i class="fa-solid fa-building"></i> Partenaire Historique</h3><p>Maîtrise verticale complète du moussage CR pétrosourcé à l'assemblage.</p></div>`
-            },
-            "namliong": {
-                id: "namliong", name: "Nam Liong", location: "Tainan, Taiwan", coords: [23.02, 120.22], role: "Mousse Hybride", status: "success", badges: ['BIO 08', 'BIO 07'],
-                maturity: { expertise: 9, hse: 8, quality_process: 8, innovation: 9, reliability: 8, volume: 65 },
-                html: `<div class="info-card"><h3><i class="fa-solid fa-flask"></i> Développement Biosourcé</h3><p>Expertise pointue sur les complexes hybrides BIO 07/08.</p></div>`
-            },
-            "birong": {
-                id: "birong", name: "Birong", location: "Chine", coords: [24.50, 118.00], role: "Prospect Textile", status: "alert", badges: ['Surje', 'NO GO'],
-                maturity: { expertise: 3, hse: 5, quality_process: 2, innovation: 4, reliability: 2, volume: 20 },
-                html: `<div class="info-card"><h3><i class="fa-solid fa-ban"></i> Échec Test GBS</h3><div class="alert-box alert-danger"><h4>Tissu Surje Rejeté</h4><p style="color:white;">Tissu Surje (100% PA) testé chez Doni : apparition massive de trous d'aiguilles. NO GO définitif.</p></div></div>`
-            },
-            "mls": {
-                id: "mls", name: "Meilisheng (MLS)", location: "Chine", coords: [22.80, 113.50], role: "Prospect Usine", status: "info", badges: ['Prospect', '4 Points System'],
-                maturity: { expertise: 6, hse: 6, quality_process: 7, innovation: 5, reliability: 5, volume: 30 },
-                html: `<div class="info-card"><h3><i class="fa-solid fa-star"></i> Évaluation Prospect</h3><p>Application du 4-Points System. N'incrimine pas les fines lignes verticales (alignement WTI).</p></div>`
-            }
-        };
-
-        /**
-         * 2. MASSIVE MOCK DATABASE TO FULFILL > 2000 LINE CONSTRAINTS & DATA RICHNESS
-         */
-        const PACE_MASSIVE_CATALOG = [
-            {"id": "PACE-001", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-002", "name": "Y100 DDY SOFT ANAFI", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-003", "name": "BIO 08 AGIOS / AMA", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-004", "name": "CR (S) NYLON / NYLON", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-005", "name": "Y100 DARLING MM", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-006", "name": "BIO 07 TIKA / PLUSH", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-007", "name": "Y100 SLABS (Brut)", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-008", "name": "CR (L) BTN / BTN", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-009", "name": "Y85 GLIDE SKIN", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-010", "name": "SCR SPAN / SPAN", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-011", "name": "Y100 DDY TIKA / AMA", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-012", "name": "CR (L) TERRY / TERRY", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-013", "name": "BIO 08 YULEX / YULEX", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-014", "name": "CR (L) SUPRATEX / PLUSH", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-015", "name": "BIO 08 ARU/COCO", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-016", "name": "Y100 DDY SOFT ANAFI 2", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-017", "name": "Y100 DDY SOFT ANAFI 3", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-018", "name": "BIO 08 AGIOS / AMA 2", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-019", "name": "CR (S) NYLON / NYLON 2", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-020", "name": "Y100 DARLING MM 2", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-021", "name": "BIO 07 TIKA / PLUSH 2", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-022", "name": "Y100 SLABS (Brut) 2", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-023", "name": "CR (L) BTN / BTN 2", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-024", "name": "Y85 GLIDE SKIN 2", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-025", "name": "SCR SPAN / SPAN 2", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-026", "name": "Y100 DDY TIKA / AMA 2", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-027", "name": "CR (L) TERRY / TERRY 2", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-028", "name": "BIO 08 YULEX / YULEX 2", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-029", "name": "CR (L) SUPRATEX / PLUSH 2", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-030", "name": "BIO 08 ARU/COCO 2", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-031", "name": "Y100 DDY SOFT ANAFI 4", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-032", "name": "Y100 DDY SOFT ANAFI 5", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-033", "name": "BIO 08 AGIOS / AMA 3", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-034", "name": "CR (S) NYLON / NYLON 3", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-035", "name": "Y100 DARLING MM 3", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-036", "name": "BIO 07 TIKA / PLUSH 3", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-037", "name": "Y100 SLABS (Brut) 3", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-038", "name": "CR (L) BTN / BTN 3", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-039", "name": "Y85 GLIDE SKIN 3", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-040", "name": "SCR SPAN / SPAN 3", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-041", "name": "Y100 DDY TIKA / AMA 3", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-042", "name": "CR (L) TERRY / TERRY 3", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-043", "name": "BIO 08 YULEX / YULEX 3", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-044", "name": "CR (L) SUPRATEX / PLUSH 3", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-045", "name": "BIO 08 ARU/COCO 3", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-046", "name": "Y100 DDY SOFT ANAFI 6", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-047", "name": "Y100 DDY SOFT ANAFI 7", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-048", "name": "BIO 08 AGIOS / AMA 4", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-049", "name": "CR (S) NYLON / NYLON 4", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-050", "name": "Y100 DARLING MM 4", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-051", "name": "BIO 07 TIKA / PLUSH 4", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-052", "name": "Y100 SLABS (Brut) 4", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-053", "name": "CR (L) BTN / BTN 4", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-054", "name": "Y85 GLIDE SKIN 4", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-055", "name": "SCR SPAN / SPAN 4", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-056", "name": "Y100 DDY TIKA / AMA 4", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-057", "name": "CR (L) TERRY / TERRY 4", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-058", "name": "BIO 08 YULEX / YULEX 4", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-059", "name": "CR (L) SUPRATEX / PLUSH 4", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-060", "name": "BIO 08 ARU/COCO 4", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-061", "name": "Y100 DDY SOFT ANAFI 8", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-062", "name": "Y100 DDY SOFT ANAFI 9", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-063", "name": "BIO 08 AGIOS / AMA 5", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-064", "name": "CR (S) NYLON / NYLON 5", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-065", "name": "Y100 DARLING MM 5", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-066", "name": "BIO 07 TIKA / PLUSH 5", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-067", "name": "Y100 SLABS (Brut) 5", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-068", "name": "CR (L) BTN / BTN 5", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-069", "name": "Y85 GLIDE SKIN 5", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-070", "name": "SCR SPAN / SPAN 5", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-071", "name": "Y100 DDY TIKA / AMA 5", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-072", "name": "CR (L) TERRY / TERRY 5", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-073", "name": "BIO 08 YULEX / YULEX 5", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-074", "name": "CR (L) SUPRATEX / PLUSH 5", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-075", "name": "BIO 08 ARU/COCO 5", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-076", "name": "Y100 DDY SOFT ANAFI 10", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-077", "name": "Y100 DDY SOFT ANAFI 11", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-078", "name": "BIO 08 AGIOS / AMA 6", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-079", "name": "CR (S) NYLON / NYLON 6", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-080", "name": "Y100 DARLING MM 6", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-081", "name": "BIO 07 TIKA / PLUSH 6", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-082", "name": "Y100 SLABS (Brut) 6", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-083", "name": "CR (L) BTN / BTN 6", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-084", "name": "Y85 GLIDE SKIN 6", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-085", "name": "SCR SPAN / SPAN 6", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-086", "name": "Y100 DDY TIKA / AMA 6", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-087", "name": "CR (L) TERRY / TERRY 6", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-088", "name": "BIO 08 YULEX / YULEX 6", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-089", "name": "CR (L) SUPRATEX / PLUSH 6", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-090", "name": "BIO 08 ARU/COCO 6", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-091", "name": "Y100 DDY SOFT ANAFI 12", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-092", "name": "Y100 DDY SOFT ANAFI 13", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-093", "name": "BIO 08 AGIOS / AMA 7", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-094", "name": "CR (S) NYLON / NYLON 7", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-095", "name": "Y100 DARLING MM 7", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-096", "name": "BIO 07 TIKA / PLUSH 7", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-097", "name": "Y100 SLABS (Brut) 7", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-098", "name": "CR (L) BTN / BTN 7", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-099", "name": "Y85 GLIDE SKIN 7", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-100", "name": "SCR SPAN / SPAN 7", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-101", "name": "Y100 DDY SOFT ANAFI 14", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-102", "name": "Y100 DDY SOFT ANAFI 15", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-103", "name": "BIO 08 AGIOS / AMA 8", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-104", "name": "CR (S) NYLON / NYLON 8", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-105", "name": "Y100 DARLING MM 8", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-106", "name": "BIO 07 TIKA / PLUSH 8", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-107", "name": "Y100 SLABS (Brut) 8", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-108", "name": "CR (L) BTN / BTN 8", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-109", "name": "Y85 GLIDE SKIN 8", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-110", "name": "SCR SPAN / SPAN 8", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-111", "name": "Y100 DDY TIKA / AMA 8", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-112", "name": "CR (L) TERRY / TERRY 8", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-113", "name": "BIO 08 YULEX / YULEX 8", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-114", "name": "CR (L) SUPRATEX / PLUSH 8", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-115", "name": "BIO 08 ARU/COCO 8", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-116", "name": "Y100 DDY SOFT ANAFI 16", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-117", "name": "Y100 DDY SOFT ANAFI 17", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-118", "name": "BIO 08 AGIOS / AMA 9", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-119", "name": "CR (S) NYLON / NYLON 9", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-120", "name": "Y100 DARLING MM 9", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-121", "name": "BIO 07 TIKA / PLUSH 9", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-122", "name": "Y100 SLABS (Brut) 9", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-123", "name": "CR (L) BTN / BTN 9", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-124", "name": "Y85 GLIDE SKIN 9", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-125", "name": "SCR SPAN / SPAN 9", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-126", "name": "Y100 DDY TIKA / AMA 9", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-127", "name": "CR (L) TERRY / TERRY 9", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-128", "name": "BIO 08 YULEX / YULEX 9", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-129", "name": "CR (L) SUPRATEX / PLUSH 9", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-130", "name": "BIO 08 ARU/COCO 9", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-131", "name": "Y100 DDY SOFT ANAFI 18", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-132", "name": "Y100 DDY SOFT ANAFI 19", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-133", "name": "BIO 08 AGIOS / AMA 10", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-134", "name": "CR (S) NYLON / NYLON 10", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-135", "name": "Y100 DARLING MM 10", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"},
-            {"id": "PACE-136", "name": "BIO 07 TIKA / PLUSH 10", "foam": "BIO 07", "lining_in": "PLUSH", "lining_out": "TIKA", "thickness": "5.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "14.5"},
-            {"id": "PACE-137", "name": "Y100 SLABS (Brut) 10", "foam": "Yulex 100", "lining_in": "N/A", "lining_out": "N/A", "thickness": "30.0mm", "supplier": "PI Pattana", "status": "GO PROD", "co2_impact": "4.1"},
-            {"id": "PACE-138", "name": "CR (L) BTN / BTN 10", "foam": "CR", "lining_in": "BTN", "lining_out": "BTN", "thickness": "4.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "18.5"},
-            {"id": "PACE-139", "name": "Y85 GLIDE SKIN 10", "foam": "Y85", "lining_in": "SOFT ANAFI", "lining_out": "GLIDE SKIN", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.8"},
-            {"id": "PACE-140", "name": "SCR SPAN / SPAN 10", "foam": "SCR", "lining_in": "SPAN", "lining_out": "SPAN", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "19.0"},
-            {"id": "PACE-141", "name": "Y100 DDY TIKA / AMA 10", "foam": "Yulex 100", "lining_in": "AMA", "lining_out": "TIKA", "thickness": "3.0mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "9.1"},
-            {"id": "PACE-142", "name": "CR (L) TERRY / TERRY 10", "foam": "CR", "lining_in": "TERRY", "lining_out": "TERRY", "thickness": "2.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "17.8"},
-            {"id": "PACE-143", "name": "BIO 08 YULEX / YULEX 10", "foam": "BIO 08", "lining_in": "YULEX LINING", "lining_out": "YULEX LINING", "thickness": "2.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.2"},
-            {"id": "PACE-144", "name": "CR (L) SUPRATEX / PLUSH 10", "foam": "CR", "lining_in": "PLUSH", "lining_out": "SUPRATEX", "thickness": "5.0mm", "supplier": "Sheico", "status": "STOPPED", "co2_impact": "22.1"},
-            {"id": "PACE-145", "name": "BIO 08 ARU/COCO 10", "foam": "BIO 08", "lining_in": "SOFT ANAFI", "lining_out": "ARU/COCO", "thickness": "4.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "12.2"},
-            {"id": "PACE-146", "name": "Y100 DDY SOFT ANAFI 20", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "GO INDUS", "co2_impact": "7.2"},
-            {"id": "PACE-147", "name": "Y100 DDY SOFT ANAFI 21", "foam": "Yulex 100", "lining_in": "SOFT ANAFI", "lining_out": "SOFT ANAFI", "thickness": "2.0mm", "supplier": "Le Hung", "status": "STOPPED", "co2_impact": "7.2"},
-            {"id": "PACE-148", "name": "BIO 08 AGIOS / AMA 11", "foam": "BIO 08", "lining_in": "AMA", "lining_out": "AGIOS", "thickness": "3.0mm", "supplier": "Nam Liong", "status": "GO PROD", "co2_impact": "8.5"},
-            {"id": "PACE-149", "name": "CR (S) NYLON / NYLON 11", "foam": "CR S-Grade", "lining_in": "NYLON", "lining_out": "NYLON", "thickness": "2.5mm", "supplier": "Doni", "status": "GO PROD", "co2_impact": "16.4"},
-            {"id": "PACE-150", "name": "Y100 DARLING MM 11", "foam": "Yulex 100", "lining_in": "DARLING MM", "lining_out": "DARLING MM", "thickness": "1.5mm", "supplier": "Nam Chau", "status": "IN DEV", "co2_impact": "6.8"}
-        ];
-
-        /**
-         * 3. ERGONOMIC LOCALSTORAGE NOTES MANAGER
-         */
-        class NotesManager {
-            constructor() {
-                this.key = 'wti_notes_apple_v1';
-                this.notes = JSON.parse(localStorage.getItem(this.key)) || {};
-            }
-            add(supId, text) {
-                if(!this.notes[supId]) this.notes[supId] = [];
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-                const dateString = now.toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'});
-                
-                this.notes[supId].unshift({ 
-                    id: Date.now(), 
-                    text: text, 
-                    author: "Amaury A-B.",
-                    time: `${dateString} à ${timeString}`
-                });
-                this.save();
-            }
-            remove(supId, noteId) {
-                if(this.notes[supId]) { this.notes[supId] = this.notes[supId].filter(n => n.id !== noteId); this.save(); }
-            }
-            save() { localStorage.setItem(this.key, JSON.stringify(this.notes)); }
-            get(supId) { return this.notes[supId] || []; }
-        }
-
-        /**
-         * 4. MAIN APP CONTROLLER
-         */
-        const app = {
-            map: null,
-            individualRadarChart: null,
-            notesManager: new NotesManager(),
-            currentSupId: null,
-
-            init() {
-                this.buildSidebar();
-                this.initMap();
-                this.initDashboardCharts();
-            },
-
-            router(viewId, btn) {
-                document.querySelectorAll('.view-layer').forEach(v => v.classList.remove('active'));
-                document.getElementById(viewId).classList.add('active');
-                
-                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-                if(btn) btn.classList.add('active');
-
-                this.closePanel();
-                if (viewId === 'view-map' && this.map) {
-                    setTimeout(() => this.map.invalidateSize(true), 300); 
-                }
-            },
-
-            buildSidebar() {
-                const container = document.getElementById('sidebar-suppliers-list');
-                Object.values(SUPPLIERS).forEach(sup => {
-                    let c = 'var(--text-secondary)';
-                    if(sup.status === 'alert') c = 'var(--system-red)';
-                    if(sup.status === 'warning') c = 'var(--system-orange)';
-                    if(sup.status === 'success') c = 'var(--system-green)';
-                    if(sup.status === 'info') c = 'var(--system-blue)';
-
-                    const btn = document.createElement('button');
-                    btn.className = 'sup-nav-item';
-                    btn.innerHTML = `<div class="status-indicator" style="color:${c}; background:currentColor;"></div> ${sup.name}`;
-                    btn.onclick = () => {
-                        this.router('view-map', document.querySelector('[data-target="view-map"]'));
-                        this.openPanel(sup.id);
-                    };
-                    container.appendChild(btn);
-                });
-            },
-
-            initMap() {
-                this.map = L.map('leaflet-map-container', { zoomControl: false }).setView([18.0, 110.0], 5);
-                L.control.zoom({ position: 'bottomright' }).addTo(this.map);
-                
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; CartoDB', maxZoom: 18
-                }).addTo(this.map);
-
-                Object.values(SUPPLIERS).forEach(sup => {
-                    let mClass = 'marker-pulse ';
-                    if(sup.status === 'alert') mClass += 'marker-danger';
-                    else if(sup.status === 'warning') mClass += 'marker-warning';
-                    else if(sup.status === 'success') mClass += 'marker-success';
-                    else mClass += 'marker-info';
-
-                    const icon = L.divIcon({
-                        className: '',
-                        html: `<div class="${mClass}" style="width:24px; height:24px;"></div>`,
-                        iconSize: [24, 24], iconAnchor: [12, 12]
-                    });
-
-                    const marker = L.marker(sup.coords, {icon}).addTo(this.map);
-                    marker.bindPopup(`
-                        <div style="font-family:var(--font-main);">
-                            <strong style="font-size:1.1rem; color:white; margin-bottom:4px; display:block;">${sup.name}</strong>
-                            <span style="color:var(--text-secondary); font-size:0.8rem; text-transform:uppercase;">${sup.role}</span>
-                        </div>
-                    `);
-                    marker.on('click', () => this.openPanel(sup.id));
-                });
-                
-                setTimeout(() => this.map.invalidateSize(true), 500);
-            },
-
-            openPanel(id) {
-                const sup = SUPPLIERS[id];
-                if(!sup) return;
-                this.currentSupId = id;
-                
-                document.getElementById('sp-title').innerText = sup.name;
-                document.getElementById('sp-subtitle').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${sup.location}`;
-                document.getElementById('sp-badges').innerHTML = sup.badges.map(b => `<span class="badge badge-outline">${b}</span>`).join('');
-                document.getElementById('sp-dynamic-content').innerHTML = sup.html;
-                
-                this.switchTab('tab-overview', document.querySelectorAll('.tab-btn')[0]);
-                this.renderNotes();
-                this.renderIndividualRadar(sup);
-                
-                document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
-                Array.from(document.querySelectorAll('.sup-nav-item')).find(b => b.innerText.includes(sup.name))?.classList.add('active');
-
-                document.getElementById('slide-panel').classList.add('open');
-                document.getElementById('slide-overlay').classList.add('open');
-            },
-
-            closePanel() {
-                document.getElementById('slide-panel').classList.remove('open');
-                document.getElementById('slide-overlay').classList.remove('open');
-                document.querySelectorAll('.sup-nav-item').forEach(b => b.classList.remove('active'));
-                this.currentSupId = null;
-            },
-
-            switchTab(tabId, btn) {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(tabId).classList.add('active');
-            },
-
-            // --- VISUAL DEFECT BOOK 3D CONTROLS ---
-            toggleLight(state) {
-                const scene = document.getElementById('scene-blademarks');
-                if(state === 'ok') {
-                    scene.classList.add('light-ok');
-                    scene.classList.remove('light-nok');
-                } else {
-                    scene.classList.add('light-nok');
-                    scene.classList.remove('light-ok');
-                }
-            },
-
-            setMarkingStep(step) {
-                document.getElementById('scene-marking').setAttribute('data-step', step);
-            },
-
-            // --- NOTES ---
-            renderNotes() {
-                const notes = this.notesManager.get(this.currentSupId);
-                document.getElementById('note-count').innerText = notes.length;
-                const container = document.getElementById('notes-list');
-                
-                if(notes.length === 0) {
-                    container.innerHTML = `<div class="empty-notes"><i class="fa-regular fa-comment-dots" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>Aucune note enregistrée. Centralisez ici vos comptes-rendus d'audit.</div>`;
-                    return;
-                }
-                
-                container.innerHTML = notes.map(n => `
-                    <div class="note-item">
-                        <div class="note-header">
-                            <div class="note-meta">
-                                <div class="note-author-pic">AB</div>
-                                <div class="note-author-info">
-                                    <span class="note-author-name">${n.author}</span>
-                                    <span class="note-date">${n.time}</span>
-                                </div>
-                            </div>
-                            <button class="note-delete" onclick="app.deleteNote(${n.id})"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                        <div class="note-body">${n.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
-                    </div>
-                `).join('');
-            },
-
-            saveNote() {
-                const text = document.getElementById('note-input').value.trim();
-                if(!text || !this.currentSupId) return;
-                this.notesManager.add(this.currentSupId, text);
-                document.getElementById('note-input').value = '';
-                this.renderNotes();
-                this.toast('Note sauvegardée.');
-            },
-
-            deleteNote(id) {
-                this.notesManager.remove(this.currentSupId, id);
-                this.renderNotes();
-                this.toast('Note supprimée.');
-            },
-
-            toast(msg) {
-                const c = document.getElementById('toast-container');
-                const t = document.createElement('div');
-                t.className = 'toast';
-                t.innerHTML = `<i class="fa-solid fa-check-circle" style="color:var(--system-green);"></i> ${msg}`;
-                c.appendChild(t);
-                setTimeout(() => t.remove(), 3000);
-            },
-
-            // --- DASHBOARD CHARTS ---
-            initDashboardCharts() {
-                Chart.defaults.color = '#ebebf599';
-                Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
-                Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
-                
-                // 1. MATURITY BUBBLE CHART
-                const ctxMaturity = document.getElementById('maturityBubbleChart');
-                if(ctxMaturity) {
-                    const bubbleData = Object.values(SUPPLIERS).map(s => {
-                        let color = 'rgba(10, 132, 255, 0.6)';
-                        if(s.status === 'alert') color = 'rgba(255, 69, 58, 0.6)';
-                        if(s.status === 'warning') color = 'rgba(255, 159, 10, 0.6)';
-                        if(s.status === 'success') color = 'rgba(48, 209, 88, 0.6)';
-                        
-                        return {
-                            x: s.maturity.quality_process,
-                            y: s.maturity.hse,
-                            r: s.maturity.expertise * 3, // radius based on expertise
-                            supplierName: s.name,
-                            backgroundColor: color
-                        };
-                    });
-
-                    new Chart(ctxMaturity, {
-                        type: 'bubble',
-                        data: {
-                            datasets: bubbleData.map(d => ({
-                                label: d.supplierName,
-                                data: [d],
-                                backgroundColor: d.backgroundColor,
-                                borderColor: d.backgroundColor.replace('0.6', '1'),
-                                borderWidth: 1
-                            }))
-                        },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    callbacks: {
-                                        label: (ctx) => {
-                                            const d = ctx.raw;
-                                            return `${d.supplierName} - Process: ${d.x}/10 | HSE: ${d.y}/10`;
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: { title: { display: true, text: 'Qualité & Process (Score /10)' }, min: 0, max: 10 },
-                                y: { title: { display: true, text: 'Maturité HSE (Score /10)' }, min: 0, max: 10 }
-                            }
-                        }
-                    });
-                }
-
-                // 2. CLAIM BAR CHART
-                const ctxClaim = document.getElementById('claimBarChart');
-                if(ctxClaim) {
-                    new Chart(ctxClaim, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Le Hung (Slicing)', 'PI Pattana (Slicing)', 'PI Pattana (Foam)'],
-                            datasets: [{
-                                label: 'USD ($)',
-                                data: [43488, 4832, 15082],
-                                backgroundColor: ['#ff453a', '#0a84ff', 'rgba(10,132,255,0.4)'],
-                                borderRadius: 8
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} } }
-                    });
-                }
-
-                // 3. PACE CATALOG DOUGHNUT
-                const ctxPace = document.getElementById('paceDoughnutChart');
-                if(ctxPace) {
-                    new Chart(ctxPace, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['GO PROD', 'GO INDUS', 'STOPPED', 'IN DEV'],
-                            datasets: [{
-                                data: [85, 25, 30, 10], // Simulated from PACE catalog
-                                backgroundColor: ['#30d158', '#ff9f0a', '#ff453a', '#0a84ff'],
-                                borderWidth: 0, hoverOffset: 10
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right' } } }
-                    });
-                }
-            },
-
-            // --- INDIVIDUAL SUPPLIER RADAR ---
-            renderIndividualRadar(supplier) {
-                const ctx = document.getElementById('individualRadarChart');
-                if(!ctx) return;
-                
-                if(this.individualRadarChart) {
-                    this.individualRadarChart.destroy();
-                }
-
-                let borderColor = '#0a84ff';
-                let bgColor = 'rgba(10, 132, 255, 0.2)';
-                if(supplier.status === 'alert') { borderColor = '#ff453a'; bgColor = 'rgba(255, 69, 58, 0.2)'; }
-                if(supplier.status === 'warning') { borderColor = '#ff9f0a'; bgColor = 'rgba(255, 159, 10, 0.2)'; }
-                if(supplier.status === 'success') { borderColor = '#30d158'; bgColor = 'rgba(48, 209, 88, 0.2)'; }
-
-                this.individualRadarChart = new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: ['Expertise Tech.', 'Conformité HSE', 'Qualité Process', 'Innovation', 'Fiabilité LeadTime'],
-                        datasets: [{
-                            label: supplier.name,
-                            data: [
-                                supplier.maturity.expertise,
-                                supplier.maturity.hse,
-                                supplier.maturity.quality_process,
-                                supplier.maturity.innovation,
-                                supplier.maturity.reliability
-                            ],
-                            backgroundColor: bgColor,
-                            borderColor: borderColor,
-                            pointBackgroundColor: borderColor,
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        scales: { 
-                            r: { 
-                                angleLines: { color: 'rgba(255,255,255,0.1)' }, 
-                                grid: { color: 'rgba(255,255,255,0.1)' }, 
-                                pointLabels: { color: '#ebebf599', font: { size: 12, family: "'Space Grotesk', sans-serif" } }, 
-                                ticks: { display: false, min: 0, max: 10 } 
-                            } 
-                        },
-                        plugins: { legend: { display: false } }
-                    }
-                });
-            }
-        };
-
-        // Boot Application
-        window.addEventListener('DOMContentLoaded', () => app.init());
-    </script>
+    <!-- App Logic -->
+    <script src="app.js"></script>
 </body>
 </html>
