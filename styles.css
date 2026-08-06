@@ -448,7 +448,7 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .canvas-wrap { flex-grow: 1; position: relative; width: 100%; height: 100%; min-height: 200px; }
 
 /* ==========================================================================
-   8. VISUAL DEFECT BOOK (3D & WEBGL)
+   8. VISUAL DEFECT BOOK & 3D CSS / WEBGL SCHEMAS
    ========================================================================== */
 .visual-header { text-align: center; margin-bottom: 60px; }
 .visual-header h1 { font-size: 3.8rem; text-transform: uppercase; letter-spacing: -2px; }
@@ -462,16 +462,16 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .defect-text-card h3 { margin-bottom: 16px; font-size: 1.4rem; }
 .defect-text-card p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; font-size: 0.98rem; }
 
+/* 3D SCENE CONTAINER */
 .scene-3d {
     flex: 1.5; min-width: 340px; height: 420px;
     background: rgba(0,0,0,0.4);
     border-radius: 20px; border: 1px solid var(--glass-border);
     perspective: 1200px; display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
 }
 .scene-3d-dark { background: #000; box-shadow: none; }
-
-.three-canvas-wrap { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
 
 .scene-controls {
     position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -479,6 +479,33 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
     background: rgba(28, 28, 30, 0.85); padding: 8px 12px; border-radius: 100px; 
     border: 1px solid var(--glass-border);
 }
+
+/* BLADEMARKS 3D CSS RETAINED EXACTLY AS ORIGINAL */
+.foam-sheet-3d {
+    width: 240px; height: 240px; background: #2c2c2e; border: 2px solid #3a3a3c;
+    transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(45deg);
+    position: relative; transition: transform 0.8s var(--spring-bouncy), background 0.5s;
+    box-shadow: 20px 20px 40px rgba(0,0,0,0.9);
+}
+
+.blade-indent {
+    position: absolute; top: 40%; left: 0; width: 100%; height: 8px;
+    background: #1c1c1e; transform: translateZ(-2px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    transition: all 0.6s var(--spring-soft);
+}
+
+.light-source {
+    position: absolute; width: 350px; height: 350px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%);
+    pointer-events: none; transition: all 0.8s var(--spring-bouncy);
+    mix-blend-mode: overlay;
+}
+
+.scene-3d.light-ok .light-source { transform: translate3d(-120px, -80px, 80px) rotateX(45deg) rotateY(45deg); opacity: 0.9; }
+.scene-3d.light-ok .blade-indent { box-shadow: inset 0 6px 8px rgba(0,0,0,1); background: #000; }
+.scene-3d.light-nok .light-source { transform: translate3d(0, -180px, 120px) rotateX(80deg); opacity: 0.9; }
+.scene-3d.light-nok .blade-indent { box-shadow: inset 0 0px 1px rgba(0,0,0,0.3); background: #2c2c2e; }
 
 /* Cavity Cross Section */
 .cavity-flex-wrapper { display: flex; width: 100%; justify-content: space-around; margin-bottom: 40px; }
@@ -547,6 +574,22 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .scene-marking[data-step="2"] .masking-tape { opacity: 1; }
 .scene-marking[data-step="2"] .edge-label, .scene-marking[data-step="2"] .measure-line { opacity: 0; }
 .scene-marking[data-step="3"] .masking-tape, .scene-marking[data-step="3"] .edge-label, .scene-marking[data-step="3"] .measure-line { opacity: 1; }
+
+/* SCAVI 3D CANVAS IN PANEL */
+.scavi-3d-box {
+    width: 100%; height: 320px; background: #121215; border-radius: 16px;
+    border: 1px solid var(--glass-border); position: relative; overflow: hidden; margin-top: 14px;
+}
+.scavi-3d-controls {
+    position: absolute; top: 12px; right: 12px; z-index: 10; display: flex; gap: 8px;
+}
+.scavi-3d-btn {
+    background: rgba(255,255,255,0.1); color: white; padding: 6px 12px; border-radius: 8px;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid var(--glass-border);
+    transition: var(--transition-fast);
+}
+.scavi-3d-btn:hover { background: rgba(255,255,255,0.25); }
+.scavi-3d-btn.active { background: var(--system-blue); border-color: var(--system-blue); }
 
 /* ==========================================================================
    9. SLIDE-OVER SUPPLIER PANEL
