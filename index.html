@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet, Chart.js & Three.js (3D WebGL) -->
+    <!-- Leaflet, Chart.js & Three.js (3D WebGL Engine) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -54,7 +54,7 @@
             <div class="nav-section">
                 <div class="nav-section-title">Panel Fournisseurs (Asie)</div>
                 <div class="supplier-nav-list" id="sidebar-suppliers-list">
-                    <!-- Injecté dynamiquement par app.js -->
+                    <!-- Injecté par app.js -->
                 </div>
             </div>
         </div>
@@ -85,7 +85,6 @@
                     <span class="badge badge-info"><i class="fa-solid fa-star" aria-hidden="true"></i> Integrated / Prospect</span>
                 </div>
             </div>
-            <!-- LEAFLET MAP CONTAINER -->
             <div id="leaflet-map-container"></div>
         </section>
 
@@ -146,9 +145,9 @@
                 </p>
             </div>
 
-            <!-- BLADEMARKS 3D WEBGL -->
+            <!-- 1. BLADEMARKS (RESTAURÉ COMME À L'ORIGINE : 3D CSS RÈGLE DES 45°) -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);" aria-hidden="true"></i> 1. Blademarks : La Règle des 45° (Modèle 3D WebGL)</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);" aria-hidden="true"></i> 1. Blademarks : La Règle des 45°</h2>
                 <div class="scene-container">
                     <div class="apple-glass defect-text-card">
                         <h3>L'Angle de Lumière Parfait (45°)</h3>
@@ -165,23 +164,25 @@
                         </div>
                     </div>
                     
-                    <div class="scene-3d" id="three-blademarks-container">
-                        <div id="three-blademarks-canvas" class="three-canvas-wrap"></div>
+                    <div class="scene-3d light-ok" id="scene-blademarks">
+                        <div class="foam-sheet-3d">
+                            <div class="blade-indent"></div>
+                        </div>
+                        <div class="light-source"></div>
                         <div class="scene-controls">
-                            <button class="btn btn-success" data-action="toggle-light-ok">Lumière 45° (OK)</button>
-                            <button class="btn btn-danger" data-action="toggle-light-nok">Zénithale 90° (NOK)</button>
+                            <button class="btn btn-success" data-action="toggle-light-ok">Méthode OK (Lumière à 45°)</button>
+                            <button class="btn btn-danger" data-action="toggle-light-nok">Méthode NOK (Zénithale)</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- HOLES VS HOLLOWS -->
+            <!-- 2. HOLES VS HOLLOWS -->
             <div class="defect-section">
                 <h2 class="defect-section-title"><i class="fa-solid fa-circle-radiation" style="color:var(--system-orange);" aria-hidden="true"></i> 2. Holes vs Hollows</h2>
                 <div class="scene-container">
                     <div class="scene-3d scene-3d-dark" id="scene-holes-hollows">
                         <div class="cavity-flex-wrapper">
-                            <!-- Hollow -->
                             <div class="cavity-column">
                                 <div class="cross-section-view">
                                     <div class="defect-cavity hollow-defect"></div>
@@ -190,7 +191,6 @@
                                 <h4>Hollow (Cavité)</h4>
                             </div>
                             
-                            <!-- Hole -->
                             <div class="cavity-column">
                                 <div class="cross-section-view">
                                     <div class="defect-cavity hole-defect"></div>
@@ -204,9 +204,7 @@
 
                     <div class="apple-glass defect-text-card">
                         <h3>Critères d'Acceptabilité</h3>
-                        <p>
-                            Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille.
-                        </p>
+                        <p>Fréquence d'inspection : 100% des feuilles tranchées. Utilisez une source de lumière <b>sous</b> la feuille.</p>
                         <ul class="criteria-list">
                             <li class="criteria-item item-danger">
                                 <b>HOLE (Trou) :</b> Laissent passer la lumière. <b>NON ACCEPTABLE</b>. La colle ne peut compenser le trou, créant un risque mécanique et thermique.
@@ -222,15 +220,13 @@
                 </div>
             </div>
 
-            <!-- DEFECT MARKING FLOW -->
+            <!-- 3. DEFECT MARKING FLOW -->
             <div class="defect-section">
                 <h2 class="defect-section-title"><i class="fa-solid fa-tags" style="color:var(--system-purple);" aria-hidden="true"></i> 3. Traçabilité : Defect Marking Process</h2>
                 <div class="scene-container">
                     <div class="apple-glass defect-text-card">
                         <h3>Procédure Opératoire</h3>
-                        <p>
-                            Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille).
-                        </p>
+                        <p>Appliquée uniquement si la feuille contient <b>entre 1 et 3 défauts majeurs</b> (permet d'éviter le rejet total de la feuille).</p>
                         <ol class="steps-list">
                             <li><b>Étape 1 :</b> Couvrir le défaut des DEUX CÔTÉS avec du ruban adhésif jaune (Masking Tape).</li>
                             <li><b>Étape 2 :</b> Mesurer la distance jusqu'au bord le plus proche.</li>
@@ -292,12 +288,10 @@
         </div>
 
         <div class="panel-content">
-            <!-- TAB: OVERVIEW -->
             <div id="tab-overview" class="tab-pane active" role="tabpanel">
                 <div id="sp-dynamic-content"></div>
             </div>
             
-            <!-- TAB: MATURITY RADAR -->
             <div id="tab-maturity" class="tab-pane" role="tabpanel">
                 <div class="info-card radar-card">
                     <h3><i class="fa-solid fa-chart-radar" aria-hidden="true"></i> Évaluation Individuelle (Radar)</h3>
@@ -306,7 +300,6 @@
                 </div>
             </div>
 
-            <!-- TAB: NOTES SYSTEM -->
             <div id="tab-notes" class="tab-pane" role="tabpanel">
                 <div class="notes-container">
                     <div class="note-editor">
