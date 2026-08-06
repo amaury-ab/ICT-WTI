@@ -448,7 +448,7 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .canvas-wrap { flex-grow: 1; position: relative; width: 100%; height: 100%; min-height: 200px; }
 
 /* ==========================================================================
-   8. VISUAL DEFECT BOOK & 3D CSS / WEBGL SCHEMAS
+   8. VISUAL DEFECT BOOK (3D CSS ANIMATION GO 45° vs NOGO 90°)
    ========================================================================== */
 .visual-header { text-align: center; margin-bottom: 60px; }
 .visual-header h1 { font-size: 3.8rem; text-transform: uppercase; letter-spacing: -2px; }
@@ -473,6 +473,11 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 }
 .scene-3d-dark { background: #000; box-shadow: none; }
 
+.light-status-badge {
+    position: absolute; top: 20px; left: 20px; z-index: 10;
+    transition: var(--transition-fast);
+}
+
 .scene-controls {
     position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
     display: flex; gap: 10px; z-index: 10;
@@ -480,7 +485,7 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
     border: 1px solid var(--glass-border);
 }
 
-/* BLADEMARKS 3D CSS RETAINED EXACTLY AS ORIGINAL */
+/* BLADEMARKS 3D CSS WITH FLUID GO / NOGO TRANSITION */
 .foam-sheet-3d {
     width: 240px; height: 240px; background: #2c2c2e; border: 2px solid #3a3a3c;
     transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(45deg);
@@ -502,10 +507,13 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
     mix-blend-mode: overlay;
 }
 
+/* ANIMATION GO (45° RASANTE) */
 .scene-3d.light-ok .light-source { transform: translate3d(-120px, -80px, 80px) rotateX(45deg) rotateY(45deg); opacity: 0.9; }
-.scene-3d.light-ok .blade-indent { box-shadow: inset 0 6px 8px rgba(0,0,0,1); background: #000; }
-.scene-3d.light-nok .light-source { transform: translate3d(0, -180px, 120px) rotateX(80deg); opacity: 0.9; }
-.scene-3d.light-nok .blade-indent { box-shadow: inset 0 0px 1px rgba(0,0,0,0.3); background: #2c2c2e; }
+.scene-3d.light-ok .blade-indent { box-shadow: inset 0 6px 10px rgba(0,0,0,1); background: #000; }
+
+/* ANIMATION NOGO (90° ZÉNITHALE) */
+.scene-3d.light-nok .light-source { transform: translate3d(0, -180px, 120px) rotateX(80deg); opacity: 0.4; }
+.scene-3d.light-nok .blade-indent { box-shadow: inset 0 0px 1px rgba(0,0,0,0.2); background: #2c2c2e; }
 
 /* Cavity Cross Section */
 .cavity-flex-wrapper { display: flex; width: 100%; justify-content: space-around; margin-bottom: 40px; }
