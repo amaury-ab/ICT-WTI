@@ -1,5 +1,5 @@
 /**
- * WTI Hub - Application Controller
+ * WTI Hub - Application Controller & 3D WebGL Engine
  */
 
 // 1. BASE DE DONNÉES FOURNISSEURS
@@ -82,9 +82,48 @@ const SUPPLIERS = {
         html: `<div class="info-card"><h3><i class="fa-solid fa-swatchbook" aria-hidden="true"></i> Visual Defect Book (Textile)</h3><p>Les 4 priorités d'inspection : Vertical Stripes, Horizontal Stripes, Folding marks, Bow & Skew.</p></div>`
     },
     "scavi": {
-        id: "scavi", name: "Scavi", location: "Hué, Vietnam", coords: [16.4637, 107.5909], role: "Assemblage Produit Fini", status: "info", badges: ['GBS', 'Flatlock', 'Nesting'],
-        maturity: { expertise: 8, hse: 8, quality_process: 9, innovation: 6, reliability: 8, volume: 85 },
-        html: `<div class="info-card"><h3><i class="fa-solid fa-scissors" aria-hidden="true"></i> Finished Goods</h3><p>Gestion intelligente du Nesting pour placer les défauts mineurs dans les chutes.</p></div>`
+        id: "scavi", name: "Scavi", location: "Hué, Vietnam", coords: [16.4637, 107.5909], role: "Assemblage Produit Fini", status: "info", badges: ['GBS', 'Flatlock', 'Nesting', 'Gemba Walk OK'],
+        maturity: { expertise: 8, hse: 8, quality_process: 9, innovation: 7, reliability: 8, volume: 85 },
+        html: `
+            <div class="info-card">
+                <h3><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i> Gemba Walk Report - Scavi Hué (21 July 2026)[cite: 1]</h3>
+                <p>Auditeur : <b>Amaury Asselos (ICT WTI)</b>[cite: 1]. Évaluation du stockage et vérification du plan de contrôle (focalisé sur les 3 premières étapes)[cite: 1].</p>
+                
+                <div class="alert-box alert-info">
+                    <h4><i class="fa-solid fa-warehouse" aria-hidden="true"></i> État Général &amp; Stockage</h4>
+                    <ul class="alert-list">
+                        <li><b>Stockage :</b> Très bon stockage des feuilles laminées (traçabilité et protection optimales)[cite: 1].</li>
+                        <li><b>Poste de Contrôle :</b> Table d'inspection visuelle conforme (bonnes dimensions et éclairage adéquat)[cite: 1].</li>
+                        <li><b>Condition Globale :</b> Conforme aux exigences WTI[cite: 1].</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> Plan de Contrôle (Laminated Sheets)</h3>
+                <ul class="alert-list" style="color: var(--text-secondary);">
+                    <li><b>1. Couleur &amp; Variations :</b> Contrôle initial de la teinte et vérification des nuances de couleur[cite: 1].</li>
+                    <li><b>2. Traçabilité :</b> Contrôle systématique des étiquettes de traçabilité[cite: 1].</li>
+                    <li><b>3. Dimensions (Renforcé) :</b> Prise de mesures supérieures au DPR (3x en largeur, 3x en longueur)[cite: 1].</li>
+                    <li><b>4. Épaisseur :</b> Contrôle conforme au standard DPR[cite: 1].</li>
+                    <li><b>5. Délamination :</b> Test de résistance au décollement conforme à la norme DS 072[cite: 1].</li>
+                </ul>
+
+                <div class="alert-box alert-warning" style="margin-top: 16px;">
+                    <h4><i class="fa-solid fa-book-open" aria-hidden="true"></i> Visual Defect Library (Axe d'Amélioration)</h4>
+                    <p>Scavi possède sa propre bibliothèque interne de défauts (photos uniquement)[cite: 1]. Volonté exprimée d'améliorer ce point et de s'aligner sur le standard interactif <b>WTI Visual Defect Book</b>[cite: 1].</p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-scissors" aria-hidden="true"></i> Fin de Chaîne (Finished Goods &amp; Nesting)</h3>
+                <p>Réceptionne les complexes de Nam Chau et Le Hung pour la confection Surf.</p>
+                <div class="alert-box alert-info">
+                    <h4>Gestion Intelligente des Défauts</h4>
+                    <p>Les opérateurs repèrent les rubans adhésifs jaunes posés en amont par le fournisseur (défauts mineurs) et décalent les patronages lors de la découpe pour placer ces défauts dans les chutes (scraps).</p>
+                </div>
+            </div>
+        `
     },
     "sheico": {
         id: "sheico", name: "Sheico HQ", location: "Yilan, Taiwan", coords: [24.68, 121.76], role: "Usine Intégrée", status: "success", badges: ['CR', 'Historique'],
@@ -108,7 +147,6 @@ const SUPPLIERS = {
     }
 };
 
-// Catalogue PACE pour alimenter dynamiquement le graphique
 const PACE_CATALOG = [
     { status: "GO PROD", count: 85 },
     { status: "GO INDUS", count: 25 },
@@ -116,7 +154,100 @@ const PACE_CATALOG = [
     { status: "IN DEV", count: 10 }
 ];
 
-// 2. GESTIONNAIRE DE NOTES (SÉCURISÉ LOCALSTORAGE)
+// 2. MOTEUR DE RENDU 3D WEBGL (THREE.JS)
+const Schema3D = {
+    scene: null,
+    camera: null,
+    renderer: null,
+    light: null,
+    sheetMesh: null,
+    cutMesh: null,
+
+    initBlademarks3D(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container || typeof THREE === 'undefined') return;
+
+        container.innerHTML = '';
+
+        const width = container.clientWidth || 380;
+        const height = container.clientHeight || 350;
+
+        // Scène & Caméra
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x121214);
+
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        this.camera.position.set(0, 14, 22);
+        this.camera.lookAt(0, 0, 0);
+
+        // WebGL Renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer.setSize(width, height);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(this.renderer.domElement);
+
+        // Modèle : Plaque de Néoprène 3D
+        const sheetGeo = new THREE.BoxGeometry(10, 0.5, 10);
+        const sheetMat = new THREE.MeshStandardMaterial({ color: 0x2c2c2e, roughness: 0.75, metalness: 0.15 });
+        this.sheetMesh = new THREE.Mesh(sheetGeo, sheetMat);
+        this.sheetMesh.receiveShadow = true;
+        this.scene.add(this.sheetMesh);
+
+        // Modèle : Blademark (Entaille 3D)
+        const cutGeo = new THREE.BoxGeometry(6, 0.2, 0.25);
+        const cutMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        this.cutMesh = new THREE.Mesh(cutGeo, cutMat);
+        this.cutMesh.position.set(0, 0.22, 0);
+        this.scene.add(this.cutMesh);
+
+        // Lumière Ambiante
+        const ambient = new THREE.AmbientLight(0xffffff, 0.25);
+        this.scene.add(ambient);
+
+        // Lumière Orientée Interactive
+        this.light = new THREE.DirectionalLight(0x30d158, 2.5);
+        this.light.castShadow = true;
+        this.light.shadow.mapSize.width = 1024;
+        this.light.shadow.mapSize.height = 1024;
+        this.setLightAngle('ok');
+        this.scene.add(this.light);
+
+        // Animation Loop (Rotation 3D fluide)
+        const animate = () => {
+            requestAnimationFrame(animate);
+            this.sheetMesh.rotation.y += 0.003;
+            this.cutMesh.rotation.y += 0.003;
+            this.renderer.render(this.scene, this.camera);
+        };
+        animate();
+
+        // Auto Resize Handler
+        window.addEventListener('resize', () => {
+            if (!container || !this.renderer) return;
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            this.camera.aspect = w / h;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(w, h);
+        });
+    },
+
+    setLightAngle(mode) {
+        if (!this.light) return;
+        if (mode === 'ok') {
+            // Angle 45° rasant -> Révèle l'ombre portée
+            this.light.position.set(-8, 8, 8);
+            this.light.color.setHex(0x30d158);
+        } else {
+            // Angle Zénithal 90° -> Ombre masquée
+            this.light.position.set(0, 16, 0);
+            this.light.color.setHex(0xff453a);
+        }
+    }
+};
+
+// 3. GESTIONNAIRE DE NOTES LOCALSTORAGE
 class NotesManager {
     constructor() {
         this.key = 'wti_notes_apple_v1';
@@ -127,7 +258,7 @@ class NotesManager {
             const data = localStorage.getItem(this.key);
             return data ? JSON.parse(data) : {};
         } catch (e) {
-            console.warn('LocalStorage non accessible:', e);
+            console.warn('LocalStorage inacessible:', e);
             return {};
         }
     }
@@ -155,13 +286,13 @@ class NotesManager {
         try {
             localStorage.setItem(this.key, JSON.stringify(this.notes)); 
         } catch (e) {
-            console.error('Erreur lors de la sauvegarde des notes:', e);
+            console.error('Erreur de sauvegarde localStorage:', e);
         }
     }
     get(supId) { return this.notes[supId] || []; }
 }
 
-// 3. APPLICATION CONTROLLER
+// 4. MAIN APP CONTROLLER
 const app = {
     map: null,
     individualRadarChart: null,
@@ -173,10 +304,14 @@ const app = {
         this.buildSidebar();
         this.initMap();
         this.initDashboardCharts();
+        
+        // Initialisation de la scène 3D WebGL
+        setTimeout(() => {
+            Schema3D.initBlademarks3D('three-blademarks-canvas');
+        }, 400);
     },
 
     setupEventListeners() {
-        // Event delegation pour les boutons de navigation
         document.addEventListener('click', (e) => {
             const targetBtn = e.target.closest('[data-router]');
             if (targetBtn) {
@@ -201,7 +336,6 @@ const app = {
             }
         });
 
-        // Toggle Sidebar Mobile
         const mobileBtn = document.getElementById('mobile-toggle-btn');
         if (mobileBtn) {
             mobileBtn.addEventListener('click', () => {
@@ -209,17 +343,14 @@ const app = {
             });
         }
 
-        // Fermeture du panneau slide
         document.getElementById('panel-close-btn').addEventListener('click', () => this.closePanel());
         document.getElementById('slide-overlay').addEventListener('click', () => {
             this.closePanel();
             this.closeMobileSidebar();
         });
 
-        // Enregistrement de note
         document.getElementById('btn-save-note').addEventListener('click', () => this.saveNote());
 
-        // Invalidation de taille Leaflet lors de la fin d'animation CSS
         document.getElementById('view-map').addEventListener('transitionend', () => {
             if (this.map) this.map.invalidateSize();
         });
@@ -227,8 +358,14 @@ const app = {
 
     handleAction(action) {
         switch(action) {
-            case 'toggle-light-ok': this.toggleLight('ok'); break;
-            case 'toggle-light-nok': this.toggleLight('nok'); break;
+            case 'toggle-light-ok': 
+                Schema3D.setLightAngle('ok');
+                this.toast('Lumière 45° : Blademark détectable');
+                break;
+            case 'toggle-light-nok': 
+                Schema3D.setLightAngle('nok');
+                this.toast('Lumière Zénithale : Blademark invaginer !');
+                break;
             case 'step-marking-1': this.setMarkingStep(1); break;
             case 'step-marking-2': this.setMarkingStep(2); break;
             case 'step-marking-3': this.setMarkingStep(3); break;
@@ -353,18 +490,6 @@ const app = {
         if (targetPane) targetPane.classList.add('active');
     },
 
-    toggleLight(state) {
-        const scene = document.getElementById('scene-blademarks');
-        if(!scene) return;
-        if(state === 'ok') {
-            scene.classList.add('light-ok');
-            scene.classList.remove('light-nok');
-        } else {
-            scene.classList.add('light-nok');
-            scene.classList.remove('light-ok');
-        }
-    },
-
     setMarkingStep(step) {
         const scene = document.getElementById('scene-marking');
         if (scene) scene.setAttribute('data-step', step);
@@ -406,7 +531,7 @@ const app = {
 
             const body = document.createElement('div');
             body.className = 'note-body';
-            body.textContent = n.text; // Protection XSS native via textContent
+            body.textContent = n.text;
 
             item.appendChild(header);
             item.appendChild(body);
@@ -444,7 +569,6 @@ const app = {
         Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
         Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
         
-        // 1. Bubble Chart (Maturité)
         const ctxMaturity = document.getElementById('maturityBubbleChart');
         if(ctxMaturity) {
             const bubbleData = Object.values(SUPPLIERS).map(s => {
@@ -491,7 +615,6 @@ const app = {
             });
         }
 
-        // 2. Bar Chart (Claims)
         const ctxClaim = document.getElementById('claimBarChart');
         if(ctxClaim) {
             new Chart(ctxClaim, {
@@ -509,7 +632,6 @@ const app = {
             });
         }
 
-        // 3. Doughnut Chart (PACE Catalog Dynamique)
         const ctxPace = document.getElementById('paceDoughnutChart');
         if(ctxPace) {
             new Chart(ctxPace, {
@@ -576,5 +698,4 @@ const app = {
     }
 };
 
-// Initialisation au chargement du DOM
 window.addEventListener('DOMContentLoaded', () => app.init());
