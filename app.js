@@ -1,5 +1,5 @@
 /**
- * WTI Hub - Application Controller & 3D WebGL Engine
+ * WTI Hub - Application Controller & Three.js 3D Engine
  */
 
 // 1. BASE DE DONNÉES FOURNISSEURS
@@ -99,28 +99,34 @@ const SUPPLIERS = {
                 </div>
             </div>
 
+            <!-- SCHÉMA 3D INTERACTIF DÉDIÉ AU PLAN DE CONTRÔLE SCAVI -->
             <div class="info-card">
-                <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> Plan de Contrôle (Laminated Sheets)</h3>
-                <ul class="alert-list" style="color: var(--text-secondary);">
-                    <li><b>1. Couleur &amp; Variations :</b> Contrôle initial de la teinte et vérification des nuances de couleur[cite: 1].</li>
-                    <li><b>2. Traçabilité :</b> Contrôle systématique des étiquettes de traçabilité[cite: 1].</li>
-                    <li><b>3. Dimensions (Renforcé) :</b> Prise de mesures supérieures au DPR (3x en largeur, 3x en longueur)[cite: 1].</li>
-                    <li><b>4. Épaisseur :</b> Contrôle conforme au standard DPR[cite: 1].</li>
-                    <li><b>5. Délamination :</b> Test de résistance au décollement conforme à la norme DS 072[cite: 1].</li>
-                </ul>
-
-                <div class="alert-box alert-warning" style="margin-top: 16px;">
-                    <h4><i class="fa-solid fa-book-open" aria-hidden="true"></i> Visual Defect Library (Axe d'Amélioration)</h4>
-                    <p>Scavi possède sa propre bibliothèque interne de défauts (photos uniquement)[cite: 1]. Volonté exprimée d'améliorer ce point et de s'aligner sur le standard interactif <b>WTI Visual Defect Book</b>[cite: 1].</p>
+                <h3><i class="fa-solid fa-cubes" aria-hidden="true"></i> Schéma 3D - Procédure d'Inspection Scavi</h3>
+                <p>Visualisation interactive du Plan de Contrôle (DPR 02.027.A &amp; DPR 02.009.B)[cite: 2]. Cliquez sur les modes ci-dessous pour modifier la modélisation 3D :</p>
+                
+                <div class="scavi-3d-box">
+                    <div class="scavi-3d-controls">
+                        <button class="scavi-3d-btn active" data-action="scavi-3d-points">1. Grille 9 Points Epaisseur (DPR 02.027.A)[cite: 2]</button>
+                        <button class="scavi-3d-btn" data-action="scavi-3d-dims">2. Mesures 3x L x 3x l (DPR 02.009.B)[cite: 1, 2]</button>
+                        <button class="scavi-3d-btn" data-action="scavi-3d-peel">3. Test Délamination (DS 072)[cite: 1, 2]</button>
+                    </div>
+                    <div id="scavi-3d-canvas-container" style="width:100%; height:100%;"></div>
                 </div>
             </div>
 
             <div class="info-card">
-                <h3><i class="fa-solid fa-scissors" aria-hidden="true"></i> Fin de Chaîne (Finished Goods &amp; Nesting)</h3>
-                <p>Réceptionne les complexes de Nam Chau et Le Hung pour la confection Surf.</p>
-                <div class="alert-box alert-info">
-                    <h4>Gestion Intelligente des Défauts</h4>
-                    <p>Les opérateurs repèrent les rubans adhésifs jaunes posés en amont par le fournisseur (défauts mineurs) et décalent les patronages lors de la découpe pour placer ces défauts dans les chutes (scraps).</p>
+                <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> Dépouillement des Éapes de Contrôle Scavi</h3>
+                <ul class="alert-list" style="color: var(--text-secondary);">
+                    <li><b>1. Couleur &amp; Variations :</b> Contrôle initial de la teinte et des nuances[cite: 1].</li>
+                    <li><b>2. Traçabilité :</b> Contrôle des étiquettes de traçabilité des pièces réceptionnées[cite: 1].</li>
+                    <li><b>3. Dimensions (3x L / 3x l) :</b> Prise de mesures renforcée sur 3 points en longueur et 3 points en largeur (supérieur au DPR)[cite: 1, 2].</li>
+                    <li><b>4. Épaisseur (Grille 9 Points) :</b> Contrôle avec jauge sur 9 points répartis à 5 cm du bord (début, milieu, fin)[cite: 2].</li>
+                    <li><b>5. Test Délamination (DS 072) :</b> Test de traction manuelle du textile pour vérifier l'adhérence de l'encollage[cite: 1, 2].</li>
+                </ul>
+
+                <div class="alert-box alert-warning" style="margin-top: 16px;">
+                    <h4><i class="fa-solid fa-book-open" aria-hidden="true"></i> Visual Defect Library (Axe d'Amélioration)</h4>
+                    <p>Scavi possède sa propre bibliothèque de défauts (photos uniquement)[cite: 1]. Volonté exprimée de basculer vers le standard interactif <b>WTI Visual Defect Book</b>[cite: 1].</p>
                 </div>
             </div>
         `
@@ -154,96 +160,120 @@ const PACE_CATALOG = [
     { status: "IN DEV", count: 10 }
 ];
 
-// 2. MOTEUR DE RENDU 3D WEBGL (THREE.JS)
-const Schema3D = {
+// 2. MOTEUR DE RENDU 3D WEBGL SPÉCIFIQUE POUR SCAVI
+const Scavi3DEngine = {
     scene: null,
     camera: null,
     renderer: null,
-    light: null,
     sheetMesh: null,
-    cutMesh: null,
+    pinsGroup: null,
+    dimLinesGroup: null,
+    peelGroup: null,
 
-    initBlademarks3D(containerId) {
+    init(containerId) {
         const container = document.getElementById(containerId);
         if (!container || typeof THREE === 'undefined') return;
 
         container.innerHTML = '';
+        const width = container.clientWidth || 550;
+        const height = container.clientHeight || 300;
 
-        const width = container.clientWidth || 380;
-        const height = container.clientHeight || 350;
-
-        // Scène & Caméra
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x121214);
+        this.scene.background = new THREE.Color(0x121215);
 
-        this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-        this.camera.position.set(0, 14, 22);
+        this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+        this.camera.position.set(0, 12, 18);
         this.camera.lookAt(0, 0, 0);
 
-        // WebGL Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(width, height);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         container.appendChild(this.renderer.domElement);
 
-        // Modèle : Plaque de Néoprène 3D
-        const sheetGeo = new THREE.BoxGeometry(10, 0.5, 10);
-        const sheetMat = new THREE.MeshStandardMaterial({ color: 0x2c2c2e, roughness: 0.75, metalness: 0.15 });
+        // Lumières
+        const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+        const directional = new THREE.DirectionalLight(0x0a84ff, 1.8);
+        directional.position.set(5, 12, 8);
+        this.scene.add(ambient, directional);
+
+        // Modèle principal : Feuille de Néoprène Scavi
+        const sheetGeo = new THREE.BoxGeometry(10, 0.3, 6);
+        const sheetMat = new THREE.MeshStandardMaterial({ color: 0x2c2c2e, roughness: 0.6 });
         this.sheetMesh = new THREE.Mesh(sheetGeo, sheetMat);
-        this.sheetMesh.receiveShadow = true;
         this.scene.add(this.sheetMesh);
 
-        // Modèle : Blademark (Entaille 3D)
-        const cutGeo = new THREE.BoxGeometry(6, 0.2, 0.25);
-        const cutMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        this.cutMesh = new THREE.Mesh(cutGeo, cutMat);
-        this.cutMesh.position.set(0, 0.22, 0);
-        this.scene.add(this.cutMesh);
+        // Groupes d'éléments 3D pour les modes
+        this.pinsGroup = new THREE.Group();
+        this.dimLinesGroup = new THREE.Group();
+        this.peelGroup = new THREE.Group();
 
-        // Lumière Ambiante
-        const ambient = new THREE.AmbientLight(0xffffff, 0.25);
-        this.scene.add(ambient);
+        this.scene.add(this.pinsGroup);
+        this.scene.add(this.dimLinesGroup);
+        this.scene.add(this.peelGroup);
 
-        // Lumière Orientée Interactive
-        this.light = new THREE.DirectionalLight(0x30d158, 2.5);
-        this.light.castShadow = true;
-        this.light.shadow.mapSize.width = 1024;
-        this.light.shadow.mapSize.height = 1024;
-        this.setLightAngle('ok');
-        this.scene.add(this.light);
+        this.buildThicknessGrid();
+        this.buildDimensionLines();
+        this.buildPeelTest();
 
-        // Animation Loop (Rotation 3D fluide)
+        this.setMode('points');
+
         const animate = () => {
             requestAnimationFrame(animate);
-            this.sheetMesh.rotation.y += 0.003;
-            this.cutMesh.rotation.y += 0.003;
+            this.sheetMesh.rotation.y += 0.002;
+            this.pinsGroup.rotation.y += 0.002;
+            this.dimLinesGroup.rotation.y += 0.002;
+            this.peelGroup.rotation.y += 0.002;
             this.renderer.render(this.scene, this.camera);
         };
         animate();
+    },
 
-        // Auto Resize Handler
-        window.addEventListener('resize', () => {
-            if (!container || !this.renderer) return;
-            const w = container.clientWidth;
-            const h = container.clientHeight;
-            this.camera.aspect = w / h;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(w, h);
+    buildThicknessGrid() {
+        // DPR 02.027.A : 9 points d'épaisseur (P1 à P9) à 5 cm des bords[cite: 2]
+        const pinMat = new THREE.MeshBasicMaterial({ color: 0x30d158 });
+        const xPositions = [-4.2, 0, 4.2];
+        const zPositions = [-2.2, 0, 2.2];
+
+        xPositions.forEach(x => {
+            zPositions.forEach(z => {
+                const pinGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.8, 16);
+                const pin = new THREE.Mesh(pinGeo, pinMat);
+                pin.position.set(x, 0.5, z);
+                this.pinsGroup.add(pin);
+            });
         });
     },
 
-    setLightAngle(mode) {
-        if (!this.light) return;
-        if (mode === 'ok') {
-            // Angle 45° rasant -> Révèle l'ombre portée
-            this.light.position.set(-8, 8, 8);
-            this.light.color.setHex(0x30d158);
-        } else {
-            // Angle Zénithal 90° -> Ombre masquée
-            this.light.position.set(0, 16, 0);
-            this.light.color.setHex(0xff453a);
-        }
+    buildDimensionLines() {
+        // Scavi Slide 7 : 3x Largeur & 3x Longueur[cite: 1]
+        const lineMat = new THREE.MeshBasicMaterial({ color: 0x0a84ff });
+        [-3.5, 0, 3.5].forEach(x => {
+            const lineGeo = new THREE.BoxGeometry(0.08, 0.1, 5.8);
+            const line = new THREE.Mesh(lineGeo, lineMat);
+            line.position.set(x, 0.2, 0);
+            this.dimLinesGroup.add(line);
+        });
+        [-2, 0, 2].forEach(z => {
+            const lineGeo = new THREE.BoxGeometry(9.8, 0.1, 0.08);
+            const line = new THREE.Mesh(lineGeo, lineMat);
+            line.position.set(0, 0.2, z);
+            this.dimLinesGroup.add(line);
+        });
+    },
+
+    buildPeelTest() {
+        // DS 072 : Test de Délamination (Coin soulevé)[cite: 1, 2]
+        const peelGeo = new THREE.BoxGeometry(2.5, 0.1, 2.5);
+        const peelMat = new THREE.MeshStandardMaterial({ color: 0xff9f0a, roughness: 0.3 });
+        const peelMesh = new THREE.Mesh(peelGeo, peelMat);
+        peelMesh.position.set(-3.5, 0.6, -1.8);
+        peelMesh.rotation.z = 0.35;
+        this.peelGroup.add(peelMesh);
+    },
+
+    setMode(mode) {
+        this.pinsGroup.visible = (mode === 'points');
+        this.dimLinesGroup.visible = (mode === 'dims');
+        this.peelGroup.visible = (mode === 'peel');
     }
 };
 
@@ -258,7 +288,7 @@ class NotesManager {
             const data = localStorage.getItem(this.key);
             return data ? JSON.parse(data) : {};
         } catch (e) {
-            console.warn('LocalStorage inacessible:', e);
+            console.warn('LocalStorage inaccessible:', e);
             return {};
         }
     }
@@ -286,7 +316,7 @@ class NotesManager {
         try {
             localStorage.setItem(this.key, JSON.stringify(this.notes)); 
         } catch (e) {
-            console.error('Erreur de sauvegarde localStorage:', e);
+            console.error('Erreur sauvegarde localStorage:', e);
         }
     }
     get(supId) { return this.notes[supId] || []; }
@@ -304,11 +334,6 @@ const app = {
         this.buildSidebar();
         this.initMap();
         this.initDashboardCharts();
-        
-        // Initialisation de la scène 3D WebGL
-        setTimeout(() => {
-            Schema3D.initBlademarks3D('three-blademarks-canvas');
-        }, 400);
     },
 
     setupEventListeners() {
@@ -324,7 +349,7 @@ const app = {
             const actionBtn = e.target.closest('[data-action]');
             if (actionBtn) {
                 const action = actionBtn.getAttribute('data-action');
-                this.handleAction(action);
+                this.handleAction(action, actionBtn);
                 return;
             }
 
@@ -356,20 +381,56 @@ const app = {
         });
     },
 
-    handleAction(action) {
+    handleAction(action, btn) {
         switch(action) {
             case 'toggle-light-ok': 
-                Schema3D.setLightAngle('ok');
-                this.toast('Lumière 45° : Blademark détectable');
+                this.toggleLight('ok'); 
                 break;
             case 'toggle-light-nok': 
-                Schema3D.setLightAngle('nok');
-                this.toast('Lumière Zénithale : Blademark invaginer !');
+                this.toggleLight('nok'); 
                 break;
             case 'step-marking-1': this.setMarkingStep(1); break;
             case 'step-marking-2': this.setMarkingStep(2); break;
             case 'step-marking-3': this.setMarkingStep(3); break;
+
+            // Actions 3D Scavi
+            case 'scavi-3d-points':
+                this.updateScavi3DBtn(btn);
+                Scavi3DEngine.setMode('points');
+                break;
+            case 'scavi-3d-dims':
+                this.updateScavi3DBtn(btn);
+                Scavi3DEngine.setMode('dims');
+                break;
+            case 'scavi-3d-peel':
+                this.updateScavi3DBtn(btn);
+                Scavi3DEngine.setMode('peel');
+                break;
         }
+    },
+
+    updateScavi3DBtn(activeBtn) {
+        document.querySelectorAll('.scavi-3d-btn').forEach(b => b.classList.remove('active'));
+        if (activeBtn) activeBtn.classList.add('active');
+    },
+
+    toggleLight(state) {
+        const scene = document.getElementById('scene-blademarks');
+        if(!scene) return;
+        if(state === 'ok') {
+            scene.classList.add('light-ok');
+            scene.classList.remove('light-nok');
+            this.toast('Lumière à 45° : Blademark détectable');
+        } else {
+            scene.classList.add('light-nok');
+            scene.classList.remove('light-ok');
+            this.toast('Lumière Zénithale : Blademark masqué !');
+        }
+    },
+
+    setMarkingStep(step) {
+        const scene = document.getElementById('scene-marking');
+        if (scene) scene.setAttribute('data-step', step);
     },
 
     router(viewId, btn) {
@@ -460,6 +521,13 @@ const app = {
         
         this.renderNotes();
         this.renderIndividualRadar(sup);
+
+        // Si le panneau de Scavi est ouvert, initialiser son moteur 3D
+        if (id === 'scavi') {
+            setTimeout(() => {
+                Scavi3DEngine.init('scavi-3d-canvas-container');
+            }, 300);
+        }
         
         document.querySelectorAll('.sup-nav-item').forEach(b => {
             b.classList.toggle('active', b.innerText.includes(sup.name));
@@ -488,11 +556,6 @@ const app = {
         
         const targetPane = document.getElementById(tabId);
         if (targetPane) targetPane.classList.add('active');
-    },
-
-    setMarkingStep(step) {
-        const scene = document.getElementById('scene-marking');
-        if (scene) scene.setAttribute('data-step', step);
     },
 
     renderNotes() {
