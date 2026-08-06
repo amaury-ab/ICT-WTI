@@ -11,10 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet & Chart.js -->
+    <!-- Leaflet, Chart.js & Three.js (3D WebGL) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <!-- App Styles -->
     <link rel="stylesheet" href="styles.css">
@@ -145,9 +146,9 @@
                 </p>
             </div>
 
-            <!-- BLADEMARKS -->
+            <!-- BLADEMARKS 3D WEBGL -->
             <div class="defect-section">
-                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);" aria-hidden="true"></i> 1. Blademarks : La Règle des 45°</h2>
+                <h2 class="defect-section-title"><i class="fa-solid fa-arrows-to-eye" style="color:var(--system-blue);" aria-hidden="true"></i> 1. Blademarks : La Règle des 45° (Modèle 3D WebGL)</h2>
                 <div class="scene-container">
                     <div class="apple-glass defect-text-card">
                         <h3>L'Angle de Lumière Parfait (45°)</h3>
@@ -164,14 +165,11 @@
                         </div>
                     </div>
                     
-                    <div class="scene-3d light-ok" id="scene-blademarks">
-                        <div class="foam-sheet-3d">
-                            <div class="blade-indent"></div>
-                        </div>
-                        <div class="light-source"></div>
+                    <div class="scene-3d" id="three-blademarks-container">
+                        <div id="three-blademarks-canvas" class="three-canvas-wrap"></div>
                         <div class="scene-controls">
-                            <button class="btn btn-success" data-action="toggle-light-ok">Lumière à 45° (OK)</button>
-                            <button class="btn btn-danger" data-action="toggle-light-nok">Zénithale (NOK)</button>
+                            <button class="btn btn-success" data-action="toggle-light-ok">Lumière 45° (OK)</button>
+                            <button class="btn btn-danger" data-action="toggle-light-nok">Zénithale 90° (NOK)</button>
                         </div>
                     </div>
                 </div>
