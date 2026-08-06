@@ -115,7 +115,7 @@ const SUPPLIERS = {
             </div>
 
             <div class="info-card">
-                <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> Dépouillement des Éapes de Contrôle Scavi</h3>
+                <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> Dépouillement des Étapes de Contrôle Scavi</h3>
                 <ul class="alert-list" style="color: var(--text-secondary);">
                     <li><b>1. Couleur &amp; Variations :</b> Contrôle initial de la teinte et des nuances[cite: 1].</li>
                     <li><b>2. Traçabilité :</b> Contrôle des étiquettes de traçabilité des pièces réceptionnées[cite: 1].</li>
@@ -189,19 +189,16 @@ const Scavi3DEngine = {
         this.renderer.setSize(width, height);
         container.appendChild(this.renderer.domElement);
 
-        // Lumières
         const ambient = new THREE.AmbientLight(0xffffff, 0.6);
         const directional = new THREE.DirectionalLight(0x0a84ff, 1.8);
         directional.position.set(5, 12, 8);
         this.scene.add(ambient, directional);
 
-        // Modèle principal : Feuille de Néoprène Scavi
         const sheetGeo = new THREE.BoxGeometry(10, 0.3, 6);
         const sheetMat = new THREE.MeshStandardMaterial({ color: 0x2c2c2e, roughness: 0.6 });
         this.sheetMesh = new THREE.Mesh(sheetGeo, sheetMat);
         this.scene.add(this.sheetMesh);
 
-        // Groupes d'éléments 3D pour les modes
         this.pinsGroup = new THREE.Group();
         this.dimLinesGroup = new THREE.Group();
         this.peelGroup = new THREE.Group();
@@ -228,7 +225,6 @@ const Scavi3DEngine = {
     },
 
     buildThicknessGrid() {
-        // DPR 02.027.A : 9 points d'épaisseur (P1 à P9) à 5 cm des bords[cite: 2]
         const pinMat = new THREE.MeshBasicMaterial({ color: 0x30d158 });
         const xPositions = [-4.2, 0, 4.2];
         const zPositions = [-2.2, 0, 2.2];
@@ -244,7 +240,6 @@ const Scavi3DEngine = {
     },
 
     buildDimensionLines() {
-        // Scavi Slide 7 : 3x Largeur & 3x Longueur[cite: 1]
         const lineMat = new THREE.MeshBasicMaterial({ color: 0x0a84ff });
         [-3.5, 0, 3.5].forEach(x => {
             const lineGeo = new THREE.BoxGeometry(0.08, 0.1, 5.8);
@@ -261,7 +256,6 @@ const Scavi3DEngine = {
     },
 
     buildPeelTest() {
-        // DS 072 : Test de Délamination (Coin soulevé)[cite: 1, 2]
         const peelGeo = new THREE.BoxGeometry(2.5, 0.1, 2.5);
         const peelMat = new THREE.MeshStandardMaterial({ color: 0xff9f0a, roughness: 0.3 });
         const peelMesh = new THREE.Mesh(peelGeo, peelMat);
@@ -393,7 +387,6 @@ const app = {
             case 'step-marking-2': this.setMarkingStep(2); break;
             case 'step-marking-3': this.setMarkingStep(3); break;
 
-            // Actions 3D Scavi
             case 'scavi-3d-points':
                 this.updateScavi3DBtn(btn);
                 Scavi3DEngine.setMode('points');
@@ -416,15 +409,36 @@ const app = {
 
     toggleLight(state) {
         const scene = document.getElementById('scene-blademarks');
+        const badge = document.getElementById('light-status-badge');
+        const btnGo = document.getElementById('btn-light-go');
+        const btnNogo = document.getElementById('btn-light-nogo');
+        
         if(!scene) return;
+        
         if(state === 'ok') {
             scene.classList.add('light-ok');
             scene.classList.remove('light-nok');
-            this.toast('Lumière à 45° : Blademark détectable');
+            
+            if(badge) {
+                badge.innerHTML = `<span class="badge badge-success"><i class="fa-solid fa-check"></i> GO - Lumière à 45° (Révèle l'ombre)</span>`;
+            }
+            if(btnGo && btnNogo) {
+                btnGo.classList.add('active');
+                btnNogo.classList.remove('active');
+            }
+            this.toast('Mode GO : Lumière à 45° rasante activée');
         } else {
             scene.classList.add('light-nok');
             scene.classList.remove('light-ok');
-            this.toast('Lumière Zénithale : Blademark masqué !');
+            
+            if(badge) {
+                badge.innerHTML = `<span class="badge badge-danger"><i class="fa-solid fa-xmark"></i> NOGO - Lumière Zénithale 90° (Défaut masqué)</span>`;
+            }
+            if(btnGo && btnNogo) {
+                btnNogo.classList.add('active');
+                btnGo.classList.remove('active');
+            }
+            this.toast('Mode NOGO : Lumière 90° zénithale masquant les ombres !');
         }
     },
 
@@ -522,7 +536,6 @@ const app = {
         this.renderNotes();
         this.renderIndividualRadar(sup);
 
-        // Si le panneau de Scavi est ouvert, initialiser son moteur 3D
         if (id === 'scavi') {
             setTimeout(() => {
                 Scavi3DEngine.init('scavi-3d-canvas-container');
