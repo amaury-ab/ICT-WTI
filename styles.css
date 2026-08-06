@@ -2,23 +2,19 @@
    1. APPLE-STYLE DESIGN TOKENS & VARIABLES
    ========================================================================== */
 :root {
-    /* Palette Dark Mode Apple */
     --bg-base: #000000;
     --bg-surface: #1c1c1e;
     --bg-elevated: #2c2c2e;
     
-    /* Vibrancy / Glassmorphism optimisé GPU */
     --glass-bg: rgba(28, 28, 30, 0.75);
     --glass-bg-hover: rgba(44, 44, 46, 0.85);
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-highlight: rgba(255, 255, 255, 0.18);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     
-    /* Typographie */
     --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-display: 'Space Grotesk', -apple-system, sans-serif;
     
-    /* Couleurs Système */
     --text-primary: #ffffff;
     --text-secondary: #ebebf599;
     --text-tertiary: #ebebf54d;
@@ -32,7 +28,6 @@
     
     --sidebar-width: 320px;
     
-    /* Physics Animations */
     --spring-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
     --spring-bouncy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --transition-fast: all 0.2s var(--spring-soft);
@@ -67,7 +62,6 @@ body {
     position: relative;
 }
 
-/* Texture overlay légère */
 body::before {
     content: '';
     position: fixed;
@@ -87,7 +81,6 @@ h1, h2, h3, h4, h5, h6 {
 a { text-decoration: none; color: inherit; transition: var(--transition-fast); }
 button, input, textarea, select { font-family: inherit; outline: none; border: none; }
 
-/* Scrollbar macOS Style */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { 
@@ -128,7 +121,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .text-danger { color: var(--system-red); }
 .text-warning { color: var(--system-orange); }
 
-/* Buttons */
 .btn {
     background: rgba(255, 255, 255, 0.1); 
     border: 1px solid var(--glass-border);
@@ -164,7 +156,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .btn-success { background: rgba(48, 209, 88, 0.2); color: var(--system-green); border-color: rgba(48, 209, 88, 0.3); }
 .btn-success:hover { background: rgba(48, 209, 88, 0.35); }
 
-/* Status Badges */
 .badge {
     padding: 6px 14px; 
     border-radius: 100px; 
@@ -183,7 +174,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .badge-info { background: rgba(10, 132, 255, 0.15); color: var(--system-blue); border: 1px solid rgba(10, 132, 255, 0.3); }
 .badge-outline { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid var(--glass-border); }
 
-/* Mobile Menu Toggle */
 .mobile-toggle-btn {
     display: none;
     position: fixed;
@@ -458,7 +448,7 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .canvas-wrap { flex-grow: 1; position: relative; width: 100%; height: 100%; min-height: 200px; }
 
 /* ==========================================================================
-   8. VISUAL DEFECT BOOK (3D ANIMATIONS)
+   8. VISUAL DEFECT BOOK (3D & WEBGL)
    ========================================================================== */
 .visual-header { text-align: center; margin-bottom: 60px; }
 .visual-header h1 { font-size: 3.8rem; text-transform: uppercase; letter-spacing: -2px; }
@@ -481,39 +471,14 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 }
 .scene-3d-dark { background: #000; box-shadow: none; }
 
+.three-canvas-wrap { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+
 .scene-controls {
     position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
     display: flex; gap: 10px; z-index: 10;
     background: rgba(28, 28, 30, 0.85); padding: 8px 12px; border-radius: 100px; 
     border: 1px solid var(--glass-border);
 }
-
-/* 3D Blademarks */
-.foam-sheet-3d {
-    width: 240px; height: 240px; background: #2c2c2e; border: 2px solid #3a3a3c;
-    transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(45deg);
-    position: relative; transition: transform 0.8s var(--spring-bouncy);
-    box-shadow: 20px 20px 40px rgba(0,0,0,0.8);
-}
-
-.blade-indent {
-    position: absolute; top: 40%; left: 0; width: 100%; height: 8px;
-    background: #1c1c1e; transform: translateZ(-2px);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
-    transition: all 0.6s var(--spring-soft);
-}
-
-.light-source {
-    position: absolute; width: 350px; height: 350px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%);
-    pointer-events: none; transition: all 0.8s var(--spring-bouncy);
-    mix-blend-mode: overlay;
-}
-
-.scene-3d.light-ok .light-source { transform: translate3d(-120px, -80px, 80px) rotateX(45deg); opacity: 0.9; }
-.scene-3d.light-ok .blade-indent { box-shadow: inset 0 6px 8px rgba(0,0,0,1); background: #000; }
-.scene-3d.light-nok .light-source { transform: translate3d(0, -180px, 120px) rotateX(80deg); opacity: 0.9; }
-.scene-3d.light-nok .blade-indent { box-shadow: inset 0 0px 1px rgba(0,0,0,0.3); background: #2c2c2e; }
 
 /* Cavity Cross Section */
 .cavity-flex-wrapper { display: flex; width: 100%; justify-content: space-around; margin-bottom: 40px; }
@@ -544,7 +509,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
     opacity: 1;
 }
 
-/* Criteria List */
 .criteria-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
 .criteria-item { padding: 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.5; }
 .item-danger { background: rgba(255,69,58,0.1); border-left: 4px solid var(--system-red); }
@@ -553,7 +517,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 
 .steps-list { margin-left: 20px; color: white; line-height: 2; font-size: 0.98rem; margin-top: 10px; }
 
-/* Defect Marking */
 .marking-step-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
 .marking-sheet {
     width: 200px; height: 280px; background: #2c2c2e; border: 2px solid #48484a; border-radius: 8px;
@@ -644,7 +607,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 .tab-pane { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s var(--spring-soft); }
 .tab-pane.active { display: block; opacity: 1; transform: translateY(0); }
 
-/* Info Cards & Alerts in Panel */
 .info-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 18px; padding: 24px; margin-bottom: 20px; }
 .info-card h3 { font-size: 1.3rem; color: white; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
 .info-card p { font-size: 0.98rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 12px; }
@@ -703,7 +665,6 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 
 .empty-notes { text-align: center; padding: 50px 20px; color: var(--text-secondary); font-size: 0.95rem; border-radius: 16px; border: 1px dashed var(--glass-border); }
 
-/* Toasts */
 .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
 .toast { 
     background: rgba(28, 28, 30, 0.95); backdrop-filter: blur(15px);
@@ -714,7 +675,7 @@ button, input, textarea, select { font-family: inherit; outline: none; border: n
 @keyframes toastPop { 0% { opacity: 0; transform: translateY(30px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
 /* ==========================================================================
-   11. RESPONSIVE ADAPTATIONS (MOBILE & TABLETS)
+   11. RESPONSIVE ADAPTATIONS
    ========================================================================== */
 @media (max-width: 1024px) {
     .charts-row-split { grid-template-columns: 1fr; }
